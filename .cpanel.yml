@@ -1,0 +1,13 @@
+deployment:
+  tasks:
+    # Ruta hacia la carpeta pública del hosting
+    - export DEPLOYPATH=/home/ibbsccou/public_html/
+
+    # Limpiar el public_html antes de copiar
+    - /bin/rm -rf $DEPLOYPATH/*
+
+    # Copiar solo la carpeta /public de tu proyecto Laravel
+    - /bin/cp -R public/* $DEPLOYPATH
+
+    # OPCIONAL: si querés que composer instale dependencias (solo si tenés SSH)
+    # - /usr/bin/php81 /usr/bin/composer install --no-dev --optimize-autoloader
