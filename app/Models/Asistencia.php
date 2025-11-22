@@ -15,7 +15,8 @@ class Asistencia extends Model
         'chapel_mujeres',
         'chapel_adultos_mayores',
         'chapel_adultos',
-        'chapel_jovenes',
+        'chapel_jovenes_masculinos',
+        'chapel_jovenes_femeninas',
         'clase_0_1_hombres',
         'clase_0_1_mujeres',
         'clase_0_1_maestros_hombres',
@@ -33,10 +34,23 @@ class Asistencia extends Model
         'clase_9_11_maestros_hombres',
         'clase_9_11_maestros_mujeres',
         'total_asistencia',
+        'cerrado',
+        'cerrado_at',
+        'cerrado_por',
+    ];
+
+    protected $casts = [
+        'cerrado' => 'boolean',
+        'cerrado_at' => 'datetime',
     ];
 
     public function culto(): BelongsTo
     {
         return $this->belongsTo(Culto::class);
+    }
+
+    public function cerradoPor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cerrado_por');
     }
 }

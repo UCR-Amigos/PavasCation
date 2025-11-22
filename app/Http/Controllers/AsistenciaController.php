@@ -10,8 +10,19 @@ class AsistenciaController extends Controller
 {
     public function index()
     {
-        $cultos = Culto::with('asistencia')->orderBy('fecha', 'desc')->paginate(20);
-        return view('asistencia.index', compact('cultos'));
+        $cultos = Culto::with('asistencia')
+            ->whereHas('asistencia', function($query) {
+                $query->where('cerrado', false);
+            })
+            ->orderBy('fecha', 'desc')
+            ->paginate(20);
+        
+        $asistenciasCerradas = Asistencia::where('cerrado', true)
+            ->with('culto')
+            ->orderBy('cerrado_at', 'desc')
+            ->get();
+        
+        return view('asistencia.index', compact('cultos', 'asistenciasCerradas'));
     }
 
     public function create()
@@ -24,11 +35,13 @@ class AsistenciaController extends Controller
     {
         $validated = $request->validate([
             'culto_id' => 'required|exists:cultos,id|unique:asistencia,culto_id',
-            'chapel_hombres' => 'required|integer|min:0',
-            'chapel_mujeres' => 'required|integer|min:0',
-            'chapel_adultos_mayores' => 'required|integer|min:0',
-            'chapel_adultos' => 'required|integer|min:0',
-            'chapel_jovenes' => 'required|integer|min:0',
+            'chapel_adultos_hombres' => 'required|integer|min:0',
+            'chapel_adultos_mujeres' => 'required|integer|min:0',
+            'chapel_adultos_mayores_hombres' => 'required|integer|min:0',
+            'chapel_adultos_mayores_mujeres' => 'required|integer|min:0',
+            'chapel_jovenes_masculinos' => 'required|integer|min:0',
+            'chapel_jovenes_femeninas' => 'required|integer|min:0',
+            'chapel_maestros_hombres' => 'required|integer|min:0',
             'clase_0_1_hombres' => 'required|integer|min:0',
             'clase_0_1_mujeres' => 'required|integer|min:0',
             'clase_0_1_maestros_hombres' => 'required|integer|min:0',
@@ -61,12 +74,19 @@ class AsistenciaController extends Controller
 
     public function update(Request $request, Asistencia $asistencium)
     {
+        if ($asistencium->cerrado) {
+            return redirect()->route('asistencia.index')
+                ->with('error', 'No se puede editar una asistencia cerrada.');
+        }
+
         $validated = $request->validate([
-            'chapel_hombres' => 'required|integer|min:0',
-            'chapel_mujeres' => 'required|integer|min:0',
-            'chapel_adultos_mayores' => 'required|integer|min:0',
-            'chapel_adultos' => 'required|integer|min:0',
-            'chapel_jovenes' => 'required|integer|min:0',
+            'chapel_adultos_hombres' => 'required|integer|min:0',
+            'chapel_adultos_mujeres' => 'required|integer|min:0',
+            'chapel_adultos_mayores_hombres' => 'required|integer|min:0',
+            'chapel_adultos_mayores_mujeres' => 'required|integer|min:0',
+            'chapel_jovenes_masculinos' => 'required|integer|min:0',
+            'chapel_jovenes_femeninas' => 'required|integer|min:0',
+            'chapel_maestros_hombres' => 'required|integer|min:0',
             'clase_0_1_hombres' => 'required|integer|min:0',
             'clase_0_1_mujeres' => 'required|integer|min:0',
             'clase_0_1_maestros_hombres' => 'required|integer|min:0',
@@ -94,9 +114,31 @@ class AsistenciaController extends Controller
 
     public function destroy(Asistencia $asistencium)
     {
+        if ($asistencium->cerrado) {
+            return redirect()->route('asistencia.index')
+                ->with('error', 'No se puede eliminar una asistencia cerrada.');
+        }
+
         $asistencium->delete();
 
         return redirect()->route('asistencia.index')
             ->with('success', 'Asistencia eliminada correctamente.');
+    }
+
+    public function cerrarAsistencia(Asistencia $asistencium)
+    {
+        if ($asistencium->cerrado) {
+            return redirect()->route('asistencia.index')
+                ->with('error', 'Esta asistencia ya está cerrada.');
+        }
+
+        $asistencium->update([
+            'cerrado' => true,
+            'cerrado_at' => now(),
+            'cerrado_por' => auth()->id(),
+        ]);
+
+        return redirect()->route('asistencia.index')
+            ->with('success', 'Asistencia cerrada correctamente. Ahora aparece en la lista de asistencias cerradas.');
     }
 }

@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('chapel_mujeres')->default(0);
             $table->integer('chapel_adultos_mayores')->default(0);
             $table->integer('chapel_adultos')->default(0);
-            $table->integer('chapel_jovenes')->default(0);
+            $table->integer('chapel_jovenes_masculinos')->default(0);
+            $table->integer('chapel_jovenes_femeninas')->default(0);
             
             // Clase 0-1
             $table->integer('clase_0_1_hombres')->default(0);

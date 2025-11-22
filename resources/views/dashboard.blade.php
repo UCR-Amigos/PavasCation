@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Dashboard - Sistema de Iglesia')
+@section('title', 'IBBSC - Dashboard')
 @section('page-title', 'Dashboard')
 
 @section('content')
@@ -77,13 +77,17 @@
         <!-- Gráfico de Barras - Ingresos por Culto -->
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold mb-4">Ingresos por Culto (Últimos 10)</h3>
-            <canvas id="ingresosChart"></canvas>
+            <div style="height: 300px; position: relative;">
+                <canvas id="ingresosChart"></canvas>
+            </div>
         </div>
 
         <!-- Gráfico Circular - Distribución por Categorías -->
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold mb-4">Distribución por Categorías (Mes Actual)</h3>
-            <canvas id="distribucionChart"></canvas>
+            <div style="height: 300px; position: relative;">
+                <canvas id="distribucionChart"></canvas>
+            </div>
         </div>
     </div>
 
@@ -92,13 +96,17 @@
         <!-- Línea de Tiempo - Asistencia -->
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold mb-4">Tendencia de Asistencia</h3>
-            <canvas id="asistenciaChart"></canvas>
+            <div style="height: 300px; position: relative;">
+                <canvas id="asistenciaChart"></canvas>
+            </div>
         </div>
 
         <!-- Promesas Cumplidas vs Pendientes -->
         <div class="bg-white rounded-lg shadow p-6">
             <h3 class="text-lg font-semibold mb-4">Estado de Promesas (Mes Actual)</h3>
-            <canvas id="promesasChart"></canvas>
+            <div style="height: 300px; position: relative;">
+                <canvas id="promesasChart"></canvas>
+            </div>
         </div>
     </div>
 </div>

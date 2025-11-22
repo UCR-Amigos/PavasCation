@@ -6,6 +6,7 @@ use App\Models\Culto;
 use App\Models\Persona;
 use App\Models\Sobre;
 use App\Models\SobreDetalle;
+use App\Models\OfrendaSuelta;
 use App\Services\CalculoTotalesCultoService;
 use Illuminate\Http\Request;
 
@@ -21,15 +22,32 @@ class RecuentoController extends Controller
     public function index(Request $request)
     {
         $cultoId = $request->get('culto_id');
+        $verCerrado = $request->has('ver_cerrado');
         
-        $cultos = Culto::orderBy('fecha', 'desc')->get();
+        // Traer cultos no cerrados para el selector
+        $cultos = Culto::where('cerrado', false)->orderBy('fecha', 'desc')->get();
+        
+        // Traer cultos cerrados para la lista de solo lectura
+        $cultosCerrados = Culto::where('cerrado', true)
+            ->with('totales')
+            ->orderBy('cerrado_at', 'desc')
+            ->get();
+        
+        // Si hay un culto seleccionado
+        $cultoSeleccionado = null;
+        if ($cultoId) {
+            $cultoSeleccionado = Culto::find($cultoId);
+        }
+        
         $sobres = $cultoId 
             ? Sobre::where('culto_id', $cultoId)->with(['persona', 'detalles'])->get()
             : collect();
 
-        $cultoSeleccionado = $cultoId ? Culto::find($cultoId) : null;
+        $ofrendasSueltas = $cultoId
+            ? OfrendaSuelta::where('culto_id', $cultoId)->orderBy('created_at', 'desc')->get()
+            : collect();
 
-        return view('recuento.index', compact('sobres', 'cultos', 'cultoSeleccionado'));
+        return view('recuento.index', compact('sobres', 'cultos', 'cultoSeleccionado', 'ofrendasSueltas', 'cultosCerrados'));
     }
 
     public function create(Request $request)
@@ -52,6 +70,13 @@ class RecuentoController extends Controller
             'detalles.*.categoria' => 'required|string',
             'detalles.*.monto' => 'required|numeric|min:0',
         ]);
+
+        // Verificar que el culto no esté cerrado
+        $culto = Culto::findOrFail($validated['culto_id']);
+        if ($culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $culto->id])
+                ->with('error', 'No se pueden agregar sobres a un culto cerrado.');
+        }
 
         // Calcular total declarado
         $totalDeclarado = collect($validated['detalles'])->sum('monto');
@@ -84,6 +109,11 @@ class RecuentoController extends Controller
 
     public function edit(Sobre $sobre)
     {
+        if ($sobre->culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $sobre->culto_id])
+                ->with('error', 'No se puede editar un sobre de un culto cerrado.');
+        }
+
         $sobre->load(['detalles', 'culto']);
         $personas = Persona::where('activo', true)->get();
 
@@ -92,6 +122,11 @@ class RecuentoController extends Controller
 
     public function update(Request $request, Sobre $sobre)
     {
+        if ($sobre->culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $sobre->culto_id])
+                ->with('error', 'No se puede editar un sobre de un culto cerrado.');
+        }
+
         $validated = $request->validate([
             'persona_id' => 'nullable|exists:personas,id',
             'metodo_pago' => 'required|in:efectivo,transferencia',
@@ -131,6 +166,11 @@ class RecuentoController extends Controller
 
     public function destroy(Sobre $sobre)
     {
+        if ($sobre->culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $sobre->culto_id])
+                ->with('error', 'No se puede eliminar un sobre de un culto cerrado.');
+        }
+
         $cultoId = $sobre->culto_id;
         $sobre->delete();
 
@@ -142,5 +182,122 @@ class RecuentoController extends Controller
 
         return redirect()->route('recuento.index', ['culto_id' => $cultoId])
             ->with('success', 'Sobre eliminado correctamente.');
+    }
+
+    public function storeSuelto(Request $request)
+    {
+        $validated = $request->validate([
+            'culto_id' => 'required|exists:cultos,id',
+            'monto' => 'required|numeric|min:0.01',
+            'descripcion' => 'nullable|string|max:500',
+        ]);
+
+        // Verificar que el culto no esté cerrado
+        $culto = Culto::findOrFail($validated['culto_id']);
+        if ($culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $culto->id])
+                ->with('error', 'No se puede agregar dinero suelto a un culto cerrado.');
+        }
+
+        OfrendaSuelta::create([
+            'culto_id' => $validated['culto_id'],
+            'monto' => $validated['monto'],
+            'descripcion' => $validated['descripcion'] ?? null,
+        ]);
+
+        // Recalcular totales
+        $culto = Culto::find($validated['culto_id']);
+        if ($culto) {
+            $this->calculoService->recalcular($culto);
+        }
+
+        return redirect()->route('recuento.index', ['culto_id' => $validated['culto_id']])
+            ->with('success', 'Dinero suelto registrado correctamente.');
+    }
+
+    public function editSuelto(OfrendaSuelta $suelto)
+    {
+        if ($suelto->culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $suelto->culto_id])
+                ->with('error', 'No se puede editar dinero suelto de un culto cerrado.');
+        }
+
+        return response()->json($suelto);
+    }
+
+    public function updateSuelto(Request $request, OfrendaSuelta $suelto)
+    {
+        if ($suelto->culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $suelto->culto_id])
+                ->with('error', 'No se puede editar dinero suelto de un culto cerrado.');
+        }
+
+        $validated = $request->validate([
+            'monto' => 'required|numeric|min:0.01',
+            'descripcion' => 'nullable|string|max:500',
+        ]);
+
+        $suelto->update([
+            'monto' => $validated['monto'],
+            'descripcion' => $validated['descripcion'] ?? null,
+        ]);
+
+        // Recalcular totales
+        $culto = Culto::find($suelto->culto_id);
+        if ($culto) {
+            $this->calculoService->recalcular($culto);
+        }
+
+        return redirect()->route('recuento.index', ['culto_id' => $suelto->culto_id])
+            ->with('success', 'Dinero suelto actualizado correctamente.');
+    }
+
+    public function destroySuelto(OfrendaSuelta $suelto)
+    {
+        if ($suelto->culto->cerrado) {
+            return redirect()->route('recuento.index', ['culto_id' => $suelto->culto_id])
+                ->with('error', 'No se puede eliminar dinero suelto de un culto cerrado.');
+        }
+
+        $cultoId = $suelto->culto_id;
+        $suelto->delete();
+
+        // Recalcular totales
+        $culto = Culto::find($cultoId);
+        if ($culto) {
+            $this->calculoService->recalcular($culto);
+        }
+
+        return redirect()->route('recuento.index', ['culto_id' => $cultoId])
+            ->with('success', 'Dinero suelto eliminado correctamente.');
+    }
+
+    public function cerrarCulto(Culto $culto)
+    {
+        if ($culto->cerrado) {
+            return redirect()->route('recuento.index')
+                ->with('error', 'Este culto ya está cerrado.');
+        }
+
+        $culto->update([
+            'cerrado' => true,
+            'cerrado_at' => now(),
+            'cerrado_por' => auth()->id(),
+        ]);
+
+        return redirect()->route('recuento.index')
+            ->with('success', 'Culto cerrado correctamente. Ahora aparece en la lista de cultos cerrados.');
+    }
+
+    public function verCultoCerrado(Culto $culto)
+    {
+        if (!$culto->cerrado) {
+            return response()->json(['error' => 'Este culto no está cerrado'], 400);
+        }
+
+        $sobres = $culto->sobres()->with(['persona', 'detalles'])->get();
+        $ofrendasSueltas = $culto->ofrendasSueltas;
+
+        return view('recuento.partials.resumen-cerrado', compact('culto', 'sobres', 'ofrendasSueltas'));
     }
 }

@@ -1,0 +1,687 @@
+@extends('layouts.admin')
+
+@section('title', 'IBBSC - Recuento de Sobres')
+@section('page-title', 'Recuento de Sobres')
+
+@section('content')
+<div class="space-y-6">
+    <!-- Mensajes de éxito/error -->
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ session('success') }}</span>
+    </div>
+    @endif
+    
+    @if(session('error'))
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ session('error') }}</span>
+    </div>
+    @endif
+
+    <!-- Filtro por Culto -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <form method="GET" action="{{ route('recuento.index') }}" class="flex items-end gap-4">
+            <div class="flex-1">
+                <label for="culto_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Seleccionar Culto
+                </label>
+                <select name="culto_id" id="culto_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" onchange="this.form.submit()">
+                    <option value="">-- Seleccione un culto --</option>
+                    @foreach($cultos as $culto)
+                        <option value="{{ $culto->id }}" {{ request('culto_id') == $culto->id ? 'selected' : '' }}>
+                            {{ $culto->fecha->format('d/m/Y') }} - {{ ucfirst($culto->tipo_culto) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @if($cultoSeleccionado)
+            <div class="flex gap-2">
+                @if(!$cultoSeleccionado->cerrado)
+                <a href="{{ route('recuento.create', ['culto_id' => $cultoSeleccionado->id]) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                    + Agregar Sobre
+                </a>
+                <button type="button" onclick="document.getElementById('modalSuelto').classList.remove('hidden')" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                    + Dinero Suelto
+                </button>
+                <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Descargar PDF
+                </a>
+                <button type="button" onclick="cerrarCulto({{ $cultoSeleccionado->id }})" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                    🔒 Cerrar Culto
+                </button>
+                @else
+                <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Descargar PDF
+                </a>
+                <div class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md border border-gray-300 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Culto Cerrado</span>
+                    @if($cultoSeleccionado->cerrado_at)
+                    <span class="text-xs text-gray-500">({{ $cultoSeleccionado->cerrado_at->format('d/m/Y H:i') }})</span>
+                    @endif
+                </div>
+                @endif
+            </div>
+            @endif
+        </form>
+    </div>
+
+    @if($cultoSeleccionado && !$cultoSeleccionado->cerrado)
+    <!-- MODO EDICIÓN: Culto Activo Seleccionado -->
+    
+    <!-- Resumen del Culto -->
+    @if($cultoSeleccionado->totales)
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600">Total General</p>
+            <p class="text-2xl font-bold text-blue-600">${{ number_format($cultoSeleccionado->totales->total_general, 2) }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600">Cantidad de Sobres</p>
+            <p class="text-2xl font-bold text-green-600">{{ $cultoSeleccionado->totales->cantidad_sobres }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600">Diezmos</p>
+            <p class="text-2xl font-bold text-purple-600">${{ number_format($cultoSeleccionado->totales->total_diezmo, 2) }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4">
+            <p class="text-sm text-gray-600">Transferencias</p>
+            <p class="text-2xl font-bold text-orange-600">{{ $cultoSeleccionado->totales->cantidad_transferencias }}</p>
+        </div>
+    </div>
+    @endif
+
+    <!-- Tabla de Sobres -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Sobre</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Persona</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Método Pago</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detalles</th>
+                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse($sobres as $sobre)
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            #{{ $sobre->numero_sobre }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ $sobre->persona ? $sobre->persona->nombre : 'Anónimo' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $sobre->metodo_pago == 'transferencia' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
+                                {{ ucfirst($sobre->metodo_pago) }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            ${{ number_format($sobre->total_declarado, 2) }}
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            @foreach($sobre->detalles as $detalle)
+                                <span class="inline-block bg-gray-100 rounded px-2 py-1 text-xs mr-1 mb-1">
+                                    {{ ucfirst($detalle->categoria) }}: ${{ number_format($detalle->monto, 2) }}
+                                </span>
+                            @endforeach
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="{{ route('recuento.edit', $sobre) }}" class="text-blue-600 hover:text-blue-900 mr-3">Editar</a>
+                            <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero }})" class="text-red-600 hover:text-red-900">
+                                Eliminar
+                            </button>
+                            <form id="form-eliminar-sobre-{{ $sobre->id }}" action="{{ route('recuento.destroy', $sobre) }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p class="mt-2">No hay sobres registrados para este culto</p>
+                            <a href="{{ route('recuento.create', ['culto_id' => $cultoSeleccionado->id]) }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                Agregar primer sobre
+                            </a>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Tabla Resumen por Culto -->
+    @if($sobres->count() > 0)
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <h3 class="text-lg font-semibold text-gray-900">Resumen Detallado por Categorías</h3>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">N° Sobre</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Diezmo</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Misiones</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Seminario</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Campamento</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Préstamo</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Construcción</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Micro</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase font-bold">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @php
+                        $totales = [
+                            'diezmo' => 0,
+                            'misiones' => 0,
+                            'seminario' => 0,
+                            'campa' => 0,
+                            'prestamo' => 0,
+                            'construccion' => 0,
+                            'micro' => 0,
+                            'subtotal' => 0
+                        ];
+                    @endphp
+                    @foreach($sobres as $sobre)
+                    @php
+                        $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
+                        $diezmo = $detallesPorCategoria->get('diezmo')->monto ?? 0;
+                        $misiones = $detallesPorCategoria->get('misiones')->monto ?? 0;
+                        $seminario = $detallesPorCategoria->get('seminario')->monto ?? 0;
+                        $campa = $detallesPorCategoria->get('campa')->monto ?? 0;
+                        $prestamo = $detallesPorCategoria->get('prestamo')->monto ?? 0;
+                        $construccion = $detallesPorCategoria->get('construccion')->monto ?? 0;
+                        $micro = $detallesPorCategoria->get('micro')->monto ?? 0;
+                        $subtotal = $sobre->total_declarado;
+
+                        $totales['diezmo'] += $diezmo;
+                        $totales['misiones'] += $misiones;
+                        $totales['seminario'] += $seminario;
+                        $totales['campa'] += $campa;
+                        $totales['prestamo'] += $prestamo;
+                        $totales['construccion'] += $construccion;
+                        $totales['micro'] += $micro;
+                        $totales['subtotal'] += $subtotal;
+                    @endphp
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-sm font-medium text-gray-900">#{{ $sobre->numero_sobre }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($diezmo, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($misiones, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($seminario, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($campa, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($prestamo, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($construccion, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($micro, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-600">${{ number_format($subtotal, 2) }}</td>
+                    </tr>
+                    @endforeach
+                    
+                    <!-- Filas de Dinero Suelto -->
+                    @foreach($ofrendasSueltas as $ofrenda)
+                    @php
+                        $totales['subtotal'] += $ofrenda->monto;
+                    @endphp
+                    <tr class="hover:bg-green-50 bg-green-50/30">
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="font-medium text-green-700">Dinero Suelto</span>
+                                    @if($ofrenda->descripcion)
+                                    <span class="text-xs text-gray-500 block">{{ $ofrenda->descripcion }}</span>
+                                    @endif
+                                </div>
+                                <div class="flex gap-2 ml-2">
+                                    <button onclick="editarSuelto({{ $ofrenda->id }}, {{ $ofrenda->monto }}, '{{ $ofrenda->descripcion }}')" 
+                                            class="text-blue-600 hover:text-blue-900 text-xs">
+                                        Editar
+                                    </button>
+                                    <button type="button" onclick="mostrarModalEliminarSuelto({{ $ofrenda->id }}, '{{ $ofrenda->descripcion }}')" class="text-red-600 hover:text-red-900 text-xs">
+                                        Eliminar
+                                    </button>
+                                    <form id="form-eliminar-suelto-{{ $ofrenda->id }}" action="{{ route('recuento.destroy-suelto', $ofrenda) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-green-600">${{ number_format($ofrenda->monto, 2) }}</td>
+                    </tr>
+                    @endforeach
+                    
+                    <!-- Fila de Totales -->
+                    <tr class="bg-blue-50 border-t-2 border-blue-200">
+                        <td class="px-4 py-3 text-sm font-bold text-gray-900">TOTALES</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['diezmo'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['misiones'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['seminario'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['campa'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['prestamo'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['construccion'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['micro'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-green-700 text-lg">${{ number_format($totales['subtotal'], 2) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+    @endif
+
+    <!-- Lista de Cultos Cerrados (Archivo) -->
+    @if($cultosCerrados->count() > 0)
+    <div class="mt-12 pt-8 border-t-2 border-gray-300">
+        <div class="flex items-center gap-3 mb-6">
+            <svg class="w-6 h-6 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z"></path>
+                <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+            </svg>
+            <h2 class="text-2xl font-bold text-gray-800">Cultos Cerrados (Archivo)</h2>
+            <span class="px-3 py-1 bg-gray-200 text-gray-700 rounded-full text-sm font-semibold">{{ $cultosCerrados->count() }}</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            @foreach($cultosCerrados as $cultoCerrado)
+            <div class="bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200">
+                <div class="p-5">
+                    <div class="flex items-start justify-between mb-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">{{ $cultoCerrado->fecha->format('d/m/Y') }}</h3>
+                            <p class="text-sm text-gray-600">{{ ucfirst($cultoCerrado->tipo_culto) }}</p>
+                        </div>
+                        <span class="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs font-medium">
+                            <svg class="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Cerrado
+                        </span>
+                    </div>
+
+                    @if($cultoCerrado->totales)
+                    <div class="bg-gray-50 rounded-lg p-3 mb-3">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-gray-600">Total General</span>
+                            <span class="text-lg font-bold text-blue-600">${{ number_format($cultoCerrado->totales->total_general, 2) }}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                            <div class="flex justify-between">
+                                <span>Sobres:</span>
+                                <span class="font-semibold">{{ $cultoCerrado->totales->cantidad_sobres }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Transferencias:</span>
+                                <span class="font-semibold">{{ $cultoCerrado->totales->cantidad_transferencias }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                    <div class="text-xs text-gray-500 mb-3">
+                        <svg class="w-3 h-3 inline" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                        </svg>
+                        Cerrado: {{ $cultoCerrado->cerrado_at->format('d/m/Y H:i') }}
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="verCultoCerrado({{ $cultoCerrado->id }})" 
+                           class="flex-1 text-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors">
+                            <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Ver
+                        </button>
+                        <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoCerrado->id) }}" 
+                           class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
+                            <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </a>
+                        <button type="button" onclick="mostrarModalEliminarCulto({{ $cultoCerrado->id }}, '{{ $cultoCerrado->fecha }}')" 
+                                class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                            <svg class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <form id="form-eliminar-culto-{{ $cultoCerrado->id }}" action="{{ route('cultos.destroy', $cultoCerrado) }}" method="POST" class="hidden">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
+</div>
+
+<!-- Modal para Ver Culto Cerrado -->
+<div id="modalVerCultoCerrado" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-10 mx-auto p-8 border w-11/12 max-w-6xl shadow-2xl rounded-lg bg-white mb-10">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-2xl font-bold text-gray-900">Resumen de Culto Cerrado</h3>
+            <button onclick="cerrarModal()" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+        <div id="contenidoCultoCerrado">
+            <!-- El contenido se cargará aquí dinámicamente -->
+        </div>
+    </div>
+</div>
+
+<script>
+function verCultoCerrado(cultoId) {
+    // Hacer petición AJAX para cargar el resumen
+    fetch(`/recuento/culto-cerrado/${cultoId}`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('contenidoCultoCerrado').innerHTML = html;
+            document.getElementById('modalVerCultoCerrado').classList.remove('hidden');
+        })
+        .catch(error => {
+            alert('Error al cargar el resumen del culto');
+            console.error(error);
+        });
+}
+
+function cerrarModal() {
+    document.getElementById('modalVerCultoCerrado').classList.add('hidden');
+}
+</script>
+
+<!-- Modal para Dinero Suelto -->
+<div id="modalSuelto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Agregar Dinero Suelto</h3>
+            <form action="{{ route('recuento.store-suelto') }}" method="POST">
+                @csrf
+                <input type="hidden" name="culto_id" value="{{ $cultoSeleccionado?->id }}">
+                
+                <div class="mb-4">
+                    <label for="monto_suelto" class="block text-sm font-medium text-gray-700 mb-2">Monto *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                        <input type="number" name="monto" id="monto_suelto" min="0.01" step="0.01" required
+                               class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="descripcion_suelto" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                    <textarea name="descripcion" id="descripcion_suelto" rows="2"
+                              class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('modalSuelto').classList.add('hidden')"
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Editar Dinero Suelto -->
+<div id="modalEditarSuelto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Editar Dinero Suelto</h3>
+            <form id="formEditarSuelto" method="POST">
+                @csrf
+                @method('PUT')
+                
+                <div class="mb-4">
+                    <label for="monto_suelto_edit" class="block text-sm font-medium text-gray-700 mb-2">Monto *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                        <input type="number" name="monto" id="monto_suelto_edit" min="0.01" step="0.01" required
+                               class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="descripcion_suelto_edit" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                    <textarea name="descripcion" id="descripcion_suelto_edit" rows="2"
+                              class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('modalEditarSuelto').classList.add('hidden')"
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function editarSuelto(id, monto, descripcion) {
+    document.getElementById('formEditarSuelto').action = `/recuento/suelto/${id}`;
+    document.getElementById('monto_suelto_edit').value = monto;
+    document.getElementById('descripcion_suelto_edit').value = descripcion || '';
+    document.getElementById('modalEditarSuelto').classList.remove('hidden');
+}
+
+function cerrarCulto(cultoId) {
+    if (confirm('¿Cerrar este culto? Ya no podrás agregar o editar sobres después de cerrarlo.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/recuento/${cultoId}/cerrar`;
+        
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = '_token';
+        csrfToken.value = '{{ csrf_token() }}';
+        form.appendChild(csrfToken);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Modales de eliminación
+let sobreIdEliminar = null;
+let sueltoIdEliminar = null;
+let cultoIdEliminar = null;
+
+function mostrarModalEliminarSobre(id, numero) {
+    sobreIdEliminar = id;
+    document.getElementById('numeroSobre').textContent = numero;
+    document.getElementById('modalEliminarSobre').classList.remove('hidden');
+}
+
+function cerrarModalEliminarSobre() {
+    document.getElementById('modalEliminarSobre').classList.add('hidden');
+    sobreIdEliminar = null;
+}
+
+function confirmarEliminacionSobre() {
+    if (sobreIdEliminar) {
+        document.getElementById('form-eliminar-sobre-' + sobreIdEliminar).submit();
+    }
+}
+
+function mostrarModalEliminarSuelto(id, descripcion) {
+    sueltoIdEliminar = id;
+    document.getElementById('descripcionSuelto').textContent = descripcion || 'este dinero suelto';
+    document.getElementById('modalEliminarSuelto').classList.remove('hidden');
+}
+
+function cerrarModalEliminarSuelto() {
+    document.getElementById('modalEliminarSuelto').classList.add('hidden');
+    sueltoIdEliminar = null;
+}
+
+function confirmarEliminacionSuelto() {
+    if (sueltoIdEliminar) {
+        document.getElementById('form-eliminar-suelto-' + sueltoIdEliminar).submit();
+    }
+}
+
+function mostrarModalEliminarCulto(id, fecha) {
+    cultoIdEliminar = id;
+    document.getElementById('fechaCulto').textContent = fecha;
+    document.getElementById('modalEliminarCulto').classList.remove('hidden');
+}
+
+function cerrarModalEliminarCulto() {
+    document.getElementById('modalEliminarCulto').classList.add('hidden');
+    cultoIdEliminar = null;
+}
+
+function confirmarEliminacionCulto() {
+    if (cultoIdEliminar) {
+        document.getElementById('form-eliminar-culto-' + cultoIdEliminar).submit();
+    }
+}
+</script>
+
+<!-- Modal: Eliminar Sobre -->
+<div id="modalEliminarSobre" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-red-900">⚠️ Eliminar Sobre</h3>
+                <button onclick="cerrarModalEliminarSobre()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p class="text-sm text-yellow-800 mb-2">
+                    ¿Estás seguro de que deseas eliminar el sobre <strong id="numeroSobre"></strong>?
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" 
+                        onclick="cerrarModalEliminarSobre()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" 
+                        onclick="confirmarEliminacionSobre()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Eliminar Dinero Suelto -->
+<div id="modalEliminarSuelto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-red-900">⚠️ Eliminar Dinero Suelto</h3>
+                <button onclick="cerrarModalEliminarSuelto()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p class="text-sm text-yellow-800 mb-2">
+                    ¿Estás seguro de que deseas eliminar <strong id="descripcionSuelto"></strong>?
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" 
+                        onclick="cerrarModalEliminarSuelto()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" 
+                        onclick="confirmarEliminacionSuelto()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Eliminar Culto -->
+<div id="modalEliminarCulto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-red-900">⚠️ Eliminar Culto</h3>
+                <button onclick="cerrarModalEliminarCulto()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p class="text-sm text-yellow-800 mb-2">
+                    ¿Estás seguro de que deseas eliminar el culto del <strong id="fechaCulto"></strong> y todos sus datos asociados?
+                </p>
+                <p class="text-xs text-red-600 mt-2">
+                    ⚠️ Esta acción no se puede deshacer.
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" 
+                        onclick="cerrarModalEliminarCulto()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" 
+                        onclick="confirmarEliminacionCulto()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection

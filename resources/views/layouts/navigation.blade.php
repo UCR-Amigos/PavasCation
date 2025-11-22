@@ -15,6 +15,39 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    @if(Auth::user()->canAccessRecuento())
+                    <!-- Menú para Admin y Tesorero -->
+                    <x-nav-link :href="route('recuento.index')" :active="request()->routeIs('recuento.*')">
+                        {{ __('Recuento') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('cultos.index')" :active="request()->routeIs('cultos.*')">
+                        {{ __('Cultos') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('ingresos-asistencia.index')" :active="request()->routeIs('ingresos-asistencia.index') || request()->routeIs('ingresos-asistencia.ingresos')">
+                        {{ __('Ingresos') }}
+                    </x-nav-link>
+                    @endif
+
+                    @if(Auth::user()->canAccessAsistencia())
+                    <!-- Menú para Admin y Asistente -->
+                    <x-nav-link :href="route('asistencia.index')" :active="request()->routeIs('asistencia.*')">
+                        {{ __('Asistencia') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('personas.index')" :active="request()->routeIs('personas.*') || request()->routeIs('promesas.*') || request()->routeIs('compromisos.*')">
+                        {{ __('Personas') }}
+                    </x-nav-link>
+                    @endif
+
+                    @if(Auth::user()->canAccessAdmin())
+                    <!-- Menú solo para Admin -->
+                    <x-nav-link :href="route('admin.clases.index')" :active="request()->routeIs('admin.clases.*')">
+                        {{ __('Clases') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')">
+                        {{ __('Usuarios') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -70,6 +103,36 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            @if(Auth::user()->canAccessRecuento())
+            <x-responsive-nav-link :href="route('recuento.index')" :active="request()->routeIs('recuento.*')">
+                {{ __('Recuento') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('cultos.index')" :active="request()->routeIs('cultos.*')">
+                {{ __('Cultos') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('ingresos-asistencia.index')" :active="request()->routeIs('ingresos-asistencia.index') || request()->routeIs('ingresos-asistencia.ingresos')">
+                {{ __('Ingresos') }}
+            </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->canAccessAsistencia())
+            <x-responsive-nav-link :href="route('asistencia.index')" :active="request()->routeIs('asistencia.*')">
+                {{ __('Asistencia') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('personas.index')" :active="request()->routeIs('personas.*') || request()->routeIs('promesas.*') || request()->routeIs('compromisos.*')">
+                {{ __('Personas') }}
+            </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->canAccessAdmin())
+            <x-responsive-nav-link :href="route('admin.clases.index')" :active="request()->routeIs('admin.clases.*')">
+                {{ __('Clases') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')">
+                {{ __('Usuarios') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

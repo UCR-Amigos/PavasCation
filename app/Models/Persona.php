@@ -30,4 +30,9 @@ class Persona extends Model
     {
         return $this->hasMany(Promesa::class);
     }
+
+    public function compromisos(): HasMany
+    {
+        return $this->hasMany(Compromiso::class);
+    }
 }

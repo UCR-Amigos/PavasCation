@@ -23,37 +23,72 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Vista pública para rol "general" - solo lectura
-Route::middleware(['auth', 'role:general,tesorero,admin'])->group(function () {
-    Route::get('/ingresos-asistencia', [IngresosAsistenciaController::class, 'index'])->name('ingresos-asistencia.index');
-});
-
-// Rutas para admin y tesorero
+// Rutas para Admin y Tesorero - Recuento e Ingresos
 Route::middleware(['auth', 'role:admin,tesorero'])->group(function () {
-    // Cultos
-    Route::resource('cultos', CultoController::class);
-    
     // Recuento (Sobres)
     Route::prefix('recuento')->name('recuento.')->group(function () {
         Route::get('/', [RecuentoController::class, 'index'])->name('index');
         Route::get('/create', [RecuentoController::class, 'create'])->name('create');
         Route::post('/', [RecuentoController::class, 'store'])->name('store');
+        Route::post('/suelto', [RecuentoController::class, 'storeSuelto'])->name('store-suelto');
+        Route::get('/suelto/{suelto}/edit', [RecuentoController::class, 'editSuelto'])->name('edit-suelto');
+        Route::put('/suelto/{suelto}', [RecuentoController::class, 'updateSuelto'])->name('update-suelto');
+        Route::delete('/suelto/{suelto}', [RecuentoController::class, 'destroySuelto'])->name('destroy-suelto');
+        Route::post('/{culto}/cerrar', [RecuentoController::class, 'cerrarCulto'])->name('cerrar-culto');
+        Route::get('/culto-cerrado/{culto}', [RecuentoController::class, 'verCultoCerrado'])->name('ver-culto-cerrado');
         Route::get('/{sobre}/edit', [RecuentoController::class, 'edit'])->name('edit');
         Route::put('/{sobre}', [RecuentoController::class, 'update'])->name('update');
         Route::delete('/{sobre}', [RecuentoController::class, 'destroy'])->name('destroy');
     });
     
+    // Reportes de ingresos
+    Route::get('/ingresos-asistencia', [IngresosAsistenciaController::class, 'index'])->name('ingresos-asistencia.index');
+    Route::get('/ingresos-asistencia/ingresos', [IngresosAsistenciaController::class, 'ingresos'])->name('ingresos-asistencia.ingresos');
+    Route::get('/ingresos-asistencia/pdf-ingresos', [IngresosAsistenciaController::class, 'pdfIngresos'])->name('ingresos-asistencia.pdf-ingresos');
+    Route::get('/ingresos-asistencia/pdf-recuento/{culto}', [IngresosAsistenciaController::class, 'pdfRecuentoIndividual'])->name('ingresos-asistencia.pdf-recuento-individual');
+});
+
+// Rutas para Admin y Asistente - Asistencia
+Route::middleware(['auth', 'role:admin,asistente'])->group(function () {
     // Asistencia
+    Route::post('asistencia/{asistencium}/cerrar', [AsistenciaController::class, 'cerrarAsistencia'])->name('asistencia.cerrar');
     Route::resource('asistencia', AsistenciaController::class);
     
-    // Personas y Promesas
-    Route::resource('personas', PersonaController::class);
-    Route::resource('promesas', PromesaController::class);
+    // Reportes de asistencia
+    Route::get('/ingresos-asistencia/asistencia', [IngresosAsistenciaController::class, 'asistencia'])->name('ingresos-asistencia.asistencia');
+    Route::get('/ingresos-asistencia/pdf-asistencia', [IngresosAsistenciaController::class, 'pdfAsistencia'])->name('ingresos-asistencia.pdf-asistencia');
+    Route::get('/ingresos-asistencia/pdf-asistencia-culto/{culto}', [IngresosAsistenciaController::class, 'pdfAsistenciaCulto'])->name('ingresos-asistencia.pdf-asistencia-culto');
+    Route::get('/ingresos-asistencia/pdf-asistencia-mes', [IngresosAsistenciaController::class, 'pdfAsistenciaMes'])->name('ingresos-asistencia.pdf-asistencia-mes');
 });
 
 // Solo admin
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    // Configuraciones adicionales si es necesario
+    // Cultos
+    Route::resource('cultos', CultoController::class);
+    
+    // Administración de Clases de Asistencia
+    Route::prefix('admin/clases')->name('admin.clases.')->group(function () {
+        Route::get('/', [App\Http\Controllers\ClaseAsistenciaController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\ClaseAsistenciaController::class, 'create'])->name('create');
+        Route::post('/', [App\Http\Controllers\ClaseAsistenciaController::class, 'store'])->name('store');
+        Route::get('/{clase}/edit', [App\Http\Controllers\ClaseAsistenciaController::class, 'edit'])->name('edit');
+        Route::put('/{clase}', [App\Http\Controllers\ClaseAsistenciaController::class, 'update'])->name('update');
+        Route::delete('/{clase}', [App\Http\Controllers\ClaseAsistenciaController::class, 'destroy'])->name('destroy');
+    });
+    
+    // Personas y Promesas
+    Route::post('personas/quick-store', [PersonaController::class, 'quickStore'])->name('personas.quick-store');
+    Route::post('personas/{persona}/reiniciar-compromisos', [PersonaController::class, 'reiniciarCompromisos'])->name('personas.reiniciar-compromisos');
+    Route::post('personas/{persona}/limpiar-todo', [PersonaController::class, 'limpiarTodo'])->name('personas.limpiar-todo');
+    Route::resource('personas', PersonaController::class);
+    Route::resource('promesas', PromesaController::class);
+    
+    // Compromisos
+    Route::get('personas/{persona}/compromisos', [App\Http\Controllers\CompromisoController::class, 'show'])->name('compromisos.show');
+    Route::post('compromisos/recalcular', [App\Http\Controllers\CompromisoController::class, 'recalcular'])->name('compromisos.recalcular');
+    
+    // Gestión de Usuarios
+    Route::resource('usuarios', App\Http\Controllers\UserController::class);
 });
 
 require __DIR__.'/auth.php';

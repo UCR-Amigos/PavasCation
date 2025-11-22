@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'Sistema de Administración de Iglesia')</title>
+    <title>@yield('title', 'IBBSC - Sistema de Administración')</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/Logo.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/Logo.png') }}">
+    <link rel="shortcut icon" href="{{ asset('images/Logo.png') }}">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -19,7 +24,10 @@
         <!-- Sidebar -->
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0">
             <div class="flex items-center justify-between h-16 px-6 border-b border-blue-700">
-                <h1 class="text-xl font-bold">IBBSC Admin</h1>
+                <div class="flex items-center gap-3">
+                    <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
+                    <h1 class="text-xl font-bold">IBBSC Admin</h1>
+                </div>
                 <button id="closeSidebar" class="lg:hidden text-white hover:text-gray-200">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -35,44 +43,53 @@
                     Dashboard
                 </a>
 
-                @can('viewAny', App\Models\Sobre::class)
+                @if(Auth::user()->canAccessRecuento())
                 <a href="{{ route('recuento.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('recuento.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     Recuento
                 </a>
+                @endif
 
+                @if(Auth::user()->canAccessAsistencia())
                 <a href="{{ route('asistencia.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('asistencia.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                     Asistencia
                 </a>
-                @endcan
+                @endif
 
-                <a href="{{ route('ingresos-asistencia.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('ingresos-asistencia.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                    </svg>
-                    Ingresos y Asistencia
-                </a>
-
-                @can('viewAny', App\Models\Persona::class)
-                <a href="{{ route('personas.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('personas.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                    </svg>
-                    Personas
-                </a>
-
-                <a href="{{ route('cultos.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('cultos.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    Cultos
-                </a>
-                @endcan
+                @if(Auth::user()->rol === 'admin')
+                <div class="pt-4 mt-4 border-t border-blue-700">
+                    <div class="px-4 py-2 text-xs font-semibold text-blue-300 uppercase">Administración</div>
+                    <a href="{{ route('cultos.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('cultos.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Gestionar Cultos
+                    </a>
+                    <a href="{{ route('admin.clases.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.clases.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                        </svg>
+                        Gestionar Clases
+                    </a>
+                    <a href="{{ route('personas.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('personas.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        Gestionar Personas
+                    </a>
+                    <a href="{{ route('usuarios.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('usuarios.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        Gestionar Usuarios
+                    </a>
+                </div>
+                @endif
             </nav>
 
             <div class="p-4 border-t border-blue-700">

@@ -38,8 +38,16 @@ class CultoController extends Controller
 
     public function show(Culto $culto)
     {
-        $culto->load(['sobres.persona', 'sobres.detalles', 'ofrendasSueltas', 'asistencia', 'totales']);
-        return view('cultos.show', compact('culto'));
+        $sobres = $culto->sobres()->with(['persona', 'detalles'])->get();
+        $ofrendasSueltas = $culto->ofrendasSueltas;
+        
+        return view('recuento.index', [
+            'sobres' => $sobres,
+            'cultos' => Culto::where('cerrado', false)->orderBy('fecha', 'desc')->get(),
+            'cultoSeleccionado' => $culto,
+            'ofrendasSueltas' => $ofrendasSueltas,
+            'cultosCerrados' => Culto::where('cerrado', true)->with('totales')->orderBy('cerrado_at', 'desc')->get()
+        ]);
     }
 
     public function edit(Culto $culto)

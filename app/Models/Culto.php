@@ -15,11 +15,16 @@ class Culto extends Model
         'hora',
         'tipo_culto',
         'notas',
+        'cerrado',
+        'cerrado_at',
+        'cerrado_por',
     ];
 
     protected $casts = [
         'fecha' => 'date',
         'hora' => 'datetime',
+        'cerrado' => 'boolean',
+        'cerrado_at' => 'datetime',
     ];
 
     public function sobres(): HasMany
@@ -40,5 +45,10 @@ class Culto extends Model
     public function totales(): HasOne
     {
         return $this->hasOne(TotalesCulto::class);
+    }
+
+    public function cerradoPor()
+    {
+        return $this->belongsTo(User::class, 'cerrado_por');
     }
 }

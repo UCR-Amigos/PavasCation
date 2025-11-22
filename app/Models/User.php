@@ -57,8 +57,28 @@ class User extends Authenticatable
         return $this->rol === 'tesorero';
     }
 
-    public function isGeneral(): bool
+    public function isAsistente(): bool
     {
-        return $this->rol === 'general';
+        return $this->rol === 'asistente';
+    }
+
+    public function isInvitado(): bool
+    {
+        return $this->rol === 'invitado';
+    }
+
+    public function canAccessRecuento(): bool
+    {
+        return in_array($this->rol, ['admin', 'tesorero']);
+    }
+
+    public function canAccessAsistencia(): bool
+    {
+        return in_array($this->rol, ['admin', 'asistente']);
+    }
+
+    public function canAccessAdmin(): bool
+    {
+        return $this->rol === 'admin';
     }
 }
