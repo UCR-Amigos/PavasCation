@@ -43,6 +43,16 @@
                     Dashboard
                 </a>
 
+                @if(Auth::user()->isMiembro())
+                <!-- Menú exclusivo para miembros -->
+                <a href="{{ route('mi-perfil.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('mi-perfil.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    Yo
+                </a>
+                @endif
+
                 @if(Auth::user()->canAccessRecuento())
                 <a href="{{ route('recuento.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('recuento.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,6 +68,15 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
                     Asistencia
+                </a>
+                @endif
+
+                @if(Auth::user()->canAccessRecuento() || Auth::user()->canAccessAsistencia())
+                <a href="{{ route('ingresos-asistencia.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('ingresos-asistencia.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Reportes
                 </a>
                 @endif
 
@@ -104,17 +123,71 @@
                         <p class="text-xs text-blue-300 capitalize">{{ Auth::user()->rol }}</p>
                     </div>
                 </div>
-                <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                <form method="POST" action="{{ route('logout') }}" class="mt-3" id="logoutForm">
                     @csrf
                     <button type="submit" class="w-full px-4 py-2 text-sm text-left text-blue-100 rounded hover:bg-blue-700 transition-colors">
                         Cerrar Sesión
                     </button>
                 </form>
+                
+                <!-- Redes Sociales -->
+                <div class="mt-4 pt-4 border-t border-blue-700">
+                    <p class="text-xs text-blue-300 mb-2 text-center">Síguenos</p>
+                    <div class="flex items-center justify-center gap-3">
+                        <a href="https://www.instagram.com/ibb_santacruz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 flex items-center justify-center hover:scale-110 transition-transform duration-200">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/iglesia.biblica.bautista.santa.cruz" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center hover:scale-110 transition-transform duration-200">
+                            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
             </div>
         </aside>
 
         <!-- Overlay para mobile -->
         <div id="sidebarOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
+
+        <!-- Loading Overlay para Logout -->
+        <div id="logoutOverlay" class="fixed inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
+            <div class="text-center">
+                <!-- Logo animado -->
+                <div class="mb-8 animate-fade-out">
+                    <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="w-24 h-24 mx-auto drop-shadow-2xl">
+                </div>
+                
+                <!-- Spinner personalizado -->
+                <div class="relative w-20 h-20 mx-auto mb-6">
+                    <div class="absolute top-0 left-0 w-full h-full border-4 border-white/20 rounded-full"></div>
+                    <div class="absolute top-0 left-0 w-full h-full border-4 border-t-white border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                </div>
+                
+                <!-- Texto animado -->
+                <h2 class="text-2xl font-bold text-white mb-2 animate-fade-in">Hasta pronto</h2>
+                <p class="text-gray-300 animate-pulse">Cerrando sesión...</p>
+            </div>
+        </div>
+
+        <style>
+            @keyframes fade-out {
+                from {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                to {
+                    opacity: 0.3;
+                    transform: scale(0.9);
+                }
+            }
+            
+            .animate-fade-out {
+                animation: fade-out 2s ease-in-out infinite alternate;
+            }
+        </style>
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col overflow-hidden">
@@ -169,6 +242,13 @@
         overlay?.addEventListener('click', () => {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
+        });
+
+        // Transición para cerrar sesión
+        document.getElementById('logoutForm')?.addEventListener('submit', function(e) {
+            const logoutOverlay = document.getElementById('logoutOverlay');
+            logoutOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            logoutOverlay.classList.add('opacity-100');
         });
     </script>
 

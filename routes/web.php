@@ -23,6 +23,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Ruta para miembros - Mi Perfil
+Route::middleware(['auth', 'role:miembro'])->group(function () {
+    Route::get('/mi-perfil', [App\Http\Controllers\MiPerfilController::class, 'index'])->name('mi-perfil.index');
+});
+
 // Rutas para Admin y Tesorero - Recuento e Ingresos
 Route::middleware(['auth', 'role:admin,tesorero'])->group(function () {
     // Recuento (Sobres)
@@ -46,6 +51,11 @@ Route::middleware(['auth', 'role:admin,tesorero'])->group(function () {
     Route::get('/ingresos-asistencia/ingresos', [IngresosAsistenciaController::class, 'ingresos'])->name('ingresos-asistencia.ingresos');
     Route::get('/ingresos-asistencia/pdf-ingresos', [IngresosAsistenciaController::class, 'pdfIngresos'])->name('ingresos-asistencia.pdf-ingresos');
     Route::get('/ingresos-asistencia/pdf-recuento/{culto}', [IngresosAsistenciaController::class, 'pdfRecuentoIndividual'])->name('ingresos-asistencia.pdf-recuento-individual');
+    
+    // Reporte de Promesas
+    Route::get('/ingresos-asistencia/promesas', [App\Http\Controllers\PromesasReporteController::class, 'index'])->name('ingresos-asistencia.promesas');
+    Route::get('/ingresos-asistencia/pdf-promesas', [App\Http\Controllers\PromesasReporteController::class, 'pdfPromesas'])->name('ingresos-asistencia.pdf-promesas');
+    Route::get('/ingresos-asistencia/pdf-promesas-anual', [App\Http\Controllers\PromesasReporteController::class, 'pdfAnual'])->name('ingresos-asistencia.pdf-promesas-anual');
 });
 
 // Rutas para Admin y Asistente - Asistencia
@@ -86,6 +96,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Compromisos
     Route::get('personas/{persona}/compromisos', [App\Http\Controllers\CompromisoController::class, 'show'])->name('compromisos.show');
     Route::post('compromisos/recalcular', [App\Http\Controllers\CompromisoController::class, 'recalcular'])->name('compromisos.recalcular');
+    
+    // Limpieza de personas inactivas (temporal)
+    Route::post('personas/limpiar-inactivas', [PersonaController::class, 'limpiarInactivas'])->name('personas.limpiar-inactivas');
+    Route::post('personas/resetear-promesas', [PersonaController::class, 'resetearPromesas'])->name('personas.resetear-promesas');
     
     // Gestión de Usuarios
     Route::resource('usuarios', App\Http\Controllers\UserController::class);

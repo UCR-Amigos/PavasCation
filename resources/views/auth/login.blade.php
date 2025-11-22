@@ -2,7 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <form method="POST" action="{{ route('login') }}">
+    <form method="POST" action="{{ route('login') }}" id="loginForm">
         @csrf
 
         <!-- Email Address -->
@@ -56,7 +56,7 @@
     </div>
 
     <!-- Botón Invitado -->
-    <form method="POST" action="{{ route('login.guest') }}">
+    <form method="POST" action="{{ route('login.guest') }}" id="guestForm">
         @csrf
         <button type="submit" class="w-full flex items-center justify-center px-4 py-3 bg-gray-100 border border-gray-300 rounded-md font-semibold text-sm text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,4 +65,70 @@
             Entrar como Invitado
         </button>
     </form>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-500">
+        <div class="text-center">
+            <!-- Logo animado -->
+            <div class="mb-8 animate-bounce-slow">
+                <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="w-24 h-24 mx-auto drop-shadow-2xl">
+            </div>
+            
+            <!-- Spinner personalizado -->
+            <div class="relative w-20 h-20 mx-auto mb-6">
+                <div class="absolute top-0 left-0 w-full h-full border-4 border-white/30 rounded-full"></div>
+                <div class="absolute top-0 left-0 w-full h-full border-4 border-t-white border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+            </div>
+            
+            <!-- Texto animado -->
+            <h2 class="text-2xl font-bold text-white mb-2 animate-fade-in">Bienvenido</h2>
+            <p class="text-blue-100 animate-pulse">Cargando tu panel...</p>
+        </div>
+    </div>
+
+    <style>
+        @keyframes bounce-slow {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+        
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-bounce-slow {
+            animation: bounce-slow 2s ease-in-out infinite;
+        }
+        
+        .animate-fade-in {
+            animation: fade-in 1s ease-out;
+        }
+    </style>
+
+    <script>
+        // Transición para login normal
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+        });
+
+        // Transición para invitado
+        document.getElementById('guestForm').addEventListener('submit', function(e) {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100');
+        });
+    </script>
 </x-guest-layout>

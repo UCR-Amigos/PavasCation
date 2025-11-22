@@ -41,10 +41,10 @@
                         {{ Str::limit($promesa->descripcion, 50) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                        ${{ number_format($promesa->monto_total, 2) }}
+                        ₡{{ number_format($promesa->monto_total, 2) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
-                        ${{ number_format($montoRecibido, 2) }}
+                        ₡{{ number_format($montoRecibido, 2) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                         <div class="flex items-center">

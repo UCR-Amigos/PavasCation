@@ -38,7 +38,7 @@
                     </div>
 
                     <div>
-                        <label for="monto_total" class="block text-sm font-medium text-gray-700 mb-2">Monto Total *</label>
+                        <label for="monto_total" class="block text-sm font-medium text-gray-700 mb-2">Monto Total (₡) *</label>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
                             <input type="number" name="monto_total" id="monto_total" min="0.01" step="0.01" value="{{ old('monto_total', $promesa->monto_total) }}" 
@@ -77,11 +77,11 @@
                     <div class="space-y-2">
                         <div class="flex justify-between text-sm">
                             <span class="font-medium text-gray-700">Monto Recibido:</span>
-                            <span class="font-semibold text-green-600">${{ number_format($montoRecibido, 2) }}</span>
+                            <span class="font-semibold text-green-600">₡{{ number_format($montoRecibido, 2) }}</span>
                         </div>
                         <div class="flex justify-between text-sm">
                             <span class="font-medium text-gray-700">Monto Pendiente:</span>
-                            <span class="font-semibold text-orange-600">${{ number_format($promesa->monto_total - $montoRecibido, 2) }}</span>
+                            <span class="font-semibold text-orange-600">₡{{ number_format($promesa->monto_total - $montoRecibido, 2) }}</span>
                         </div>
                         <div class="mt-2">
                             <div class="w-full bg-gray-200 rounded-full h-2.5">

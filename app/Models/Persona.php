@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Persona extends Model
 {
@@ -13,12 +14,18 @@ class Persona extends Model
         'nombre',
         'telefono',
         'correo',
+        'password',
+        'user_id',
         'activo',
         'notas',
     ];
 
     protected $casts = [
         'activo' => 'boolean',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     public function sobres(): HasMany
@@ -34,5 +41,10 @@ class Persona extends Model
     public function compromisos(): HasMany
     {
         return $this->hasMany(Compromiso::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

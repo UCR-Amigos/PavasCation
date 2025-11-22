@@ -109,7 +109,7 @@
             inputs.forEach(input => {
                 total += parseFloat(input.value) || 0;
             });
-            totalDisplay.textContent = '$' + total.toFixed(2);
+            totalDisplay.textContent = '₡' + total.toFixed(2);
         }
 
         inputs.forEach(input => {

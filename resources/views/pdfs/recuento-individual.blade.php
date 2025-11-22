@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <title>Recuento Individual - {{ $culto->fecha->format('d/m/Y') }}</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 10px; }
-        h1 { text-align: center; color: #1f2937; margin-bottom: 5px; }
-        h2 { text-align: center; color: #4b5563; font-size: 12px; margin-top: 0; }
-        .info-box { background-color: #f3f4f6; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
-        .info-box p { margin: 5px 0; }
+        @page { size: landscape; margin: 15mm; }
+        body { font-family: Arial, sans-serif; font-size: 10px; margin: 0; padding: 0; }
+        .header { display: flex; align-items: center; margin-bottom: 15px; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; }
+        .header img { width: 60px; height: 60px; margin-right: 15px; }
+        .header-text { flex: 1; }
+        .header-text h1 { margin: 0; color: #1f2937; font-size: 18px; }
+        .header-text h2 { margin: 5px 0 0 0; color: #3b82f6; font-size: 12px; font-weight: normal; }
+        .info-box { background-color: #f3f4f6; padding: 8px; border-radius: 5px; margin-bottom: 12px; font-size: 9px; }
+        .info-box p { margin: 3px 0; }
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
         th { background-color: #3b82f6; color: white; font-size: 9px; text-transform: uppercase; }
@@ -34,11 +38,17 @@
         .summary-card { flex: 1; margin: 0 5px; padding: 10px; border: 1px solid #e5e7eb; border-radius: 5px; text-align: center; }
         .summary-card .label { font-size: 9px; color: #6b7280; text-transform: uppercase; }
         .summary-card .value { font-size: 14px; font-weight: bold; color: #1f2937; margin-top: 5px; }
+        .footer { margin-top: 20px; text-align: center; font-size: 8px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 10px; }
     </style>
 </head>
 <body>
-    <h1>RECUENTO DE SOBRES</h1>
-    <h2>{{ $culto->fecha->format('d/m/Y') }} - {{ ucfirst($culto->tipo_culto) }}</h2>
+    <div class="header">
+        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBSC">
+        <div class="header-text">
+            <h1>IBBSC - Iglesia Bíblica Bautista en Santa Cruz</h1>
+            <h2>Recuento de Sobres - {{ $culto->fecha->format('d/m/Y') }} - {{ ucfirst($culto->tipo_culto) }}</h2>
+        </div>
+    </div>
     
     <div class="info-box">
         <p><strong>Generado:</strong> {{ now()->format('d/m/Y H:i') }}</p>
@@ -52,7 +62,7 @@
     <div class="summary-grid">
         <div class="summary-card">
             <div class="label">Total General</div>
-            <div class="value">${{ number_format($culto->totales->total_general, 2) }}</div>
+            <div class="value">{{ number_format($culto->totales->total_general, 2) }}</div>
         </div>
         <div class="summary-card">
             <div class="label">Cantidad Sobres</div>
@@ -60,7 +70,7 @@
         </div>
         <div class="summary-card">
             <div class="label">Diezmos</div>
-            <div class="value">${{ number_format($culto->totales->total_diezmo, 2) }}</div>
+            <div class="value">{{ number_format($culto->totales->total_diezmo, 2) }}</div>
         </div>
         <div class="summary-card">
             <div class="label">Transferencias</div>
@@ -112,14 +122,14 @@
                         {{ ucfirst($sobre->metodo_pago) }}
                     </span>
                 </td>
-                <td class="text-right">${{ number_format($diezmo, 2) }}</td>
-                <td class="text-right">${{ number_format($misiones, 2) }}</td>
-                <td class="text-right">${{ number_format($seminario, 2) }}</td>
-                <td class="text-right">${{ number_format($campa, 2) }}</td>
-                <td class="text-right">${{ number_format($prestamo, 2) }}</td>
-                <td class="text-right">${{ number_format($construccion, 2) }}</td>
-                <td class="text-right">${{ number_format($micro, 2) }}</td>
-                <td class="text-right subtotal">${{ number_format($sobre->total_declarado, 2) }}</td>
+                <td class="text-right">{{ number_format($diezmo, 2) }}</td>
+                <td class="text-right">{{ number_format($misiones, 2) }}</td>
+                <td class="text-right">{{ number_format($seminario, 2) }}</td>
+                <td class="text-right">{{ number_format($campa, 2) }}</td>
+                <td class="text-right">{{ number_format($prestamo, 2) }}</td>
+                <td class="text-right">{{ number_format($construccion, 2) }}</td>
+                <td class="text-right">{{ number_format($micro, 2) }}</td>
+                <td class="text-right subtotal">{{ number_format($sobre->total_declarado, 2) }}</td>
             </tr>
             @endforeach
 
@@ -144,21 +154,21 @@
                 <td class="text-right">-</td>
                 <td class="text-right">-</td>
                 <td class="text-right">-</td>
-                <td class="text-right subtotal">${{ number_format($ofrenda->monto, 2) }}</td>
+                <td class="text-right subtotal">{{ number_format($ofrenda->monto, 2) }}</td>
             </tr>
             @endforeach
 
             <!-- Totales -->
             <tr class="total-row">
                 <td colspan="3" class="text-right">TOTALES</td>
-                <td class="text-right">${{ number_format($totalesPorCategoria['diezmo'], 2) }}</td>
-                <td class="text-right">${{ number_format($totalesPorCategoria['misiones'], 2) }}</td>
-                <td class="text-right">${{ number_format($totalesPorCategoria['seminario'], 2) }}</td>
-                <td class="text-right">${{ number_format($totalesPorCategoria['campa'], 2) }}</td>
-                <td class="text-right">${{ number_format($totalesPorCategoria['prestamo'], 2) }}</td>
-                <td class="text-right">${{ number_format($totalesPorCategoria['construccion'], 2) }}</td>
-                <td class="text-right">${{ number_format($totalesPorCategoria['micro'], 2) }}</td>
-                <td class="text-right">${{ number_format($totalGeneral, 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['diezmo'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['misiones'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['seminario'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['campa'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['prestamo'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['construccion'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['micro'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalGeneral, 2) }}</td>
             </tr>
         </tbody>
     </table>
@@ -168,31 +178,31 @@
         <h3>Resumen por Categorías</h3>
         <div>
             <span class="categoria-item">
-                <span class="categoria-label">Diezmo:</span> ${{ number_format($totalesPorCategoria['diezmo'], 2) }}
+                <span class="categoria-label">Diezmo:</span> {{ number_format($totalesPorCategoria['diezmo'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Misiones:</span> ${{ number_format($totalesPorCategoria['misiones'], 2) }}
+                <span class="categoria-label">Misiones:</span> {{ number_format($totalesPorCategoria['misiones'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Seminario:</span> ${{ number_format($totalesPorCategoria['seminario'], 2) }}
+                <span class="categoria-label">Seminario:</span> {{ number_format($totalesPorCategoria['seminario'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Campamento:</span> ${{ number_format($totalesPorCategoria['campa'], 2) }}
+                <span class="categoria-label">Campamento:</span> {{ number_format($totalesPorCategoria['campa'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Préstamo:</span> ${{ number_format($totalesPorCategoria['prestamo'], 2) }}
+                <span class="categoria-label">Préstamo:</span> {{ number_format($totalesPorCategoria['prestamo'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Construcción:</span> ${{ number_format($totalesPorCategoria['construccion'], 2) }}
+                <span class="categoria-label">Construcción:</span> {{ number_format($totalesPorCategoria['construccion'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Micro:</span> ${{ number_format($totalesPorCategoria['micro'], 2) }}
+                <span class="categoria-label">Micro:</span> {{ number_format($totalesPorCategoria['micro'], 2) }}
             </span>
         </div>
     </div>
 
-    <div style="margin-top: 30px; text-align: center; font-size: 8px; color: #9ca3af;">
-        <p>Sistema de Administración - IBBSC</p>
+    <div class="footer">
+        <p>Sistema de Administración - IBBSC - Iglesia Bíblica Bautista en Santa Cruz</p>
     </div>
 </body>
 </html>

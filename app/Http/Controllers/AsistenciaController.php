@@ -114,6 +114,12 @@ class AsistenciaController extends Controller
 
     public function destroy(Asistencia $asistencium)
     {
+        // Solo admin y asistente pueden eliminar asistencias
+        if (!in_array(auth()->user()->rol, ['admin', 'asistente'])) {
+            return redirect()->route('asistencia.index')
+                ->with('error', 'No tienes permiso para eliminar asistencias.');
+        }
+
         if ($asistencium->cerrado) {
             return redirect()->route('asistencia.index')
                 ->with('error', 'No se puede eliminar una asistencia cerrada.');

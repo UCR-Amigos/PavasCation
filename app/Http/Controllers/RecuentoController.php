@@ -166,6 +166,12 @@ class RecuentoController extends Controller
 
     public function destroy(Sobre $sobre)
     {
+        // Solo admin y tesorero pueden eliminar sobres
+        if (!in_array(auth()->user()->rol, ['admin', 'tesorero'])) {
+            return redirect()->route('recuento.index', ['culto_id' => $sobre->culto_id])
+                ->with('error', 'No tienes permiso para eliminar sobres.');
+        }
+
         if ($sobre->culto->cerrado) {
             return redirect()->route('recuento.index', ['culto_id' => $sobre->culto_id])
                 ->with('error', 'No se puede eliminar un sobre de un culto cerrado.');
@@ -254,6 +260,12 @@ class RecuentoController extends Controller
 
     public function destroySuelto(OfrendaSuelta $suelto)
     {
+        // Solo admin y tesorero pueden eliminar dinero suelto
+        if (!in_array(auth()->user()->rol, ['admin', 'tesorero'])) {
+            return redirect()->route('recuento.index', ['culto_id' => $suelto->culto_id])
+                ->with('error', 'No tienes permiso para eliminar dinero suelto.');
+        }
+
         if ($suelto->culto->cerrado) {
             return redirect()->route('recuento.index', ['culto_id' => $suelto->culto_id])
                 ->with('error', 'No se puede eliminar dinero suelto de un culto cerrado.');

@@ -70,15 +70,21 @@ class CompromisoController extends Controller
             $compromiso->monto_prometido = $this->calcularMontoPrometido($promesa, $año, $mes);
 
             // Obtener saldo del mes anterior
-            $mesAnterior = Carbon::create($año, $mes, 1)->subMonth();
-            $compromisoAnterior = Compromiso::where('persona_id', $persona->id)
-                ->where('categoria', $promesa->categoria)
-                ->where('año', $mesAnterior->year)
-                ->where('mes', $mesAnterior->month)
-                ->first();
+            // REGLA ESPECIAL: Si estamos en diciembre (mes 12), NO traer saldo de noviembre
+            // porque noviembre cierra el año fiscal y diciembre inicia con saldo 0
+            if ($mes == 12) {
+                $compromiso->saldo_anterior = 0;
+            } else {
+                $mesAnterior = Carbon::create($año, $mes, 1)->subMonth();
+                $compromisoAnterior = Compromiso::where('persona_id', $persona->id)
+                    ->where('categoria', $promesa->categoria)
+                    ->where('año', $mesAnterior->year)
+                    ->where('mes', $mesAnterior->month)
+                    ->first();
 
-            if ($compromisoAnterior) {
-                $compromiso->saldo_anterior = $compromisoAnterior->saldo_actual;
+                if ($compromisoAnterior) {
+                    $compromiso->saldo_anterior = $compromisoAnterior->saldo_actual;
+                }
             }
 
             // Calcular lo que ha dado en este mes

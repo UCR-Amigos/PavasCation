@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Persona;
 use App\Models\Promesa;
+use App\Models\Compromiso;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class PersonaController extends Controller
 {
     public function index()
     {
         $personas = Persona::withCount(['sobres', 'promesas'])->paginate(20);
-        return view('personas.index', compact('personas'));
+        $personasInactivas = Persona::where('activo', false)->count();
+        return view('personas.index', compact('personas', 'personasInactivas'));
     }
 
     public function create()
@@ -25,16 +29,44 @@ class PersonaController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
-            'correo' => 'nullable|email|max:255',
+            'correo' => 'nullable|email|max:255|unique:users,email',
+            'password' => 'required_with:correo|nullable|string|min:8',
             'activo' => 'boolean',
             'notas' => 'nullable|string',
             'promesas' => 'nullable|array',
             'promesas.*.categoria' => 'required|string',
             'promesas.*.monto' => 'required|numeric|min:0',
             'promesas.*.frecuencia' => 'required|in:semanal,quincenal,mensual',
+        ], [
+            'correo.unique' => 'Este correo electrónico ya está registrado en el sistema. Por favor, usa otro correo.',
+            'correo.email' => 'El formato del correo electrónico no es válido.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.required_with' => 'Debes proporcionar una contraseña cuando ingresas un correo electrónico.',
         ]);
 
-        $persona = Persona::create($validated);
+        // Si hay correo y contraseña, crear usuario miembro
+        $user = null;
+        if (!empty($validated['correo']) && !empty($validated['password'])) {
+            $user = User::create([
+                'name' => $validated['nombre'],
+                'email' => $validated['correo'],
+                'password' => Hash::make($validated['password']),
+                'rol' => 'miembro',
+            ]);
+        }
+
+        // Crear persona
+        $personaData = [
+            'nombre' => $validated['nombre'],
+            'telefono' => $validated['telefono'] ?? null,
+            'correo' => $validated['correo'] ?? null,
+            'password' => !empty($validated['password']) ? Hash::make($validated['password']) : null,
+            'user_id' => $user ? $user->id : null,
+            'activo' => $validated['activo'] ?? true,
+            'notas' => $validated['notas'] ?? null,
+        ];
+
+        $persona = Persona::create($personaData);
 
         // Guardar promesas si existen
         if ($request->has('promesas')) {
@@ -46,7 +78,7 @@ class PersonaController extends Controller
         }
 
         return redirect()->route('personas.index')
-            ->with('success', 'Persona registrada correctamente.');
+            ->with('success', 'Persona registrada correctamente.' . ($user ? ' Se creó acceso como miembro.' : ''));
     }
 
     public function show(Persona $persona)
@@ -89,16 +121,72 @@ class PersonaController extends Controller
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
-            'correo' => 'nullable|email|max:255',
+            'correo' => 'nullable|email|unique:users,email,' . ($persona->user_id ?? 'NULL'),
+            'password' => $persona->user_id ? 'nullable|string|min:8' : 'required_with:correo|nullable|string|min:8',
             'activo' => 'boolean',
             'notas' => 'nullable|string',
             'promesas' => 'nullable|array',
             'promesas.*.categoria' => 'required|string',
             'promesas.*.monto' => 'required|numeric|min:0',
             'promesas.*.frecuencia' => 'required|in:semanal,quincenal,mensual',
+        ], [
+            'correo.unique' => 'Este correo electrónico ya está registrado en el sistema. Por favor, usa otro correo.',
+            'correo.email' => 'El formato del correo electrónico no es válido.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.required_with' => 'Debes proporcionar una contraseña cuando ingresas un correo electrónico.',
         ]);
 
-        $persona->update($validated);
+        // Manejar cambios en correo y usuario
+        $updateUser = false;
+        $createUser = false;
+        
+        // Si hay correo nuevo y no tiene usuario, crear usuario
+        if (!empty($validated['correo']) && !$persona->user_id && !empty($validated['password'])) {
+            $user = User::create([
+                'name' => $validated['nombre'],
+                'email' => $validated['correo'],
+                'password' => Hash::make($validated['password']),
+                'rol' => 'miembro',
+            ]);
+            $persona->user_id = $user->id;
+            $createUser = true;
+        }
+        // Si tiene usuario y cambió el correo o contraseña, actualizar usuario
+        elseif ($persona->user_id) {
+            $user = $persona->user;
+            if ($user) {
+                $userUpdates = [];
+                if (!empty($validated['correo']) && $user->email !== $validated['correo']) {
+                    $userUpdates['email'] = $validated['correo'];
+                }
+                if (!empty($validated['password'])) {
+                    $userUpdates['password'] = Hash::make($validated['password']);
+                }
+                if (!empty($validated['nombre']) && $user->name !== $validated['nombre']) {
+                    $userUpdates['name'] = $validated['nombre'];
+                }
+                if (!empty($userUpdates)) {
+                    $user->update($userUpdates);
+                    $updateUser = true;
+                }
+            }
+        }
+
+        // Actualizar persona
+        $personaData = [
+            'nombre' => $validated['nombre'],
+            'telefono' => $validated['telefono'] ?? null,
+            'correo' => $validated['correo'] ?? null,
+            'activo' => $validated['activo'] ?? true,
+            'notas' => $validated['notas'] ?? null,
+        ];
+
+        // Solo actualizar password si se proporcionó uno nuevo
+        if (!empty($validated['password'])) {
+            $personaData['password'] = Hash::make($validated['password']);
+        }
+
+        $persona->update($personaData);
 
         // Sincronizar promesas
         $persona->promesas()->delete(); // Eliminar promesas anteriores
@@ -111,15 +199,36 @@ class PersonaController extends Controller
         }
 
         return redirect()->route('personas.index')
-            ->with('success', 'Persona actualizada correctamente.');
+            ->with('success', 'Persona actualizada correctamente.' . 
+                ($createUser ? ' Se creó acceso como miembro.' : '') . 
+                ($updateUser ? ' Se actualizó el acceso de miembro.' : ''));
     }
 
     public function destroy(Persona $persona)
     {
+        // Eliminar todas las promesas de la persona
+        $persona->promesas()->delete();
+        
+        // Eliminar todos los compromisos de la persona
+        $persona->compromisos()->delete();
+        
+        // Los sobres NO se eliminan porque el dinero ya fue dado y debe quedar registrado
+        // Solo se rompe la relación
+        $persona->sobres()->update(['persona_id' => null]);
+        
+        // Si tiene usuario asociado, eliminarlo también
+        if ($persona->user_id) {
+            $user = $persona->user;
+            if ($user) {
+                $user->delete();
+            }
+        }
+        
+        // Finalmente eliminar la persona
         $persona->delete();
 
         return redirect()->route('personas.index')
-            ->with('success', 'Persona eliminada correctamente.');
+            ->with('success', 'Persona y sus promesas eliminadas correctamente. Los sobres quedan registrados.');
     }
 
     public function quickStore(Request $request)
@@ -137,6 +246,57 @@ class PersonaController extends Controller
             'success' => true,
             'persona' => $persona
         ]);
+    }
+
+    /**
+     * Limpia todas las personas inactivas y sus promesas/compromisos
+     */
+    public function limpiarInactivas()
+    {
+        // Obtener personas inactivas
+        $personasInactivas = Persona::where('activo', false)->get();
+        $count = $personasInactivas->count();
+        
+        foreach ($personasInactivas as $persona) {
+            // Eliminar promesas
+            $persona->promesas()->delete();
+            
+            // Eliminar compromisos
+            $persona->compromisos()->delete();
+            
+            // Desvincular sobres (no eliminarlos)
+            $persona->sobres()->update(['persona_id' => null]);
+            
+            // Eliminar usuario asociado si existe
+            if ($persona->user_id) {
+                $user = $persona->user;
+                if ($user) {
+                    $user->delete();
+                }
+            }
+            
+            // Eliminar persona
+            $persona->delete();
+        }
+        
+        return redirect()->route('personas.index')
+            ->with('success', "Se eliminaron {$count} personas inactivas y sus promesas/compromisos.");
+    }
+
+    /**
+     * Resetea todas las promesas y compromisos de todas las personas
+     * Los sobres dados se mantienen como historial
+     */
+    public function resetearPromesas()
+    {
+        // Eliminar todos los compromisos
+        Compromiso::truncate();
+        
+        // Eliminar todas las promesas
+        Promesa::truncate();
+        
+        return redirect()->route('personas.index')
+            ->with('success', 'Todas las promesas y compromisos han sido reseteados. Los sobres dados se mantienen como historial.');
     }
 
     /**

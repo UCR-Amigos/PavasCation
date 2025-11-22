@@ -79,15 +79,15 @@
                                 {{ $registro['tipo'] }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['diezmo'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['misiones'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['seminario'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['campa'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['construccion'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['prestamo'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['micro'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format($registro['suelto'], 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">${{ number_format($registro['total'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['diezmo'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['misiones'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['seminario'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['campa'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['construccion'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['prestamo'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['micro'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format($registro['suelto'], 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-green-600">₡{{ number_format($registro['total'], 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                             @if(isset($registro['culto_id']))
                             <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $registro['culto_id']) }}" 
@@ -111,15 +111,15 @@
                     @if(count($registros) > 0)
                     <tr class="bg-gray-100 font-bold">
                         <td colspan="2" class="px-6 py-4 text-sm text-gray-900">TOTALES</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('diezmo'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('misiones'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('seminario'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('campa'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('construccion'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('prestamo'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('micro'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${{ number_format(collect($registros)->sum('suelto'), 2) }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">${{ number_format(collect($registros)->sum('total'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('diezmo'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('misiones'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('seminario'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('campa'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('construccion'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('prestamo'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('micro'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₡{{ number_format(collect($registros)->sum('suelto'), 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">₡{{ number_format(collect($registros)->sum('total'), 2) }}</td>
                         <td></td>
                     </tr>
                     @endif

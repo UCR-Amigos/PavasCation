@@ -5,7 +5,26 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex justify-end">
+    <div class="flex justify-between items-center">
+        <div class="flex gap-3">
+            @if($personasInactivas > 0)
+            <form action="{{ route('personas.limpiar-inactivas') }}" method="POST" class="inline-block"
+                  onsubmit="return confirm('¿Estás seguro de eliminar TODAS las personas inactivas y sus promesas? Los sobres se mantendrán.');">
+                @csrf
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                    🗑️ Limpiar Personas Inactivas ({{ $personasInactivas }})
+                </button>
+            </form>
+            @endif
+            
+            <form action="{{ route('personas.resetear-promesas') }}" method="POST" class="inline-block"
+                  onsubmit="return confirm('⚠️ ATENCIÓN: Esto eliminará TODAS las promesas y compromisos de TODAS las personas. Los sobres dados se mantienen como historial. ¿Estás seguro?');">
+                @csrf
+                <button type="submit" class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors">
+                    🔄 Resetear Todas las Promesas
+                </button>
+            </form>
+        </div>
         <a href="{{ route('personas.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
             + Nueva Persona
         </a>

@@ -77,7 +77,13 @@
                         @if($culto->asistencia)
                             @if(!$culto->asistencia->cerrado)
                             <a href="{{ route('asistencia.edit', $culto->asistencia) }}" class="text-blue-600 hover:text-blue-900 mr-3">Editar</a>
-                            <button type="button" onclick="cerrarAsistencia({{ $culto->asistencia->id }})" class="text-orange-600 hover:text-orange-900 mr-3">Cerrar</button>
+                            <button type="button" onclick="mostrarModalCerrarAsistencia({{ $culto->asistencia->id }})" class="text-orange-600 hover:text-orange-900 mr-3 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                Cerrar
+                            </button>
+                            @if(in_array(auth()->user()->rol, ['admin', 'asistente']))
                             <button type="button" onclick="mostrarModalEliminar({{ $culto->asistencia->id }}, '{{ $culto->fecha }}')" class="text-red-600 hover:text-red-900">
                                 Eliminar
                             </button>
@@ -85,6 +91,7 @@
                                 @csrf
                                 @method('DELETE')
                             </form>
+                            @endif
                             @else
                             <span class="text-gray-400 text-xs flex items-center justify-end gap-1">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -184,11 +191,21 @@
 </div>
 
 <script>
-function cerrarAsistencia(asistenciaId) {
-    if (confirm('¿Cerrar esta asistencia? Ya no podrás editarla después de cerrarla.')) {
+function mostrarModalCerrarAsistencia(asistenciaId) {
+    asistenciaIdCerrar = asistenciaId;
+    document.getElementById('modalCerrarAsistencia').classList.remove('hidden');
+}
+
+function cerrarModalCerrarAsistencia() {
+    document.getElementById('modalCerrarAsistencia').classList.add('hidden');
+    asistenciaIdCerrar = null;
+}
+
+function confirmarCerrarAsistencia() {
+    if (asistenciaIdCerrar) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/asistencia/${asistenciaId}/cerrar`;
+        form.action = `/asistencia/${asistenciaIdCerrar}/cerrar`;
         
         const csrfToken = document.createElement('input');
         csrfToken.type = 'hidden';
@@ -202,6 +219,7 @@ function cerrarAsistencia(asistenciaId) {
 }
 
 let asistenciaIdEliminar = null;
+let asistenciaIdCerrar = null;
 
 function mostrarModalEliminar(id, fecha) {
     asistenciaIdEliminar = id;
@@ -250,6 +268,44 @@ function confirmarEliminacion() {
                         onclick="confirmarEliminacion()"
                         class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                     Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Cerrar Asistencia -->
+<div id="modalCerrarAsistencia" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-orange-900">🔒 Cerrar Asistencia</h3>
+                <button onclick="cerrarModalCerrarAsistencia()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                <p class="text-sm text-orange-800 mb-2">
+                    ¿Cerrar esta asistencia? Ya no podrás editarla después de cerrarla.
+                </p>
+                <p class="text-xs text-orange-600 mt-2">
+                    ⚠️ Esta acción bloqueará las ediciones de la asistencia.
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" 
+                        onclick="cerrarModalCerrarAsistencia()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" 
+                        onclick="confirmarCerrarAsistencia()"
+                        class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
+                    Sí, Cerrar
                 </button>
             </div>
         </div>

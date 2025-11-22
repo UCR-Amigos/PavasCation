@@ -50,16 +50,16 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white rounded-lg shadow p-6">
             <p class="text-sm text-gray-600">Total Prometido</p>
-            <p class="text-2xl font-bold text-blue-600">${{ number_format($resumenTotal['total_prometido'], 2) }}</p>
+            <p class="text-2xl font-bold text-blue-600">₡{{ number_format($resumenTotal['total_prometido'], 2) }}</p>
         </div>
         <div class="bg-white rounded-lg shadow p-6">
             <p class="text-sm text-gray-600">Total Dado</p>
-            <p class="text-2xl font-bold text-green-600">${{ number_format($resumenTotal['total_dado'], 2) }}</p>
+            <p class="text-2xl font-bold text-green-600">₡{{ number_format($resumenTotal['total_dado'], 2) }}</p>
         </div>
         <div class="bg-white rounded-lg shadow p-6">
             <p class="text-sm text-gray-600">Saldo</p>
             <p class="text-2xl font-bold {{ $resumenTotal['saldo_total'] >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                ${{ number_format(abs($resumenTotal['saldo_total']), 2) }}
+                ₡{{ number_format(abs($resumenTotal['saldo_total']), 2) }}
                 @if($resumenTotal['saldo_total'] >= 0)
                     <span class="text-sm">(A favor)</span>
                 @else
@@ -93,16 +93,16 @@
                             {{ ucfirst($compromiso->categoria) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right {{ $compromiso->saldo_anterior >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                            ${{ number_format($compromiso->saldo_anterior, 2) }}
+                            ₡{{ number_format($compromiso->saldo_anterior, 2) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-900">
-                            ${{ number_format($compromiso->monto_prometido, 2) }}
+                            ₡{{ number_format($compromiso->monto_prometido, 2) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-blue-600 font-semibold">
-                            ${{ number_format($compromiso->monto_dado, 2) }}
+                            ₡{{ number_format($compromiso->monto_dado, 2) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold {{ $compromiso->saldo_actual >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                            ${{ number_format(abs($compromiso->saldo_actual), 2) }}
+                            ₡{{ number_format(abs($compromiso->saldo_actual), 2) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center">
                             @if($compromiso->saldo_actual >= 0)
@@ -151,7 +151,7 @@
                         <div>
                             <span class="text-gray-600 capitalize">{{ $comp->categoria }}:</span>
                             <span class="font-semibold {{ $comp->saldo_actual >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                                ${{ number_format(abs($comp->saldo_actual), 2) }}
+                                ₡{{ number_format(abs($comp->saldo_actual), 2) }}
                             </span>
                         </div>
                         @endforeach

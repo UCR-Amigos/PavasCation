@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Carbon\Carbon;
 
 class Culto extends Model
 {
@@ -26,6 +27,25 @@ class Culto extends Model
         'cerrado' => 'boolean',
         'cerrado_at' => 'datetime',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'fecha' => 'date:Y-m-d',
+            'hora' => 'datetime',
+            'cerrado' => 'boolean',
+            'cerrado_at' => 'datetime',
+        ];
+    }
+
+    protected static function booted()
+    {
+        static::retrieved(function ($culto) {
+            if ($culto->fecha instanceof \DateTimeInterface) {
+                $culto->fecha = Carbon::parse($culto->fecha);
+            }
+        });
+    }
 
     public function sobres(): HasMany
     {

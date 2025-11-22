@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-6">
     <!-- Botones Principales -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Botón Asistencia -->
         <a href="{{ route('ingresos-asistencia.asistencia') }}" class="block">
             <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 p-8 text-white cursor-pointer">
@@ -32,6 +32,19 @@
                 <p class="text-green-100 text-lg">Ver y descargar reportes de ingresos</p>
             </div>
         </a>
+
+        <!-- Botón Promesas -->
+        <a href="{{ route('ingresos-asistencia.promesas') }}" class="block">
+            <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 p-8 text-white cursor-pointer">
+                <div class="flex items-center justify-between mb-4">
+                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold mb-2">Promesas</h2>
+                <p class="text-purple-100 text-lg">Ver reporte de promesas y compromisos</p>
+            </div>
+        </a>
     </div>
 
     <!-- Resumen Rápido -->
@@ -44,7 +57,7 @@
             </div>
             <div class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-200">
                 <p class="text-sm text-green-600 font-medium mb-1">Total Ingresos</p>
-                <p class="text-3xl font-bold text-green-700">${{ number_format($totalSemanal, 2) }}</p>
+                <p class="text-3xl font-bold text-green-700">₡{{ number_format($totalSemanal, 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border border-purple-200">
                 <p class="text-sm text-purple-600 font-medium mb-1">Asistencia Total</p>
@@ -59,35 +72,35 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="p-4 bg-blue-50 rounded-lg">
                 <p class="text-sm text-gray-600">Diezmo</p>
-                <p class="text-xl font-bold text-blue-600">${{ number_format($categorias['diezmo'], 2) }}</p>
+                <p class="text-xl font-bold text-blue-600">₡{{ number_format($categorias['diezmo'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-green-50 rounded-lg">
                 <p class="text-sm text-gray-600">Misiones</p>
-                <p class="text-xl font-bold text-green-600">${{ number_format($categorias['misiones'], 2) }}</p>
+                <p class="text-xl font-bold text-green-600">₡{{ number_format($categorias['misiones'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-yellow-50 rounded-lg">
                 <p class="text-sm text-gray-600">Seminario</p>
-                <p class="text-xl font-bold text-yellow-600">${{ number_format($categorias['seminario'], 2) }}</p>
+                <p class="text-xl font-bold text-yellow-600">₡{{ number_format($categorias['seminario'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-purple-50 rounded-lg">
                 <p class="text-sm text-gray-600">Construcción</p>
-                <p class="text-xl font-bold text-purple-600">${{ number_format($categorias['construccion'], 2) }}</p>
+                <p class="text-xl font-bold text-purple-600">₡{{ number_format($categorias['construccion'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-red-50 rounded-lg">
                 <p class="text-sm text-gray-600">Campamento</p>
-                <p class="text-xl font-bold text-red-600">${{ number_format($categorias['campa'], 2) }}</p>
+                <p class="text-xl font-bold text-red-600">₡{{ number_format($categorias['campa'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-pink-50 rounded-lg">
                 <p class="text-sm text-gray-600">Préstamo</p>
-                <p class="text-xl font-bold text-pink-600">${{ number_format($categorias['prestamo'], 2) }}</p>
+                <p class="text-xl font-bold text-pink-600">₡{{ number_format($categorias['prestamo'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-indigo-50 rounded-lg">
                 <p class="text-sm text-gray-600">Micro</p>
-                <p class="text-xl font-bold text-indigo-600">${{ number_format($categorias['micro'], 2) }}</p>
+                <p class="text-xl font-bold text-indigo-600">₡{{ number_format($categorias['micro'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-gray-50 rounded-lg">
                 <p class="text-sm text-gray-600">Suelto</p>
-                <p class="text-xl font-bold text-gray-600">${{ number_format($categorias['suelto'], 2) }}</p>
+                <p class="text-xl font-bold text-gray-600">₡{{ number_format($categorias['suelto'], 0, ',', '.') }}</p>
             </div>
         </div>
     </div>
@@ -118,7 +131,7 @@
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                        ${{ $culto->totales ? number_format($culto->totales->total_general, 2) : '0.00' }}
+                        ₡{{ $culto->totales ? number_format($culto->totales->total_general, 0, ',', '.') : '0' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ $culto->asistencia ? $culto->asistencia->total_asistencia : '-' }}

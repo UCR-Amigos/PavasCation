@@ -5,6 +5,29 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto">
+    <!-- Mensaje de error global -->
+    @if ($errors->any())
+        <div class="mb-6 bg-red-50 border-l-4 border-red-500 rounded-lg p-4 shadow-md animate-shake">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <svg class="h-6 w-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                    <h3 class="text-sm font-semibold text-red-800 mb-2">
+                        Por favor, corrige los siguientes errores:
+                    </h3>
+                    <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="bg-white rounded-lg shadow p-6">
         <form action="{{ route('personas.store') }}" method="POST">
             @csrf
@@ -34,6 +57,27 @@
                         <input type="email" name="correo" id="correo" value="{{ old('correo') }}" 
                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('correo')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Contraseña (solo si hay correo) -->
+                <div id="password-section" class="hidden">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-blue-800">
+                            <svg class="inline w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Al agregar un correo, esta persona podrá acceder al sistema como <strong>miembro</strong> para ver su progreso y compromisos.
+                        </p>
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Contraseña *</label>
+                        <input type="password" name="password" id="password" 
+                               class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <p class="mt-1 text-xs text-gray-500">Mínimo 8 caracteres. La persona usará esta contraseña para acceder.</p>
+                        @error('password')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -113,4 +157,25 @@
         </form>
     </div>
 </div>
+
+<script>
+    // Mostrar/ocultar campo de contraseña según si hay correo
+    const correoInput = document.getElementById('correo');
+    const passwordSection = document.getElementById('password-section');
+    const passwordInput = document.getElementById('password');
+
+    function togglePasswordField() {
+        if (correoInput.value.trim() !== '') {
+            passwordSection.classList.remove('hidden');
+            passwordInput.required = true;
+        } else {
+            passwordSection.classList.add('hidden');
+            passwordInput.required = false;
+            passwordInput.value = '';
+        }
+    }
+
+    correoInput.addEventListener('input', togglePasswordField);
+    togglePasswordField(); // Verificar al cargar
+</script>
 @endsection

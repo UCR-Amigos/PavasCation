@@ -16,7 +16,7 @@
         @if($culto->totales)
         <div class="text-right">
             <p class="text-sm text-gray-600">Total General</p>
-            <p class="text-3xl font-bold text-blue-600">${{ number_format($culto->totales->total_general, 2) }}</p>
+            <p class="text-3xl font-bold text-blue-600">₡{{ number_format($culto->totales->total_general, 2) }}</p>
         </div>
         @endif
     </div>
@@ -31,7 +31,7 @@
     </div>
     <div class="bg-white rounded-lg shadow p-4 border-l-4 border-purple-500">
         <p class="text-sm text-gray-600">Total Diezmos</p>
-        <p class="text-2xl font-bold text-purple-600">${{ number_format($culto->totales->total_diezmo, 2) }}</p>
+        <p class="text-2xl font-bold text-purple-600">₡{{ number_format($culto->totales->total_diezmo, 2) }}</p>
     </div>
     <div class="bg-white rounded-lg shadow p-4 border-l-4 border-orange-500">
         <p class="text-sm text-gray-600">Transferencias</p>
@@ -96,14 +96,14 @@
                 @endphp
                 <tr class="hover:bg-gray-50">
                     <td class="px-4 py-3 text-sm font-medium text-gray-900">#{{ $sobre->numero_sobre }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($diezmo, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($misiones, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($seminario, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($campa, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($prestamo, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($construccion, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($micro, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-600">${{ number_format($subtotal, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($diezmo, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($misiones, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($seminario, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($campa, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($prestamo, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($construccion, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($micro, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-600">₡{{ number_format($subtotal, 2) }}</td>
                 </tr>
                 @endforeach
                 
@@ -126,21 +126,21 @@
                     <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                     <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                     <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-green-600">${{ number_format($ofrenda->monto, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-green-600">₡{{ number_format($ofrenda->monto, 2) }}</td>
                 </tr>
                 @endforeach
                 
                 <!-- Fila de Totales -->
                 <tr class="bg-blue-50 border-t-2 border-blue-200">
                     <td class="px-4 py-3 text-sm font-bold text-gray-900">TOTALES</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['diezmo'], 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['misiones'], 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['seminario'], 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['campa'], 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['prestamo'], 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['construccion'], 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['micro'], 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right font-bold text-green-700 text-lg">${{ number_format($totales['subtotal'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['diezmo'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['misiones'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['seminario'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['campa'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['prestamo'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['construccion'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['micro'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-green-700 text-lg">₡{{ number_format($totales['subtotal'], 2) }}</td>
                 </tr>
             </tbody>
         </table>

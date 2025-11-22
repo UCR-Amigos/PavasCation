@@ -5,6 +5,29 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto">
+    <!-- Mensaje de error global -->
+    @if ($errors->any())
+        <div class="mb-6 bg-red-50 border-l-4 border-red-500 rounded-lg p-4 shadow-md animate-shake">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <svg class="h-6 w-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3 flex-1">
+                    <h3 class="text-sm font-semibold text-red-800 mb-2">
+                        Por favor, corrige los siguientes errores:
+                    </h3>
+                    <ul class="list-disc list-inside text-sm text-red-700 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="bg-white rounded-lg shadow p-6">
         <form action="{{ route('personas.update', $persona) }}" method="POST">
             @csrf
@@ -35,6 +58,46 @@
                         <input type="email" name="correo" id="correo" value="{{ old('correo', $persona->correo) }}" 
                                class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         @error('correo')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <!-- Contraseña (solo si hay correo o se agrega uno nuevo) -->
+                <div id="password-section" class="{{ $persona->correo ? '' : 'hidden' }}">
+                    @if($persona->user_id)
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-green-800 flex items-center">
+                            <svg class="inline w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Esta persona ya tiene acceso como <strong class="ml-1">miembro</strong>
+                        </p>
+                    </div>
+                    @else
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <p class="text-sm text-blue-800">
+                            <svg class="inline w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Al agregar un correo, esta persona podrá acceder al sistema como <strong>miembro</strong> para ver su progreso.
+                        </p>
+                    </div>
+                    @endif
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                            {{ $persona->user_id ? 'Nueva Contraseña (dejar vacío para mantener actual)' : 'Contraseña *' }}
+                        </label>
+                        <input type="password" name="password" id="password" 
+                               class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <p class="mt-1 text-xs text-gray-500">
+                            @if($persona->user_id)
+                                Solo completa este campo si deseas cambiar la contraseña
+                            @else
+                                Mínimo 8 caracteres. La persona usará esta contraseña para acceder.
+                            @endif
+                        </p>
+                        @error('password')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -249,4 +312,28 @@
     </div>
 </div>
 
+<script>
+    // Mostrar/ocultar campo de contraseña según si hay correo
+    const correoInput = document.getElementById('correo');
+    const passwordSection = document.getElementById('password-section');
+    const passwordInput = document.getElementById('password');
+    const hasUser = {{ $persona->user_id ? 'true' : 'false' }};
+
+    function togglePasswordField() {
+        if (correoInput.value.trim() !== '') {
+            passwordSection.classList.remove('hidden');
+            // Solo requerido si no tiene usuario y hay correo
+            if (!hasUser) {
+                passwordInput.required = true;
+            }
+        } else {
+            passwordSection.classList.add('hidden');
+            passwordInput.required = false;
+            passwordInput.value = '';
+        }
+    }
+
+    correoInput.addEventListener('input', togglePasswordField);
+    togglePasswordField(); // Verificar al cargar
+</script>
 @endsection

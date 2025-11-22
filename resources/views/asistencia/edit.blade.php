@@ -30,37 +30,37 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adultos Hombres</label>
-                            <input type="number" name="chapel_adultos_hombres" min="0" value="{{ old('chapel_adultos_hombres', $asistencia->chapel_adultos_hombres) }}" 
+                            <input type="number" name="chapel_adultos_hombres" step="1" min="0" value="{{ old('chapel_adultos_hombres', $asistencia->chapel_adultos_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adultos Mujeres</label>
-                            <input type="number" name="chapel_adultos_mujeres" min="0" value="{{ old('chapel_adultos_mujeres', $asistencia->chapel_adultos_mujeres) }}" 
+                            <input type="number" name="chapel_adultos_mujeres" step="1" min="0" value="{{ old('chapel_adultos_mujeres', $asistencia->chapel_adultos_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adultos Mayores Hombres</label>
-                            <input type="number" name="chapel_adultos_mayores_hombres" min="0" value="{{ old('chapel_adultos_mayores_hombres', $asistencia->chapel_adultos_mayores_hombres) }}" 
+                            <input type="number" name="chapel_adultos_mayores_hombres" step="1" min="0" value="{{ old('chapel_adultos_mayores_hombres', $asistencia->chapel_adultos_mayores_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Adultos Mayores Mujeres</label>
-                            <input type="number" name="chapel_adultos_mayores_mujeres" min="0" value="{{ old('chapel_adultos_mayores_mujeres', $asistencia->chapel_adultos_mayores_mujeres) }}" 
+                            <input type="number" name="chapel_adultos_mayores_mujeres" step="1" min="0" value="{{ old('chapel_adultos_mayores_mujeres', $asistencia->chapel_adultos_mayores_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Jóvenes Masculinos</label>
-                            <input type="number" name="chapel_jovenes_masculinos" min="0" value="{{ old('chapel_jovenes_masculinos', $asistencia->chapel_jovenes_masculinos) }}" 
+                            <input type="number" name="chapel_jovenes_masculinos" step="1" min="0" value="{{ old('chapel_jovenes_masculinos', $asistencia->chapel_jovenes_masculinos) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Jóvenes Femeninas</label>
-                            <input type="number" name="chapel_jovenes_femeninas" min="0" value="{{ old('chapel_jovenes_femeninas', $asistencia->chapel_jovenes_femeninas) }}" 
+                            <input type="number" name="chapel_jovenes_femeninas" step="1" min="0" value="{{ old('chapel_jovenes_femeninas', $asistencia->chapel_jovenes_femeninas) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestros Hombres</label>
-                            <input type="number" name="chapel_maestros_hombres" min="0" value="{{ old('chapel_maestros_hombres', $asistencia->chapel_maestros_hombres) }}" 
+                            <input type="number" name="chapel_maestros_hombres" step="1" min="0" value="{{ old('chapel_maestros_hombres', $asistencia->chapel_maestros_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         </div>
@@ -79,22 +79,22 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niños</label>
-                            <input type="number" name="clase_0_1_hombres" min="0" value="{{ old('clase_0_1_hombres', $asistencia->clase_0_1_hombres) }}" 
+                            <input type="number" name="clase_0_1_hombres" step="1" min="0" value="{{ old('clase_0_1_hombres', $asistencia->clase_0_1_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niñas</label>
-                            <input type="number" name="clase_0_1_mujeres" min="0" value="{{ old('clase_0_1_mujeres', $asistencia->clase_0_1_mujeres) }}" 
+                            <input type="number" name="clase_0_1_mujeres" step="1" min="0" value="{{ old('clase_0_1_mujeres', $asistencia->clase_0_1_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestros (H)</label>
-                            <input type="number" name="clase_0_1_maestros_hombres" min="0" value="{{ old('clase_0_1_maestros_hombres', $asistencia->clase_0_1_maestros_hombres) }}" 
+                            <input type="number" name="clase_0_1_maestros_hombres" step="1" min="0" value="{{ old('clase_0_1_maestros_hombres', $asistencia->clase_0_1_maestros_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestras (M)</label>
-                            <input type="number" name="clase_0_1_maestros_mujeres" min="0" value="{{ old('clase_0_1_maestros_mujeres', $asistencia->clase_0_1_maestros_mujeres) }}" 
+                            <input type="number" name="clase_0_1_maestros_mujeres" step="1" min="0" value="{{ old('clase_0_1_maestros_mujeres', $asistencia->clase_0_1_maestros_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         </div>
@@ -113,22 +113,22 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niños</label>
-                            <input type="number" name="clase_2_6_hombres" min="0" value="{{ old('clase_2_6_hombres', $asistencia->clase_2_6_hombres) }}" 
+                            <input type="number" name="clase_2_6_hombres" step="1" min="0" value="{{ old('clase_2_6_hombres', $asistencia->clase_2_6_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niñas</label>
-                            <input type="number" name="clase_2_6_mujeres" min="0" value="{{ old('clase_2_6_mujeres', $asistencia->clase_2_6_mujeres) }}" 
+                            <input type="number" name="clase_2_6_mujeres" step="1" min="0" value="{{ old('clase_2_6_mujeres', $asistencia->clase_2_6_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestros (H)</label>
-                            <input type="number" name="clase_2_6_maestros_hombres" min="0" value="{{ old('clase_2_6_maestros_hombres', $asistencia->clase_2_6_maestros_hombres) }}" 
+                            <input type="number" name="clase_2_6_maestros_hombres" step="1" min="0" value="{{ old('clase_2_6_maestros_hombres', $asistencia->clase_2_6_maestros_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestras (M)</label>
-                            <input type="number" name="clase_2_6_maestros_mujeres" min="0" value="{{ old('clase_2_6_maestros_mujeres', $asistencia->clase_2_6_maestros_mujeres) }}" 
+                            <input type="number" name="clase_2_6_maestros_mujeres" step="1" min="0" value="{{ old('clase_2_6_maestros_mujeres', $asistencia->clase_2_6_maestros_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         </div>
@@ -147,22 +147,22 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niños</label>
-                            <input type="number" name="clase_7_8_hombres" min="0" value="{{ old('clase_7_8_hombres', $asistencia->clase_7_8_hombres) }}" 
+                            <input type="number" name="clase_7_8_hombres" step="1" min="0" value="{{ old('clase_7_8_hombres', $asistencia->clase_7_8_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niñas</label>
-                            <input type="number" name="clase_7_8_mujeres" min="0" value="{{ old('clase_7_8_mujeres', $asistencia->clase_7_8_mujeres) }}" 
+                            <input type="number" name="clase_7_8_mujeres" step="1" min="0" value="{{ old('clase_7_8_mujeres', $asistencia->clase_7_8_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestros (H)</label>
-                            <input type="number" name="clase_7_8_maestros_hombres" min="0" value="{{ old('clase_7_8_maestros_hombres', $asistencia->clase_7_8_maestros_hombres) }}" 
+                            <input type="number" name="clase_7_8_maestros_hombres" step="1" min="0" value="{{ old('clase_7_8_maestros_hombres', $asistencia->clase_7_8_maestros_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestras (M)</label>
-                            <input type="number" name="clase_7_8_maestros_mujeres" min="0" value="{{ old('clase_7_8_maestros_mujeres', $asistencia->clase_7_8_maestros_mujeres) }}" 
+                            <input type="number" name="clase_7_8_maestros_mujeres" step="1" min="0" value="{{ old('clase_7_8_maestros_mujeres', $asistencia->clase_7_8_maestros_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         </div>
@@ -181,22 +181,22 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niños</label>
-                            <input type="number" name="clase_9_11_hombres" min="0" value="{{ old('clase_9_11_hombres', $asistencia->clase_9_11_hombres) }}" 
+                            <input type="number" name="clase_9_11_hombres" step="1" min="0" value="{{ old('clase_9_11_hombres', $asistencia->clase_9_11_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Niñas</label>
-                            <input type="number" name="clase_9_11_mujeres" min="0" value="{{ old('clase_9_11_mujeres', $asistencia->clase_9_11_mujeres) }}" 
+                            <input type="number" name="clase_9_11_mujeres" step="1" min="0" value="{{ old('clase_9_11_mujeres', $asistencia->clase_9_11_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestros (H)</label>
-                            <input type="number" name="clase_9_11_maestros_hombres" min="0" value="{{ old('clase_9_11_maestros_hombres', $asistencia->clase_9_11_maestros_hombres) }}" 
+                            <input type="number" name="clase_9_11_maestros_hombres" step="1" min="0" value="{{ old('clase_9_11_maestros_hombres', $asistencia->clase_9_11_maestros_hombres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Maestras (M)</label>
-                            <input type="number" name="clase_9_11_maestros_mujeres" min="0" value="{{ old('clase_9_11_maestros_mujeres', $asistencia->clase_9_11_maestros_mujeres) }}" 
+                            <input type="number" name="clase_9_11_maestros_mujeres" step="1" min="0" value="{{ old('clase_9_11_maestros_mujeres', $asistencia->clase_9_11_maestros_mujeres) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
                         </div>
                         </div>
@@ -207,7 +207,7 @@
                 <div class="bg-blue-50 rounded-lg p-6">
                     <div class="flex justify-between items-center">
                         <label for="total_asistencia" class="text-lg font-semibold text-gray-700">Total Asistencia *</label>
-                        <input type="number" name="total_asistencia" id="total_asistencia" min="0" value="{{ old('total_asistencia', $asistencia->total_asistencia) }}" 
+                        <input type="number" name="total_asistencia" id="total_asistencia" step="1" min="0" value="{{ old('total_asistencia', $asistencia->total_asistencia) }}" 
                                class="w-32 text-2xl font-bold text-center rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required readonly>
                     </div>
                 </div>

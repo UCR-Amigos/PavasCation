@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->rol === 'invitado';
     }
 
+    public function isMiembro(): bool
+    {
+        return $this->rol === 'miembro';
+    }
+
     public function canAccessRecuento(): bool
     {
         return in_array($this->rol, ['admin', 'tesorero']);
@@ -80,5 +85,10 @@ class User extends Authenticatable
     public function canAccessAdmin(): bool
     {
         return $this->rol === 'admin';
+    }
+
+    public function persona()
+    {
+        return $this->hasOne(Persona::class);
     }
 }

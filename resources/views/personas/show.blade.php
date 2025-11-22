@@ -67,7 +67,7 @@
             <div class="flex items-center">
                 <div class="flex-1">
                     <p class="text-sm font-medium text-gray-500">Total Ofrendado</p>
-                    <p class="text-2xl font-bold text-green-600">${{ number_format($persona->sobres->sum('total_declarado'), 2) }}</p>
+                    <p class="text-2xl font-bold text-green-600">₡{{ number_format($persona->sobres->sum('total_declarado'), 2) }}</p>
                 </div>
                 <div class="p-3 bg-green-100 rounded-full">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,39 +102,28 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Monto Total</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pagado</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Progreso</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoría</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Monto</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Frecuencia</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @foreach($persona->promesas as $promesa)
-                    @php
-                        $montoRecibido = $promesa->sobreDetalles->sum('monto');
-                        $porcentaje = $promesa->monto_total > 0 ? ($montoRecibido / $promesa->monto_total) * 100 : 0;
-                    @endphp
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $promesa->fecha_promesa->format('d/m/Y') }}
-                        </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">
-                            {{ $promesa->descripcion }}
-                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                            ${{ number_format($promesa->monto_total, 2) }}
+                            {{ ucfirst($promesa->categoria) }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">
-                            ${{ number_format($montoRecibido, 2) }}
+                            ₡{{ number_format($promesa->monto, 2) }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            <div class="flex items-center">
-                                <div class="w-full bg-gray-200 rounded-full h-2.5 mr-2">
-                                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ min($porcentaje, 100) }}%"></div>
-                                </div>
-                                <span class="text-sm font-medium text-gray-700">{{ number_format($porcentaje, 1) }}%</span>
-                            </div>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                @if($promesa->frecuencia == 'semanal') bg-blue-100 text-blue-800
+                                @elseif($promesa->frecuencia == 'quincenal') bg-green-100 text-green-800
+                                @else bg-purple-100 text-purple-800
+                                @endif">
+                                {{ ucfirst($promesa->frecuencia) }}
+                            </span>
                         </td>
                     </tr>
                     @endforeach
@@ -176,13 +165,13 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                            ${{ number_format($sobre->total_declarado, 2) }}
+                            ₡{{ number_format($sobre->total_declarado, 2) }}
                         </td>
                         <td class="px-6 py-4 text-sm">
                             <div class="flex flex-wrap gap-1">
                                 @foreach($sobre->detalles as $detalle)
                                 <span class="px-2 py-1 text-xs font-semibold bg-gray-100 text-gray-700 rounded">
-                                    {{ ucfirst($detalle->categoria) }}: ${{ number_format($detalle->monto, 2) }}
+                                    {{ ucfirst($detalle->categoria) }}: ₡{{ number_format($detalle->monto, 2) }}
                                 </span>
                                 @endforeach
                             </div>

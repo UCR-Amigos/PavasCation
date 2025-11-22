@@ -49,8 +49,11 @@
                     </svg>
                     Descargar PDF
                 </a>
-                <button type="button" onclick="cerrarCulto({{ $cultoSeleccionado->id }})" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
-                    🔒 Cerrar Culto
+                <button type="button" onclick="mostrarModalCerrarCulto({{ $cultoSeleccionado->id }})" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    Cerrar Culto
                 </button>
                 @else
                 <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2">
@@ -82,7 +85,7 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div class="bg-white rounded-lg shadow p-4">
             <p class="text-sm text-gray-600">Total General</p>
-            <p class="text-2xl font-bold text-blue-600">${{ number_format($cultoSeleccionado->totales->total_general, 2) }}</p>
+            <p class="text-2xl font-bold text-blue-600">₡{{ number_format($cultoSeleccionado->totales->total_general, 2) }}</p>
         </div>
         <div class="bg-white rounded-lg shadow p-4">
             <p class="text-sm text-gray-600">Cantidad de Sobres</p>
@@ -90,7 +93,7 @@
         </div>
         <div class="bg-white rounded-lg shadow p-4">
             <p class="text-sm text-gray-600">Diezmos</p>
-            <p class="text-2xl font-bold text-purple-600">${{ number_format($cultoSeleccionado->totales->total_diezmo, 2) }}</p>
+            <p class="text-2xl font-bold text-purple-600">₡{{ number_format($cultoSeleccionado->totales->total_diezmo, 2) }}</p>
         </div>
         <div class="bg-white rounded-lg shadow p-4">
             <p class="text-sm text-gray-600">Transferencias</p>
@@ -128,17 +131,18 @@
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                            ${{ number_format($sobre->total_declarado, 2) }}
+                            ₡{{ number_format($sobre->total_declarado, 2) }}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             @foreach($sobre->detalles as $detalle)
                                 <span class="inline-block bg-gray-100 rounded px-2 py-1 text-xs mr-1 mb-1">
-                                    {{ ucfirst($detalle->categoria) }}: ${{ number_format($detalle->monto, 2) }}
+                                    {{ ucfirst($detalle->categoria) }}: ₡{{ number_format($detalle->monto, 2) }}
                                 </span>
                             @endforeach
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <a href="{{ route('recuento.edit', $sobre) }}" class="text-blue-600 hover:text-blue-900 mr-3">Editar</a>
+                            @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
                             <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero }})" class="text-red-600 hover:text-red-900">
                                 Eliminar
                             </button>
@@ -146,6 +150,7 @@
                                 @csrf
                                 @method('DELETE')
                             </form>
+                            @endif
                         </td>
                     </tr>
                     @empty
@@ -223,14 +228,14 @@
                     @endphp
                     <tr class="hover:bg-gray-50">
                         <td class="px-4 py-3 text-sm font-medium text-gray-900">#{{ $sobre->numero_sobre }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($diezmo, 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($misiones, 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($seminario, 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($campa, 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($prestamo, 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($construccion, 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700">${{ number_format($micro, 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-600">${{ number_format($subtotal, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($diezmo, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($misiones, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($seminario, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($campa, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($prestamo, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($construccion, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($micro, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-600">₡{{ number_format($subtotal, 2) }}</td>
                     </tr>
                     @endforeach
                     
@@ -253,6 +258,7 @@
                                             class="text-blue-600 hover:text-blue-900 text-xs">
                                         Editar
                                     </button>
+                                    @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
                                     <button type="button" onclick="mostrarModalEliminarSuelto({{ $ofrenda->id }}, '{{ $ofrenda->descripcion }}')" class="text-red-600 hover:text-red-900 text-xs">
                                         Eliminar
                                     </button>
@@ -260,6 +266,7 @@
                                         @csrf
                                         @method('DELETE')
                                     </form>
+                                    @endif
                                 </div>
                             </div>
                         </td>
@@ -270,21 +277,21 @@
                         <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                         <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                         <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-green-600">${{ number_format($ofrenda->monto, 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-green-600">₡{{ number_format($ofrenda->monto, 2) }}</td>
                     </tr>
                     @endforeach
                     
                     <!-- Fila de Totales -->
                     <tr class="bg-blue-50 border-t-2 border-blue-200">
                         <td class="px-4 py-3 text-sm font-bold text-gray-900">TOTALES</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['diezmo'], 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['misiones'], 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['seminario'], 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['campa'], 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['prestamo'], 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['construccion'], 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">${{ number_format($totales['micro'], 2) }}</td>
-                        <td class="px-4 py-3 text-sm text-right font-bold text-green-700 text-lg">${{ number_format($totales['subtotal'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['diezmo'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['misiones'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['seminario'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['campa'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['prestamo'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['construccion'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['micro'], 2) }}</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-green-700 text-lg">₡{{ number_format($totales['subtotal'], 2) }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -326,7 +333,7 @@
                     <div class="bg-gray-50 rounded-lg p-3 mb-3">
                         <div class="flex justify-between items-center mb-2">
                             <span class="text-xs text-gray-600">Total General</span>
-                            <span class="text-lg font-bold text-blue-600">${{ number_format($cultoCerrado->totales->total_general, 2) }}</span>
+                            <span class="text-lg font-bold text-blue-600">₡{{ number_format($cultoCerrado->totales->total_general, 2) }}</span>
                         </div>
                         <div class="grid grid-cols-2 gap-2 text-xs text-gray-600">
                             <div class="flex justify-between">
@@ -429,9 +436,9 @@ function cerrarModal() {
                 <input type="hidden" name="culto_id" value="{{ $cultoSeleccionado?->id }}">
                 
                 <div class="mb-4">
-                    <label for="monto_suelto" class="block text-sm font-medium text-gray-700 mb-2">Monto *</label>
+                    <label for="monto_suelto" class="block text-sm font-medium text-gray-700 mb-2">Monto (₡) *</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₡</span>
                         <input type="number" name="monto" id="monto_suelto" min="0.01" step="0.01" required
                                class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     </div>
@@ -467,9 +474,9 @@ function cerrarModal() {
                 @method('PUT')
                 
                 <div class="mb-4">
-                    <label for="monto_suelto_edit" class="block text-sm font-medium text-gray-700 mb-2">Monto *</label>
+                    <label for="monto_suelto_edit" class="block text-sm font-medium text-gray-700 mb-2">Monto (₡) *</label>
                     <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₡</span>
                         <input type="number" name="monto" id="monto_suelto_edit" min="0.01" step="0.01" required
                                class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     </div>
@@ -503,11 +510,21 @@ function editarSuelto(id, monto, descripcion) {
     document.getElementById('modalEditarSuelto').classList.remove('hidden');
 }
 
-function cerrarCulto(cultoId) {
-    if (confirm('¿Cerrar este culto? Ya no podrás agregar o editar sobres después de cerrarlo.')) {
+function mostrarModalCerrarCulto(cultoId) {
+    cultoIdCerrar = cultoId;
+    document.getElementById('modalCerrarCulto').classList.remove('hidden');
+}
+
+function cerrarModalCerrarCulto() {
+    document.getElementById('modalCerrarCulto').classList.add('hidden');
+    cultoIdCerrar = null;
+}
+
+function confirmarCerrarCulto() {
+    if (cultoIdCerrar) {
         const form = document.createElement('form');
         form.method = 'POST';
-        form.action = `/recuento/${cultoId}/cerrar`;
+        form.action = `/recuento/${cultoIdCerrar}/cerrar`;
         
         const csrfToken = document.createElement('input');
         csrfToken.type = 'hidden';
@@ -524,6 +541,7 @@ function cerrarCulto(cultoId) {
 let sobreIdEliminar = null;
 let sueltoIdEliminar = null;
 let cultoIdEliminar = null;
+let cultoIdCerrar = null;
 
 function mostrarModalEliminarSobre(id, numero) {
     sobreIdEliminar = id;
@@ -679,6 +697,44 @@ function confirmarEliminacionCulto() {
                         onclick="confirmarEliminacionCulto()"
                         class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                     Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Cerrar Culto -->
+<div id="modalCerrarCulto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-orange-900">🔒 Cerrar Culto</h3>
+                <button onclick="cerrarModalCerrarCulto()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
+                <p class="text-sm text-orange-800 mb-2">
+                    ¿Cerrar este culto? Ya no podrás agregar o editar sobres después de cerrarlo.
+                </p>
+                <p class="text-xs text-orange-600 mt-2">
+                    ⚠️ Esta acción bloqueará las ediciones del culto.
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" 
+                        onclick="cerrarModalCerrarCulto()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" 
+                        onclick="confirmarCerrarCulto()"
+                        class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700">
+                    Sí, Cerrar
                 </button>
             </div>
         </div>

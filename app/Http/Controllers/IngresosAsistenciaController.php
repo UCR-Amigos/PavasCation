@@ -165,14 +165,17 @@ class IngresosAsistenciaController extends Controller
         $cultos = $query->get();
 
         $pdf = Pdf::loadView('pdfs.asistencia', compact('cultos'));
-        return $pdf->download('asistencia_' . now()->format('Y-m-d') . '.pdf');
+        $fechaInicio = $request->filled('fecha_inicio') ? Carbon::parse($request->fecha_inicio) : ($cultos->first()?->fecha ?? now());
+        $nombreArchivo = 'asistencia_' . $fechaInicio->locale('es')->isoFormat('dddd_D-M-Y');
+        return $pdf->download($nombreArchivo . '.pdf');
     }
 
     public function pdfAsistenciaCulto(Culto $culto)
     {
         $culto->load('asistencia');
         $pdf = Pdf::loadView('pdfs.asistencia-culto', compact('culto'));
-        return $pdf->download('asistencia_' . $culto->fecha->format('Y-m-d') . '.pdf');
+        $nombreArchivo = 'asistencia_' . $culto->fecha->locale('es')->isoFormat('dddd_D-M-Y');
+        return $pdf->download($nombreArchivo . '.pdf');
     }
 
     public function pdfAsistenciaMes(Request $request)

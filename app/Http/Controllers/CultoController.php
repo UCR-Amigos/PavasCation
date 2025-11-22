@@ -26,7 +26,7 @@ class CultoController extends Controller
         $validated = $request->validate([
             'fecha' => 'required|date',
             'hora' => 'required',
-            'tipo_culto' => 'required|in:domingo,miércoles,sábado,especial',
+            'tipo_culto' => 'required|in:domingo,domingo_pm,miércoles,sábado,especial',
             'notas' => 'nullable|string',
         ]);
 
@@ -60,7 +60,7 @@ class CultoController extends Controller
         $validated = $request->validate([
             'fecha' => 'required|date',
             'hora' => 'required',
-            'tipo_culto' => 'required|in:domingo,miércoles,sábado,especial',
+            'tipo_culto' => 'required|in:domingo,domingo_pm,miércoles,sábado,especial',
             'notas' => 'nullable|string',
         ]);
 

@@ -10,8 +10,15 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // Obtener el mes y año desde la request o usar el actual
+        $mes = $request->input('mes', Carbon::now()->month);
+        $año = $request->input('año', Carbon::now()->year);
+        
+        $inicioMes = Carbon::createFromDate($año, $mes, 1)->startOfMonth();
+        $finMes = Carbon::createFromDate($año, $mes, 1)->endOfMonth();
+
         // Últimos 10 cultos para el gráfico de barras
         $cultosRecientes = Culto::with('totales')
             ->orderBy('fecha', 'desc')
@@ -20,11 +27,8 @@ class DashboardController extends Controller
             ->reverse()
             ->values();
 
-        // Totales de la semana actual
-        $inicioSemana = Carbon::now()->startOfWeek();
-        $finSemana = Carbon::now()->endOfWeek();
-
-        $totalesSemana = Culto::whereBetween('fecha', [$inicioSemana, $finSemana])
+        // Totales del mes seleccionado (antes era semanal, ahora es mensual)
+        $totalesMes = Culto::whereBetween('fecha', [$inicioMes, $finMes])
             ->with('totales')
             ->get()
             ->reduce(function ($carry, $culto) {
@@ -32,45 +36,37 @@ class DashboardController extends Controller
                     $carry['total_general'] += $culto->totales->total_general;
                     $carry['total_diezmo'] += $culto->totales->total_diezmo;
                     $carry['total_misiones'] += $culto->totales->total_misiones;
+                    $carry['total_seminario'] += $culto->totales->total_seminario;
+                    $carry['total_campa'] += $culto->totales->total_campa;
+                    $carry['total_prestamo'] += $culto->totales->total_prestamo;
                     $carry['total_construccion'] += $culto->totales->total_construccion;
+                    $carry['total_micro'] += $culto->totales->total_micro;
+                    $carry['total_suelto'] += $culto->totales->total_suelto;
                 }
                 return $carry;
             }, [
                 'total_general' => 0,
                 'total_diezmo' => 0,
                 'total_misiones' => 0,
+                'total_seminario' => 0,
+                'total_campa' => 0,
+                'total_prestamo' => 0,
                 'total_construccion' => 0,
+                'total_micro' => 0,
+                'total_suelto' => 0,
             ]);
 
-        // Distribución por categorías (mes actual)
-        $inicioMes = Carbon::now()->startOfMonth();
-        $finMes = Carbon::now()->endOfMonth();
-
-        $distribucion = Culto::whereBetween('fecha', [$inicioMes, $finMes])
-            ->with('totales')
-            ->get()
-            ->reduce(function ($carry, $culto) {
-                if ($culto->totales) {
-                    $carry['diezmo'] += $culto->totales->total_diezmo;
-                    $carry['misiones'] += $culto->totales->total_misiones;
-                    $carry['seminario'] += $culto->totales->total_seminario;
-                    $carry['campa'] += $culto->totales->total_campa;
-                    $carry['prestamo'] += $culto->totales->total_prestamo;
-                    $carry['construccion'] += $culto->totales->total_construccion;
-                    $carry['micro'] += $culto->totales->total_micro;
-                    $carry['suelto'] += $culto->totales->total_suelto;
-                }
-                return $carry;
-            }, [
-                'diezmo' => 0,
-                'misiones' => 0,
-                'seminario' => 0,
-                'campa' => 0,
-                'prestamo' => 0,
-                'construccion' => 0,
-                'micro' => 0,
-                'suelto' => 0,
-            ]);
+        // Distribución por categorías (mismo mes)
+        $distribucion = [
+            'diezmo' => $totalesMes['total_diezmo'],
+            'misiones' => $totalesMes['total_misiones'],
+            'seminario' => $totalesMes['total_seminario'],
+            'campa' => $totalesMes['total_campa'],
+            'prestamo' => $totalesMes['total_prestamo'],
+            'construccion' => $totalesMes['total_construccion'],
+            'micro' => $totalesMes['total_micro'],
+            'suelto' => $totalesMes['total_suelto'],
+        ];
 
         // Asistencia (últimos 10 cultos)
         $asistencias = Culto::with('asistencia')
@@ -118,10 +114,14 @@ class DashboardController extends Controller
 
         return view('dashboard', compact(
             'cultosRecientes',
-            'totalesSemana',
+            'totalesMes',
             'distribucion',
             'asistencias',
-            'promesasStatus'
+            'promesasStatus',
+            'mes',
+            'año',
+            'inicioMes',
+            'finMes'
         ));
     }
 }
