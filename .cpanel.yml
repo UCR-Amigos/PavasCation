@@ -1,7 +1,7 @@
 deployment:
   tasks:
     # 1. Definir ruta pública en el hosting
-    - export DEPLOYPATH=/home/ibbccou/public_html/
+    - export DEPLOYPATH=/home/ibbsccou/public_html/
 
     # 2. Limpiar carpeta pública antes de copiar
     - /bin/rm -rf $DEPLOYPATH/*
@@ -10,4 +10,4 @@ deployment:
     - /bin/cp -R public/. $DEPLOYPATH
 
     # 4. Crear enlace simbólico para /storage
-    - /bin/ln -s /home/ibbccou/repositories/IBBSCation/storage/app/public $DEPLOYPATH/storage
+    - /bin/ln -s /home/ibbsccou/repositories/IBBSCation/storage/app/public $DEPLOYPATH/storage
