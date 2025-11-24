@@ -444,8 +444,10 @@ class PersonaController extends Controller
 
         foreach ($personas as $persona) {
             $persona->total_sobres = 0;
-            $persona->promesas_periodo = [];
             $persona->cumplimiento_global = 0;
+            
+            // Inicializar array de promesas del período
+            $promesasPeriodo = [];
 
             // Calcular lo que debería dar según sus promesas en este período
             foreach ($persona->promesas as $promesa) {
@@ -477,7 +479,7 @@ class PersonaController extends Controller
                     }
                 }
 
-                $persona->promesas_periodo[$categoria] = [
+                $promesasPeriodo[$categoria] = [
                     'esperado' => $montoEsperado,
                     'dado' => $montoDado,
                     'diferencia' => $montoDado - $montoEsperado,
@@ -487,6 +489,9 @@ class PersonaController extends Controller
 
                 $totalPrometidoGeneral += $montoEsperado;
             }
+            
+            // Asignar promesas del período al objeto persona
+            $persona->promesas_periodo = $promesasPeriodo;
 
             // Calcular totales de sobres
             foreach ($persona->sobres as $sobre) {
@@ -501,10 +506,10 @@ class PersonaController extends Controller
             }
 
             // Calcular cumplimiento global (solo si tiene promesas)
-            if (count($persona->promesas_periodo) > 0) {
+            if (count($promesasPeriodo) > 0) {
                 $totalEsperado = 0;
                 $totalDado = 0;
-                foreach ($persona->promesas_periodo as $datos) {
+                foreach ($promesasPeriodo as $datos) {
                     $totalEsperado += $datos['esperado'];
                     $totalDado += $datos['dado'];
                 }
