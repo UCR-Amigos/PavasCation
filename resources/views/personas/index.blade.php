@@ -5,13 +5,13 @@
 
 @section('content')
 <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
-        <div class="flex flex-col sm:flex-row gap-3">
+    <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-3">
+        <div class="flex flex-col sm:flex-row flex-wrap gap-2">
             @if($personasInactivas > 0)
             <form action="{{ route('personas.limpiar-inactivas') }}" method="POST" class="inline-block"
                   onsubmit="return confirm('¿Estás seguro de eliminar TODAS las personas inactivas y sus promesas? Los sobres se mantendrán.');">
                 @csrf
-                <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-center">
+                <button type="submit" class="w-full sm:w-auto px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm whitespace-nowrap">
                     🗑️ Limpiar Inactivas ({{ $personasInactivas }})
                 </button>
             </form>
@@ -20,12 +20,12 @@
             <form action="{{ route('personas.resetear-promesas') }}" method="POST" class="inline-block"
                   onsubmit="return confirm('⚠️ ATENCIÓN: Esto eliminará TODAS las promesas y compromisos de TODAS las personas. Los sobres dados se mantienen como historial. ¿Estás seguro?');">
                 @csrf
-                <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors text-center">
+                <button type="submit" class="w-full sm:w-auto px-3 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors text-sm whitespace-nowrap">
                     🔄 Resetear Promesas
                 </button>
             </form>
         </div>
-        <a href="{{ route('personas.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-center">
+        <a href="{{ route('personas.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-center whitespace-nowrap">
             + Nueva Persona
         </a>
     </div>
@@ -36,11 +36,11 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden sm:table-cell">Teléfono</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Correo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Teléfono</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Correo</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Sobres</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Promesas</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden xl:table-cell">Sobres</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden xl:table-cell">Promesas</th>
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
