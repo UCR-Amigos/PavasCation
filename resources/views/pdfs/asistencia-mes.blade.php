@@ -67,6 +67,7 @@
                 $mujeres = $culto->asistencia->chapel_adultos_mujeres + 
                           $culto->asistencia->chapel_adultos_mayores_mujeres + 
                           $culto->asistencia->chapel_jovenes_femeninas +
+                          $culto->asistencia->chapel_maestros_mujeres +
                           $culto->asistencia->clase_0_1_mujeres + 
                           $culto->asistencia->clase_2_6_mujeres + 
                           $culto->asistencia->clase_7_8_mujeres + 

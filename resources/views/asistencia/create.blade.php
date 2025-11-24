@@ -71,6 +71,11 @@
                             <input type="number" name="chapel_maestros_hombres" step="1" min="0" value="{{ old('chapel_maestros_hombres', 0) }}" 
                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
                         </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Maestras Mujeres</label>
+                            <input type="number" name="chapel_maestros_mujeres" step="1" min="0" value="{{ old('chapel_maestros_mujeres', 0) }}" 
+                                   class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 asistencia-input" required>
+                        </div>
                         </div>
                     </div>
                 </div>
