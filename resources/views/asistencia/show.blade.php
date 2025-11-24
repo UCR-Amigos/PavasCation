@@ -232,11 +232,11 @@
         </div>
 
         <!-- Totales Finales -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
             <div class="bg-blue-50 rounded-lg p-4 border-2 border-blue-200">
                 <div class="text-sm text-gray-600 mb-1">Total Capilla</div>
-                <div class="text-3xl font-bold text-blue-600">{{ $totalCapilla }}</div>
-                <div class="text-xs text-gray-500 mt-1">Incluye maestros de capilla</div>
+                <div class="text-3xl font-bold text-blue-600">{{ $totalCapilla - $totalVisitas }}</div>
+                <div class="text-xs text-gray-500 mt-1">Sin visitas</div>
             </div>
             
             <div class="bg-green-50 rounded-lg p-4 border-2 border-green-200">
@@ -255,6 +255,12 @@
                 <div class="text-sm text-gray-600 mb-1">Total Bautismos</div>
                 <div class="text-3xl font-bold text-purple-600">{{ $totalBautismos }}</div>
                 <div class="text-xs text-gray-500 mt-1">Bautizados en el culto</div>
+            </div>
+
+            <div class="bg-orange-50 rounded-lg p-4 border-2 border-orange-200">
+                <div class="text-sm text-gray-600 mb-1">Total Visitas</div>
+                <div class="text-3xl font-bold text-orange-600">{{ $totalVisitas }}</div>
+                <div class="text-xs text-gray-500 mt-1">Personas visitantes</div>
             </div>
         </div>
 

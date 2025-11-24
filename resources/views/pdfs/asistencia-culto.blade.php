@@ -58,8 +58,12 @@
             $totalBautismos = ($culto->asistencia->bautismos_adulto_hombre ?? 0) + ($culto->asistencia->bautismos_adulto_mujer ?? 0) +
                              ($culto->asistencia->bautismos_joven_hombre ?? 0) + ($culto->asistencia->bautismos_joven_mujer ?? 0) +
                              ($culto->asistencia->bautismos_nino ?? 0) + ($culto->asistencia->bautismos_nina ?? 0);
+            
+            $totalVisitas = ($culto->asistencia->visitas_adulto_hombre ?? 0) + ($culto->asistencia->visitas_adulto_mujer ?? 0) +
+                           ($culto->asistencia->visitas_joven_hombre ?? 0) + ($culto->asistencia->visitas_joven_mujer ?? 0) +
+                           ($culto->asistencia->visitas_nino ?? 0) + ($culto->asistencia->visitas_nina ?? 0);
         @endphp
-        <p><strong>Total Capilla:</strong> {{ $totalCapilla }} | <strong>Total Niños:</strong> {{ $totalNinos }} | <strong>Salvos:</strong> {{ $totalSalvos }} | <strong>Bautismos:</strong> {{ $totalBautismos }}</p>
+        <p><strong>Total Capilla:</strong> {{ $totalCapilla }} | <strong>Total Niños:</strong> {{ $totalNinos }} | <strong>Salvos:</strong> {{ $totalSalvos }} | <strong>Bautismos:</strong> {{ $totalBautismos }} | <strong>Visitas:</strong> {{ $totalVisitas }}</p>
     </div>
 
     <h3>Capilla</h3>

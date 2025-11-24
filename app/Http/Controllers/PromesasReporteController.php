@@ -91,6 +91,7 @@ class PromesasReporteController extends Controller
             'profit' => 0,
         ];
 
+        // PASO 1: Calcular montos prometidos por categoría
         foreach ($personas as $persona) {
             foreach ($persona->promesas as $promesa) {
                 // Filtrar por categoría si se especificó
@@ -113,21 +114,39 @@ class PromesasReporteController extends Controller
                 // Calcular monto prometido para ESTE MES específico
                 $montoPrometidoMes = $this->calcularMontoPrometidoMes($promesa, $año, $mes);
                 $totalesPorCategoria[$cat]['total_prometido'] += $montoPrometidoMes;
-
-                // Calcular monto dado en ESTE MES específico
-                $montoDadoMes = SobreDetalle::whereHas('sobre', function($query) use ($persona, $año, $mes) {
-                        $query->where('persona_id', $persona->id)
-                              ->whereYear('created_at', $año)
-                              ->whereMonth('created_at', $mes);
-                    })
-                    ->where('categoria', $cat)
-                    ->sum('monto');
-
-                $totalesPorCategoria[$cat]['total_dado'] += $montoDadoMes;
             }
         }
 
-        // Calcular faltante y profit POR CATEGORÍA
+        // PASO 2: Calcular TODOS los montos dados en el mes (incluyendo anónimos)
+        $categorias = $categoria ? [$categoria] : ['diezmo', 'misiones', 'seminario', 'campa', 'construccion', 'prestamo', 'micro'];
+        
+        foreach ($categorias as $cat) {
+            // Obtener TODOS los sobres del mes en esta categoría (con o sin persona)
+            $montoDadoTotal = SobreDetalle::whereHas('sobre', function($query) use ($año, $mes) {
+                    $query->whereYear('created_at', $año)
+                          ->whereMonth('created_at', $mes);
+                })
+                ->where('categoria', $cat)
+                ->sum('monto');
+
+            // Si hay dinero dado pero no hay promesas en esta categoría, crear el registro
+            if ($montoDadoTotal > 0 && !isset($totalesPorCategoria[$cat])) {
+                $totalesPorCategoria[$cat] = [
+                    'categoria' => ucfirst($cat),
+                    'total_prometido' => 0,
+                    'total_dado' => 0,
+                    'faltante' => 0,
+                    'profit' => 0,
+                ];
+            }
+
+            // Actualizar el total dado
+            if (isset($totalesPorCategoria[$cat])) {
+                $totalesPorCategoria[$cat]['total_dado'] = $montoDadoTotal;
+            }
+        }
+
+        // PASO 3: Calcular faltante y profit POR CATEGORÍA
         foreach ($totalesPorCategoria as $cat => $datos) {
             $saldo = $datos['total_dado'] - $datos['total_prometido'];
             
@@ -136,7 +155,7 @@ class PromesasReporteController extends Controller
                 $totalesPorCategoria[$cat]['faltante'] = abs($saldo);
                 $totalesPorCategoria[$cat]['profit'] = 0;
             } else {
-                // Profit (dio de más)
+                // Profit (dio de más o igual)
                 $totalesPorCategoria[$cat]['profit'] = $saldo;
                 $totalesPorCategoria[$cat]['faltante'] = 0;
             }

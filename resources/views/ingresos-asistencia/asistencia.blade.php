@@ -135,9 +135,20 @@
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
                                     </form>
+                                @else
+                                    <span class="text-gray-400 text-xs mr-3">Cerrada</span>
+                                    @if(auth()->user()->rol === 'admin')
+                                        <form action="{{ route('asistencia.destroy', $culto->asistencia) }}" method="POST" class="inline" onsubmit="return confirm('⚠️ Esta asistencia está cerrada. ¿Estás seguro de eliminarla?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
+                                        </form>
+                                    @endif
                                 @endif
                                 <a href="{{ route('ingresos-asistencia.pdf-asistencia-culto', $culto) }}" class="text-green-600 hover:text-green-900" target="_blank">PDF</a>
                             </div>
+                        @else
+                            <span class="text-gray-400 text-sm">Sin registro</span>
                         @endif
                     </td>
                 </tr>
