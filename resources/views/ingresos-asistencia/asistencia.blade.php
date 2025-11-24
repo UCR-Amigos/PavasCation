@@ -6,7 +6,13 @@
 @section('content')
 <div class="space-y-6">
     <!-- Filtros y Búsqueda -->
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-md p-6 border border-blue-100">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+            </svg>
+            Filtros de Búsqueda
+        </h3>
         <form method="GET" action="{{ route('ingresos-asistencia.asistencia') }}" class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <!-- Filtro de Mes -->
@@ -68,11 +74,22 @@
     </div>
 
     <!-- Lista de Cultos -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-semibold">Registros de Asistencia</h3>
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+        <div class="px-6 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 flex justify-between items-center">
+            <div>
+                <h3 class="text-lg font-semibold text-white flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    Registros de Asistencia
+                </h3>
+                <p class="text-blue-100 text-sm mt-1">Lista completa de cultos y asistencias registradas</p>
+            </div>
             <a href="{{ route('ingresos-asistencia.pdf-asistencia', ['fecha_inicio' => request('fecha_inicio'), 'fecha_fin' => request('fecha_fin')]) }}" 
-               class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors" target="_blank">
+               class="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-colors flex items-center gap-2 font-semibold shadow-md" target="_blank">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
                 Descargar PDF
             </a>
         </div>
@@ -165,19 +182,27 @@
     </div>
 
     <!-- Descargas por Mes -->
-    <div class="bg-white rounded-lg shadow p-6">
-        <h3 class="text-lg font-semibold mb-4">Descargas Mensuales</h3>
+    <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-md p-6 border border-purple-100">
+        <h3 class="text-lg font-semibold mb-4 flex items-center gap-2 text-gray-800">
+            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Descargas Mensuales
+        </h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             @foreach($mesesDisponibles as $mes)
-            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-500 transition-colors">
+            <div class="p-4 bg-white border border-purple-200 rounded-lg hover:border-purple-400 hover:shadow-lg transition-all duration-200">
                 <div class="flex justify-between items-center">
                     <div>
-                        <p class="text-sm text-gray-600">{{ $mes['nombre'] }}</p>
-                        <p class="text-lg font-semibold text-gray-900">{{ $mes['año'] }}</p>
+                        <p class="text-sm text-gray-600 font-medium">{{ $mes['nombre'] }}</p>
+                        <p class="text-lg font-semibold text-purple-700">{{ $mes['año'] }}</p>
                     </div>
                     <a href="{{ route('ingresos-asistencia.pdf-asistencia-mes', ['mes' => $mes['numero'], 'año' => $mes['año']]) }}" 
-                       class="px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 text-sm" target="_blank">
-                        Descargar
+                       class="px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 text-sm font-semibold flex items-center gap-2 shadow-md transition-all" target="_blank">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                        </svg>
+                        PDF
                     </a>
                 </div>
             </div>
