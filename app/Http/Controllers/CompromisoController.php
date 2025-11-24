@@ -21,8 +21,16 @@ class CompromisoController extends Controller
         // Obtener o calcular compromisos para el mes seleccionado
         $compromisos = $this->calcularCompromisos($persona, $año, $mes);
 
-        // Obtener historial de compromisos
+        // Obtener historial de compromisos solo desde la fecha de creación de la persona
+        $fechaCreacion = Carbon::parse($persona->created_at);
         $historial = Compromiso::where('persona_id', $persona->id)
+            ->where(function($query) use ($fechaCreacion) {
+                $query->where('año', '>', $fechaCreacion->year)
+                    ->orWhere(function($q) use ($fechaCreacion) {
+                        $q->where('año', '=', $fechaCreacion->year)
+                          ->where('mes', '>=', $fechaCreacion->month);
+                    });
+            })
             ->orderBy('año', 'desc')
             ->orderBy('mes', 'desc')
             ->get()

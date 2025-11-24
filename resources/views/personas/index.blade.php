@@ -36,11 +36,11 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Teléfono</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Correo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Teléfono</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Correo</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden xl:table-cell">Sobres</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden xl:table-cell">Promesas</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sobres</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Promesas</th>
                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
@@ -50,10 +50,10 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ $persona->nombre }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ $persona->telefono ?? '-' }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ $persona->correo ?? '-' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -61,71 +61,19 @@
                             {{ $persona->activo ? 'Activo' : 'Inactivo' }}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden xl:table-cell">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ $persona->sobres_count }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden xl:table-cell">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ $persona->promesas_count }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <!-- Desktop actions (pantallas grandes) -->
-                        <div class="hidden md:flex md:items-center md:justify-end md:gap-2">
-                            <a href="{{ route('personas.show', $persona) }}" class="text-green-600 hover:text-green-900 text-xs">Ver</a>
-                            <a href="{{ route('compromisos.show', $persona) }}" class="text-purple-600 hover:text-purple-900 text-xs">Compromiso</a>
-                            <a href="{{ route('personas.edit', $persona) }}" class="text-blue-600 hover:text-blue-900 text-xs">Editar</a>
-                            <button type="button" onclick="mostrarModalEliminar({{ $persona->id }}, '{{ $persona->nombre }}')" class="text-red-600 hover:text-red-900 text-xs">
-                                Eliminar
-                            </button>
-                        </div>
-                        
-                        <!-- Mobile dropdown (solo móviles) -->
-                        <div class="relative md:hidden">
-                            <button type="button" onclick="togglePersonaDropdown({{ $persona->id }})" class="p-2 hover:bg-gray-100 rounded-full">
-                                <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
-                                </svg>
-                            </button>
-                            <div id="persona-dropdown-{{ $persona->id }}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                                <div class="py-1">
-                                    <a href="{{ route('personas.show', $persona) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50">
-                                        <span class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            Ver
-                                        </span>
-                                    </a>
-                                    <a href="{{ route('compromisos.show', $persona) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50">
-                                        <span class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            Compromiso
-                                        </span>
-                                    </a>
-                                    <a href="{{ route('personas.edit', $persona) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
-                                        <span class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
-                                                <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            Editar
-                                        </span>
-                                    </a>
-                                    <button type="button" onclick="mostrarModalEliminar({{ $persona->id }}, '{{ $persona->nombre }}'); togglePersonaDropdown({{ $persona->id }})" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-red-50">
-                                        <span class="flex items-center gap-2">
-                                            <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            Eliminar
-                                        </span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
+                        <a href="{{ route('personas.show', $persona) }}" class="text-green-600 hover:text-green-900 mr-3">Ver</a>
+                        <a href="{{ route('compromisos.show', $persona) }}" class="text-purple-600 hover:text-purple-900 mr-3">Compromiso</a>
+                        <a href="{{ route('personas.edit', $persona) }}" class="text-blue-600 hover:text-blue-900 mr-3">Editar</a>
+                        <button type="button" onclick="mostrarModalEliminar({{ $persona->id }}, '{{ $persona->nombre }}')" class="text-red-600 hover:text-red-900">
+                            Eliminar
+                        </button>
                         <form id="form-eliminar-{{ $persona->id }}" action="{{ route('personas.destroy', $persona) }}" method="POST" class="hidden">
                             @csrf
                             @method('DELETE')
@@ -203,28 +151,5 @@ function confirmarEliminacion() {
         document.getElementById('form-eliminar-' + personaIdEliminar).submit();
     }
 }
-
-function togglePersonaDropdown(id) {
-    const dropdown = document.getElementById('persona-dropdown-' + id);
-    const allDropdowns = document.querySelectorAll('[id^="persona-dropdown-"]');
-    
-    // Cierra todos los otros dropdowns
-    allDropdowns.forEach(d => {
-        if (d !== dropdown) {
-            d.classList.add('hidden');
-        }
-    });
-    
-    // Toggle el dropdown actual
-    dropdown.classList.toggle('hidden');
-}
-
-// Cerrar dropdown al hacer clic fuera
-document.addEventListener('click', function(event) {
-    if (!event.target.closest('[onclick^="togglePersonaDropdown"]') && !event.target.closest('[id^="persona-dropdown-"]')) {
-        const allDropdowns = document.querySelectorAll('[id^="persona-dropdown-"]');
-        allDropdowns.forEach(d => d.classList.add('hidden'));
-    }
-});
 </script>
 @endsection
