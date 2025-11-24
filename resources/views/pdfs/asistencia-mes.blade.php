@@ -39,6 +39,10 @@
                 <th>Hombres</th>
                 <th>Mujeres</th>
                 <th>Niños</th>
+                <th>Capilla</th>
+                <th>Visitas</th>
+                <th>Salvos</th>
+                <th>Bautismos</th>
             </tr>
         </thead>
         <tbody>
@@ -47,45 +51,83 @@
                 $totalHombres = 0;
                 $totalMujeres = 0;
                 $totalNinos = 0;
+                $totalCapillaGeneral = 0;
+                $totalVisitasGeneral = 0;
+                $totalSalvosGeneral = 0;
+                $totalBautismosGeneral = 0;
             @endphp
             @foreach($cultos as $culto)
             @if($culto->asistencia)
             @php
-                $hombres = $culto->asistencia->chapel_adultos_hombres + 
-                          $culto->asistencia->chapel_adultos_mayores_hombres + 
-                          $culto->asistencia->chapel_jovenes_masculinos + 
-                          $culto->asistencia->chapel_maestros_hombres +
-                          $culto->asistencia->clase_0_1_hombres + 
-                          $culto->asistencia->clase_2_6_hombres + 
-                          $culto->asistencia->clase_7_8_hombres + 
-                          $culto->asistencia->clase_9_11_hombres +
-                          $culto->asistencia->clase_0_1_maestros_hombres +
-                          $culto->asistencia->clase_2_6_maestros_hombres +
-                          $culto->asistencia->clase_7_8_maestros_hombres +
-                          $culto->asistencia->clase_9_11_maestros_hombres;
+                $hombres = ($culto->asistencia->chapel_adultos_hombres ?? 0) + 
+                          ($culto->asistencia->chapel_adultos_mayores_hombres ?? 0) + 
+                          ($culto->asistencia->chapel_jovenes_masculinos ?? 0) + 
+                          ($culto->asistencia->chapel_maestros_hombres ?? 0) +
+                          ($culto->asistencia->clase_0_1_hombres ?? 0) + 
+                          ($culto->asistencia->clase_2_6_hombres ?? 0) + 
+                          ($culto->asistencia->clase_7_8_hombres ?? 0) + 
+                          ($culto->asistencia->clase_9_11_hombres ?? 0) +
+                          ($culto->asistencia->clase_0_1_maestros_hombres ?? 0) +
+                          ($culto->asistencia->clase_2_6_maestros_hombres ?? 0) +
+                          ($culto->asistencia->clase_7_8_maestros_hombres ?? 0) +
+                          ($culto->asistencia->clase_9_11_maestros_hombres ?? 0);
                 
-                $mujeres = $culto->asistencia->chapel_adultos_mujeres + 
-                          $culto->asistencia->chapel_adultos_mayores_mujeres + 
-                          $culto->asistencia->chapel_jovenes_femeninas +
-                          $culto->asistencia->chapel_maestros_mujeres +
-                          $culto->asistencia->clase_0_1_mujeres + 
-                          $culto->asistencia->clase_2_6_mujeres + 
-                          $culto->asistencia->clase_7_8_mujeres + 
-                          $culto->asistencia->clase_9_11_mujeres +
-                          $culto->asistencia->clase_0_1_maestros_mujeres +
-                          $culto->asistencia->clase_2_6_maestros_mujeres +
-                          $culto->asistencia->clase_7_8_maestros_mujeres +
-                          $culto->asistencia->clase_9_11_maestros_mujeres;
+                $mujeres = ($culto->asistencia->chapel_adultos_mujeres ?? 0) + 
+                          ($culto->asistencia->chapel_adultos_mayores_mujeres ?? 0) + 
+                          ($culto->asistencia->chapel_jovenes_femeninas ?? 0) +
+                          ($culto->asistencia->chapel_maestros_mujeres ?? 0) +
+                          ($culto->asistencia->clase_0_1_mujeres ?? 0) + 
+                          ($culto->asistencia->clase_2_6_mujeres ?? 0) + 
+                          ($culto->asistencia->clase_7_8_mujeres ?? 0) + 
+                          ($culto->asistencia->clase_9_11_mujeres ?? 0) +
+                          ($culto->asistencia->clase_0_1_maestros_mujeres ?? 0) +
+                          ($culto->asistencia->clase_2_6_maestros_mujeres ?? 0) +
+                          ($culto->asistencia->clase_7_8_maestros_mujeres ?? 0) +
+                          ($culto->asistencia->clase_9_11_maestros_mujeres ?? 0);
                 
-                $ninos = $culto->asistencia->clase_0_1_hombres + $culto->asistencia->clase_0_1_mujeres +
-                        $culto->asistencia->clase_2_6_hombres + $culto->asistencia->clase_2_6_mujeres +
-                        $culto->asistencia->clase_7_8_hombres + $culto->asistencia->clase_7_8_mujeres +
-                        $culto->asistencia->clase_9_11_hombres + $culto->asistencia->clase_9_11_mujeres;
+                $ninos = ($culto->asistencia->clase_0_1_hombres ?? 0) + ($culto->asistencia->clase_0_1_mujeres ?? 0) +
+                        ($culto->asistencia->clase_2_6_hombres ?? 0) + ($culto->asistencia->clase_2_6_mujeres ?? 0) +
+                        ($culto->asistencia->clase_7_8_hombres ?? 0) + ($culto->asistencia->clase_7_8_mujeres ?? 0) +
+                        ($culto->asistencia->clase_9_11_hombres ?? 0) + ($culto->asistencia->clase_9_11_mujeres ?? 0);
+                
+                $totalCapilla = ($culto->asistencia->chapel_adultos_hombres ?? 0) + 
+                               ($culto->asistencia->chapel_adultos_mujeres ?? 0) +
+                               ($culto->asistencia->chapel_adultos_mayores_hombres ?? 0) + 
+                               ($culto->asistencia->chapel_adultos_mayores_mujeres ?? 0) +
+                               ($culto->asistencia->chapel_jovenes_masculinos ?? 0) + 
+                               ($culto->asistencia->chapel_jovenes_femeninas ?? 0) +
+                               ($culto->asistencia->chapel_maestros_hombres ?? 0) +
+                               ($culto->asistencia->chapel_maestros_mujeres ?? 0);
+                
+                $totalVisitas = ($culto->asistencia->visitas_adulto_hombre ?? 0) + 
+                               ($culto->asistencia->visitas_adulto_mujer ?? 0) +
+                               ($culto->asistencia->visitas_joven_hombre ?? 0) + 
+                               ($culto->asistencia->visitas_joven_mujer ?? 0) +
+                               ($culto->asistencia->visitas_nino ?? 0) + 
+                               ($culto->asistencia->visitas_nina ?? 0);
+                
+                $totalSalvos = ($culto->asistencia->salvos_adulto_hombre ?? 0) + 
+                              ($culto->asistencia->salvos_adulto_mujer ?? 0) +
+                              ($culto->asistencia->salvos_joven_hombre ?? 0) + 
+                              ($culto->asistencia->salvos_joven_mujer ?? 0) +
+                              ($culto->asistencia->salvos_nino ?? 0) + 
+                              ($culto->asistencia->salvos_nina ?? 0);
+                
+                $totalBautismos = ($culto->asistencia->bautismos_adulto_hombre ?? 0) + 
+                                 ($culto->asistencia->bautismos_adulto_mujer ?? 0) +
+                                 ($culto->asistencia->bautismos_joven_hombre ?? 0) + 
+                                 ($culto->asistencia->bautismos_joven_mujer ?? 0) +
+                                 ($culto->asistencia->bautismos_nino ?? 0) + 
+                                 ($culto->asistencia->bautismos_nina ?? 0);
                 
                 $totalMes += $culto->asistencia->total_asistencia;
                 $totalHombres += $hombres;
                 $totalMujeres += $mujeres;
                 $totalNinos += $ninos;
+                $totalCapillaGeneral += $totalCapilla;
+                $totalVisitasGeneral += $totalVisitas;
+                $totalSalvosGeneral += $totalSalvos;
+                $totalBautismosGeneral += $totalBautismos;
             @endphp
             <tr>
                 <td>{{ $culto->fecha->locale('es')->isoFormat('dddd D/M/Y') }}</td>
@@ -94,6 +136,10 @@
                 <td style="text-align: center;">{{ $hombres }}</td>
                 <td style="text-align: center;">{{ $mujeres }}</td>
                 <td style="text-align: center;">{{ $ninos }}</td>
+                <td style="text-align: center;">{{ $totalCapilla }}</td>
+                <td style="text-align: center;">{{ $totalVisitas }}</td>
+                <td style="text-align: center;">{{ $totalSalvos }}</td>
+                <td style="text-align: center;">{{ $totalBautismos }}</td>
             </tr>
             @endif
             @endforeach
@@ -103,6 +149,10 @@
                 <td style="text-align: center;">{{ $totalHombres }}</td>
                 <td style="text-align: center;">{{ $totalMujeres }}</td>
                 <td style="text-align: center;">{{ $totalNinos }}</td>
+                <td style="text-align: center;">{{ $totalCapillaGeneral }}</td>
+                <td style="text-align: center;">{{ $totalVisitasGeneral }}</td>
+                <td style="text-align: center;">{{ $totalSalvosGeneral }}</td>
+                <td style="text-align: center;">{{ $totalBautismosGeneral }}</td>
             </tr>
             <tr class="total-row">
                 <td colspan="2">PROMEDIO DEL MES</td>
@@ -110,6 +160,10 @@
                 <td style="text-align: center;">{{ $cultos->count() > 0 ? round($totalHombres / $cultos->count(), 2) : 0 }}</td>
                 <td style="text-align: center;">{{ $cultos->count() > 0 ? round($totalMujeres / $cultos->count(), 2) : 0 }}</td>
                 <td style="text-align: center;">{{ $cultos->count() > 0 ? round($totalNinos / $cultos->count(), 2) : 0 }}</td>
+                <td style="text-align: center;">{{ $cultos->count() > 0 ? round($totalCapillaGeneral / $cultos->count(), 2) : 0 }}</td>
+                <td style="text-align: center;">-</td>
+                <td style="text-align: center;">-</td>
+                <td style="text-align: center;">-</td>
             </tr>
         </tbody>
     </table>
