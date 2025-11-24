@@ -35,7 +35,7 @@
                 </button>
             </div>
 
-            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-transparent hover:scrollbar-thumb-blue-500">
                 <!-- Principal - Para todos los usuarios -->
                 <a href="{{ route('principal') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('principal') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
