@@ -8,21 +8,60 @@
     <!-- Filtros y Búsqueda -->
     <div class="bg-white rounded-lg shadow p-6">
         <form method="GET" action="{{ route('ingresos-asistencia.asistencia') }}" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <!-- Filtro de Mes -->
+                <div>
+                    <label for="mes" class="block text-sm font-medium text-gray-700 mb-2">Mes</label>
+                    <select name="mes" id="mes" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="todos" {{ request('mes', 'todos') == 'todos' ? 'selected' : '' }}>Todos los meses</option>
+                        <option value="1" {{ request('mes') == '1' ? 'selected' : '' }}>Enero</option>
+                        <option value="2" {{ request('mes') == '2' ? 'selected' : '' }}>Febrero</option>
+                        <option value="3" {{ request('mes') == '3' ? 'selected' : '' }}>Marzo</option>
+                        <option value="4" {{ request('mes') == '4' ? 'selected' : '' }}>Abril</option>
+                        <option value="5" {{ request('mes') == '5' ? 'selected' : '' }}>Mayo</option>
+                        <option value="6" {{ request('mes') == '6' ? 'selected' : '' }}>Junio</option>
+                        <option value="7" {{ request('mes') == '7' ? 'selected' : '' }}>Julio</option>
+                        <option value="8" {{ request('mes') == '8' ? 'selected' : '' }}>Agosto</option>
+                        <option value="9" {{ request('mes') == '9' ? 'selected' : '' }}>Septiembre</option>
+                        <option value="10" {{ request('mes') == '10' ? 'selected' : '' }}>Octubre</option>
+                        <option value="11" {{ request('mes') == '11' ? 'selected' : '' }}>Noviembre</option>
+                        <option value="12" {{ request('mes') == '12' ? 'selected' : '' }}>Diciembre</option>
+                    </select>
+                </div>
+
+                <!-- Filtro de Año -->
+                <div>
+                    <label for="año" class="block text-sm font-medium text-gray-700 mb-2">Año</label>
+                    <select name="año" id="año" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="todos" {{ request('año', 'todos') == 'todos' ? 'selected' : '' }}>Todos los años</option>
+                        @foreach($añosDisponibles as $año)
+                            <option value="{{ $año }}" {{ request('año') == $año ? 'selected' : '' }}>{{ $año }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Fecha Inicio -->
                 <div>
                     <label for="fecha_inicio" class="block text-sm font-medium text-gray-700 mb-2">Fecha Inicio</label>
                     <input type="date" name="fecha_inicio" id="fecha_inicio" value="{{ request('fecha_inicio') }}"
                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
+
+                <!-- Fecha Fin -->
                 <div>
                     <label for="fecha_fin" class="block text-sm font-medium text-gray-700 mb-2">Fecha Fin</label>
                     <input type="date" name="fecha_fin" id="fecha_fin" value="{{ request('fecha_fin') }}"
                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 </div>
-                <div class="flex items-end">
-                    <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+
+                <!-- Botones -->
+                <div class="flex items-end gap-2">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
                         Buscar
                     </button>
+                    <a href="{{ route('ingresos-asistencia.asistencia') }}" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">
+                        Limpiar
+                    </a>
                 </div>
             </div>
         </form>

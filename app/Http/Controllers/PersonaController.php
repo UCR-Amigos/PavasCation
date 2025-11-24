@@ -81,9 +81,46 @@ class PersonaController extends Controller
             ->with('success', 'Persona registrada correctamente.' . ($user ? ' Se creó acceso como miembro.' : ''));
     }
 
-    public function show(Persona $persona)
+    public function show(Request $request, Persona $persona)
     {
-        $persona->load(['sobres.detalles', 'promesas']);
+        // Query de sobres con filtros
+        $sobresQuery = $persona->sobres()->with(['detalles', 'culto']);
+        
+        // Aplicar filtros
+        if ($request->filled('mes') && $request->mes !== 'todos') {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->whereMonth('fecha', $request->mes);
+            });
+        }
+        
+        if ($request->filled('año') && $request->año !== 'todos') {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->whereYear('fecha', $request->año);
+            });
+        }
+        
+        if ($request->filled('fecha_inicio')) {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->where('fecha', '>=', $request->fecha_inicio);
+            });
+        }
+        
+        if ($request->filled('fecha_fin')) {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->where('fecha', '<=', $request->fecha_fin);
+            });
+        }
+        
+        $persona->setRelation('sobres', $sobresQuery->get());
+        $persona->load('promesas');
+        
+        // Obtener años disponibles de los sobres
+        $añosDisponibles = $persona->sobres()->whereHas('culto')
+            ->join('cultos', 'sobres.culto_id', '=', 'cultos.id')
+            ->selectRaw('YEAR(cultos.fecha) as año')
+            ->groupBy('año')
+            ->orderBy('año', 'desc')
+            ->pluck('año');
         
         // Calcular cumplimiento de promesas
         $promesasConEstatus = $persona->promesas->map(function ($promesa) use ($persona) {
@@ -107,7 +144,7 @@ class PersonaController extends Controller
             ];
         });
 
-        return view('personas.show', compact('persona', 'promesasConEstatus'));
+        return view('personas.show', compact('persona', 'promesasConEstatus', 'añosDisponibles'));
     }
 
     public function edit(Persona $persona)

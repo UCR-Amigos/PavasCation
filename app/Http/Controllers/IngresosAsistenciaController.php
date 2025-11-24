@@ -42,6 +42,17 @@ class IngresosAsistenciaController extends Controller
     {
         $query = Culto::with('asistencia')->orderBy('fecha', 'desc');
 
+        // Filtro por mes
+        if ($request->filled('mes') && $request->mes !== 'todos') {
+            $query->whereMonth('fecha', $request->mes);
+        }
+
+        // Filtro por año
+        if ($request->filled('año') && $request->año !== 'todos') {
+            $query->whereYear('fecha', $request->año);
+        }
+
+        // Filtro por rango de fechas
         if ($request->filled('fecha_inicio')) {
             $query->where('fecha', '>=', $request->fecha_inicio);
         }
@@ -66,7 +77,13 @@ class IngresosAsistenciaController extends Controller
                 ];
             });
 
-        return view('ingresos-asistencia.asistencia', compact('cultos', 'mesesDisponibles'));
+        // Obtener años únicos
+        $añosDisponibles = Culto::selectRaw('YEAR(fecha) as año')
+            ->groupBy('año')
+            ->orderBy('año', 'desc')
+            ->pluck('año');
+
+        return view('ingresos-asistencia.asistencia', compact('cultos', 'mesesDisponibles', 'añosDisponibles'));
     }
 
     public function ingresos(Request $request)
@@ -109,19 +126,19 @@ class IngresosAsistenciaController extends Controller
                 return $culto->fecha->startOfWeek()->format('d/m/Y');
             });
 
-            foreach ($semanas as $semana => $cultosSeamana) {
+            foreach ($semanas as $semana => $cultosSemana) {
                 $registros[] = [
                     'fecha' => 'Semana del ' . $semana,
                     'tipo' => 'Semanal',
-                    'diezmo' => $cultosSeamana->sum('totales.total_diezmo'),
-                    'misiones' => $cultosSeamana->sum('totales.total_misiones'),
-                    'seminario' => $cultosSeamana->sum('totales.total_seminario'),
-                    'campa' => $cultosSeamana->sum('totales.total_campa'),
-                    'construccion' => $cultosSeamana->sum('totales.total_construccion'),
-                    'prestamo' => $cultosSeamana->sum('totales.total_prestamo'),
-                    'micro' => $cultosSeamana->sum('totales.total_micro'),
-                    'suelto' => $cultosSeamana->sum('totales.total_suelto'),
-                    'total' => $cultosSeamana->sum('totales.total_general'),
+                    'diezmo' => $cultosSemana->sum(fn($c) => $c->totales?->total_diezmo ?? 0),
+                    'misiones' => $cultosSemana->sum(fn($c) => $c->totales?->total_misiones ?? 0),
+                    'seminario' => $cultosSemana->sum(fn($c) => $c->totales?->total_seminario ?? 0),
+                    'campa' => $cultosSemana->sum(fn($c) => $c->totales?->total_campa ?? 0),
+                    'construccion' => $cultosSemana->sum(fn($c) => $c->totales?->total_construccion ?? 0),
+                    'prestamo' => $cultosSemana->sum(fn($c) => $c->totales?->total_prestamo ?? 0),
+                    'micro' => $cultosSemana->sum(fn($c) => $c->totales?->total_micro ?? 0),
+                    'suelto' => $cultosSemana->sum(fn($c) => $c->totales?->total_suelto ?? 0),
+                    'total' => $cultosSemana->sum(fn($c) => $c->totales?->total_general ?? 0),
                 ];
             }
         } elseif ($tipoReporte == 'mes') {
@@ -134,15 +151,15 @@ class IngresosAsistenciaController extends Controller
                 $registros[] = [
                     'fecha' => $fecha->locale('es')->translatedFormat('F Y'),
                     'tipo' => 'Mensual',
-                    'diezmo' => $cultosMes->sum('totales.total_diezmo'),
-                    'misiones' => $cultosMes->sum('totales.total_misiones'),
-                    'seminario' => $cultosMes->sum('totales.total_seminario'),
-                    'campa' => $cultosMes->sum('totales.total_campa'),
-                    'construccion' => $cultosMes->sum('totales.total_construccion'),
-                    'prestamo' => $cultosMes->sum('totales.total_prestamo'),
-                    'micro' => $cultosMes->sum('totales.total_micro'),
-                    'suelto' => $cultosMes->sum('totales.total_suelto'),
-                    'total' => $cultosMes->sum('totales.total_general'),
+                    'diezmo' => $cultosMes->sum(fn($c) => $c->totales?->total_diezmo ?? 0),
+                    'misiones' => $cultosMes->sum(fn($c) => $c->totales?->total_misiones ?? 0),
+                    'seminario' => $cultosMes->sum(fn($c) => $c->totales?->total_seminario ?? 0),
+                    'campa' => $cultosMes->sum(fn($c) => $c->totales?->total_campa ?? 0),
+                    'construccion' => $cultosMes->sum(fn($c) => $c->totales?->total_construccion ?? 0),
+                    'prestamo' => $cultosMes->sum(fn($c) => $c->totales?->total_prestamo ?? 0),
+                    'micro' => $cultosMes->sum(fn($c) => $c->totales?->total_micro ?? 0),
+                    'suelto' => $cultosMes->sum(fn($c) => $c->totales?->total_suelto ?? 0),
+                    'total' => $cultosMes->sum(fn($c) => $c->totales?->total_general ?? 0),
                 ];
             }
         }

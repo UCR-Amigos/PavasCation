@@ -68,8 +68,8 @@
                         {{ $persona->promesas_count }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <!-- Desktop actions -->
-                        <div class="hidden md:flex md:items-center md:justify-end md:gap-3">
+                        <!-- Desktop actions (solo pantallas grandes) -->
+                        <div class="hidden lg:flex lg:items-center lg:justify-end lg:gap-3">
                             <a href="{{ route('personas.show', $persona) }}" class="text-green-600 hover:text-green-900">Ver</a>
                             <a href="{{ route('compromisos.show', $persona) }}" class="text-purple-600 hover:text-purple-900">Compromiso</a>
                             <a href="{{ route('personas.edit', $persona) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
@@ -78,8 +78,8 @@
                             </button>
                         </div>
                         
-                        <!-- Mobile dropdown -->
-                        <div class="relative md:hidden">
+                        <!-- Mobile/Tablet dropdown -->
+                        <div class="relative lg:hidden">
                             <button type="button" onclick="togglePersonaDropdown({{ $persona->id }})" class="p-2 hover:bg-gray-100 rounded-full">
                                 <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
