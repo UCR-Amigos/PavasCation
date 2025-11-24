@@ -196,6 +196,11 @@
 
         inputs.forEach(input => {
             input.addEventListener('input', calcularTotal);
+            
+            // Seleccionar todo al hacer focus (para borrar el 0 fácilmente)
+            input.addEventListener('focus', function() {
+                this.select();
+            });
         });
 
         calcularTotal();

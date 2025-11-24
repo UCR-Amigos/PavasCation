@@ -86,6 +86,12 @@ class AsistenciaController extends Controller
             ->with('success', 'Asistencia registrada correctamente.');
     }
 
+    public function show(Asistencia $asistencium)
+    {
+        $asistencium->load('culto');
+        return view('asistencia.show', ['asistencia' => $asistencium]);
+    }
+
     public function edit(Asistencia $asistencium)
     {
         return view('asistencia.edit', ['asistencia' => $asistencium]);

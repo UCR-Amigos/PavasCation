@@ -35,34 +35,34 @@
                 </select>
             </div>
             @if($cultoSeleccionado)
-            <div class="flex gap-2">
+            <div class="flex flex-col sm:flex-row gap-2">
                 @if(!$cultoSeleccionado->cerrado)
-                <a href="{{ route('recuento.create', ['culto_id' => $cultoSeleccionado->id]) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                <a href="{{ route('recuento.create', ['culto_id' => $cultoSeleccionado->id]) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-center">
                     + Agregar Sobre
                 </a>
                 <button type="button" onclick="document.getElementById('modalSuelto').classList.remove('hidden')" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
                     + Dinero Suelto
                 </button>
-                <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2">
+                <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Descargar PDF
+                    <span class="hidden sm:inline">Descargar </span>PDF
                 </a>
-                <button type="button" onclick="mostrarModalCerrarCulto({{ $cultoSeleccionado->id }})" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center gap-2">
+                <button type="button" onclick="mostrarModalCerrarCulto({{ $cultoSeleccionado->id }})" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                     </svg>
                     Cerrar Culto
                 </button>
                 @else
-                <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center gap-2">
+                <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Descargar PDF
+                    <span class="hidden sm:inline">Descargar </span>PDF
                 </a>
-                <div class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md border border-gray-300 flex items-center gap-2">
+                <div class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md border border-gray-300 flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                     </svg>
@@ -110,9 +110,9 @@
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N° Sobre</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Persona</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Método Pago</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">Método Pago</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detalles</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">Detalles</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
                 </thead>
@@ -125,7 +125,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {{ $sobre->persona ? $sobre->persona->nombre : 'Anónimo' }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm hidden sm:table-cell">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $sobre->metodo_pago == 'transferencia' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
                                 {{ ucfirst($sobre->metodo_pago) }}
                             </span>
@@ -133,7 +133,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                             ₡{{ number_format($sobre->total_declarado, 2) }}
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-500">
+                        <td class="px-6 py-4 text-sm text-gray-500 hidden lg:table-cell">
                             @foreach($sobre->detalles as $detalle)
                                 <span class="inline-block bg-gray-100 rounded px-2 py-1 text-xs mr-1 mb-1">
                                     {{ ucfirst($detalle->categoria) }}: ₡{{ number_format($detalle->monto, 2) }}
@@ -141,11 +141,49 @@
                             @endforeach
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <a href="{{ route('recuento.edit', $sobre) }}" class="text-blue-600 hover:text-blue-900 mr-3">Editar</a>
+                            <!-- Desktop actions -->
+                            <div class="hidden sm:flex sm:items-center sm:justify-end sm:gap-3">
+                                <a href="{{ route('recuento.edit', $sobre) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
+                                @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
+                                <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero }})" class="text-red-600 hover:text-red-900">
+                                    Eliminar
+                                </button>
+                                @endif
+                            </div>
+                            
+                            <!-- Mobile dropdown -->
+                            <div class="relative sm:hidden">
+                                <button type="button" onclick="toggleSobreDropdown({{ $sobre->id }})" class="p-2 hover:bg-gray-100 rounded-full">
+                                    <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>
+                                    </svg>
+                                </button>
+                                <div id="sobre-dropdown-{{ $sobre->id }}" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                                    <div class="py-1">
+                                        <a href="{{ route('recuento.edit', $sobre) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+                                                    <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Editar
+                                            </span>
+                                        </a>
+                                        @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
+                                        <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero }}); toggleSobreDropdown({{ $sobre->id }})" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-red-50">
+                                            <span class="flex items-center gap-2">
+                                                <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Eliminar
+                                            </span>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            
                             @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
-                            <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero }})" class="text-red-600 hover:text-red-900">
-                                Eliminar
-                            </button>
                             <form id="form-eliminar-sobre-{{ $sobre->id }}" action="{{ route('recuento.destroy', $sobre) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
@@ -593,6 +631,29 @@ function confirmarEliminacionCulto() {
         document.getElementById('form-eliminar-culto-' + cultoIdEliminar).submit();
     }
 }
+
+function toggleSobreDropdown(id) {
+    const dropdown = document.getElementById('sobre-dropdown-' + id);
+    const allDropdowns = document.querySelectorAll('[id^="sobre-dropdown-"]');
+    
+    // Cierra todos los otros dropdowns
+    allDropdowns.forEach(d => {
+        if (d !== dropdown) {
+            d.classList.add('hidden');
+        }
+    });
+    
+    // Toggle el dropdown actual
+    dropdown.classList.toggle('hidden');
+}
+
+// Cerrar dropdown al hacer clic fuera
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('[onclick^="toggleSobreDropdown"]') && !event.target.closest('[id^="sobre-dropdown-"]')) {
+        const allDropdowns = document.querySelectorAll('[id^="sobre-dropdown-"]');
+        allDropdowns.forEach(d => d.classList.add('hidden'));
+    }
+});
 </script>
 
 <!-- Modal: Eliminar Sobre -->

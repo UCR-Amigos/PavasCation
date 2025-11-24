@@ -14,6 +14,7 @@
         .info { background-color: #f3f4f6; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
         .info p { margin: 5px 0; font-size: 10px; }
         h3 { color: #1f2937; font-size: 13px; margin-top: 15px; margin-bottom: 8px; border-bottom: 2px solid #3b82f6; padding-bottom: 5px; }
+        h3:has(+ table) { page-break-after: avoid; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         th, td { border: 1px solid #d1d5db; padding: 8px; font-size: 10px; }
         th { background-color: #3b82f6; color: white; text-align: left; font-weight: bold; }
@@ -35,6 +36,30 @@
         <p><strong>Fecha:</strong> {{ $culto->fecha->format('d/m/Y') }}</p>
         <p><strong>Tipo de Culto:</strong> {{ ucfirst($culto->tipo_culto) }}</p>
         <p><strong>Total Asistencia:</strong> {{ $culto->asistencia->total_asistencia }}</p>
+        @php
+            $totalCapilla = ($culto->asistencia->chapel_adultos_hombres ?? 0) + 
+                           ($culto->asistencia->chapel_adultos_mujeres ?? 0) +
+                           ($culto->asistencia->chapel_adultos_mayores_hombres ?? 0) + 
+                           ($culto->asistencia->chapel_adultos_mayores_mujeres ?? 0) +
+                           ($culto->asistencia->chapel_jovenes_masculinos ?? 0) + 
+                           ($culto->asistencia->chapel_jovenes_femeninas ?? 0) +
+                           ($culto->asistencia->chapel_maestros_hombres ?? 0) +
+                           ($culto->asistencia->chapel_maestros_mujeres ?? 0);
+            
+            $totalNinos = ($culto->asistencia->clase_0_1_hombres ?? 0) + ($culto->asistencia->clase_0_1_mujeres ?? 0) +
+                         ($culto->asistencia->clase_2_6_hombres ?? 0) + ($culto->asistencia->clase_2_6_mujeres ?? 0) +
+                         ($culto->asistencia->clase_7_8_hombres ?? 0) + ($culto->asistencia->clase_7_8_mujeres ?? 0) +
+                         ($culto->asistencia->clase_9_11_hombres ?? 0) + ($culto->asistencia->clase_9_11_mujeres ?? 0);
+            
+            $totalSalvos = ($culto->asistencia->salvos_adulto_hombre ?? 0) + ($culto->asistencia->salvos_adulto_mujer ?? 0) +
+                          ($culto->asistencia->salvos_joven_hombre ?? 0) + ($culto->asistencia->salvos_joven_mujer ?? 0) +
+                          ($culto->asistencia->salvos_nino ?? 0) + ($culto->asistencia->salvos_nina ?? 0);
+            
+            $totalBautismos = ($culto->asistencia->bautismos_adulto_hombre ?? 0) + ($culto->asistencia->bautismos_adulto_mujer ?? 0) +
+                             ($culto->asistencia->bautismos_joven_hombre ?? 0) + ($culto->asistencia->bautismos_joven_mujer ?? 0) +
+                             ($culto->asistencia->bautismos_nino ?? 0) + ($culto->asistencia->bautismos_nina ?? 0);
+        @endphp
+        <p><strong>Total Capilla:</strong> {{ $totalCapilla }} | <strong>Total Niños:</strong> {{ $totalNinos }} | <strong>Salvos:</strong> {{ $totalSalvos }} | <strong>Bautismos:</strong> {{ $totalBautismos }}</p>
     </div>
 
     <h3>Capilla</h3>
@@ -98,6 +123,78 @@
                 <td>{{ $culto->asistencia->clase_9_11_mujeres }}</td>
                 <td>{{ $culto->asistencia->clase_9_11_maestros_hombres }}</td>
                 <td>{{ $culto->asistencia->clase_9_11_maestros_mujeres }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>✝️ Salvos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Adulto Hombre</th>
+                <th>Adulto Mujer</th>
+                <th>Joven Hombre</th>
+                <th>Joven Mujer</th>
+                <th>Niño</th>
+                <th>Niña</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $culto->asistencia->salvos_adulto_hombre ?? 0 }}</td>
+                <td>{{ $culto->asistencia->salvos_adulto_mujer ?? 0 }}</td>
+                <td>{{ $culto->asistencia->salvos_joven_hombre ?? 0 }}</td>
+                <td>{{ $culto->asistencia->salvos_joven_mujer ?? 0 }}</td>
+                <td>{{ $culto->asistencia->salvos_nino ?? 0 }}</td>
+                <td>{{ $culto->asistencia->salvos_nina ?? 0 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>💧 Bautismos</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Adulto Hombre</th>
+                <th>Adulto Mujer</th>
+                <th>Joven Hombre</th>
+                <th>Joven Mujer</th>
+                <th>Niño</th>
+                <th>Niña</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $culto->asistencia->bautismos_adulto_hombre ?? 0 }}</td>
+                <td>{{ $culto->asistencia->bautismos_adulto_mujer ?? 0 }}</td>
+                <td>{{ $culto->asistencia->bautismos_joven_hombre ?? 0 }}</td>
+                <td>{{ $culto->asistencia->bautismos_joven_mujer ?? 0 }}</td>
+                <td>{{ $culto->asistencia->bautismos_nino ?? 0 }}</td>
+                <td>{{ $culto->asistencia->bautismos_nina ?? 0 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>👥 Visitas</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Adulto Hombre</th>
+                <th>Adulto Mujer</th>
+                <th>Joven Hombre</th>
+                <th>Joven Mujer</th>
+                <th>Niño</th>
+                <th>Niña</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ $culto->asistencia->visitas_adulto_hombre ?? 0 }}</td>
+                <td>{{ $culto->asistencia->visitas_adulto_mujer ?? 0 }}</td>
+                <td>{{ $culto->asistencia->visitas_joven_hombre ?? 0 }}</td>
+                <td>{{ $culto->asistencia->visitas_joven_mujer ?? 0 }}</td>
+                <td>{{ $culto->asistencia->visitas_nino ?? 0 }}</td>
+                <td>{{ $culto->asistencia->visitas_nina ?? 0 }}</td>
             </tr>
         </tbody>
     </table>

@@ -114,6 +114,11 @@
 
         inputs.forEach(input => {
             input.addEventListener('input', calcularTotal);
+            
+            // Seleccionar todo al hacer focus
+            input.addEventListener('focus', function() {
+                this.select();
+            });
         });
 
         calcularTotal();

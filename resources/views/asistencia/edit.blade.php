@@ -501,6 +501,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         const inputs = document.querySelectorAll('.asistencia-input');
         const totalInput = document.getElementById('total_asistencia');
+        const form = document.querySelector('form');
 
         function calcularTotal() {
             let total = 0;
@@ -508,7 +509,109 @@
                 total += parseInt(input.value) || 0;
             });
             totalInput.value = total;
+            validarCongruencia();
         }
+
+        function validarCongruencia() {
+            const categorias = [
+                { nombre: 'Adultos Hombres', asistencia: ['chapel_adultos_hombres', 'clase_adultos_hombres'], salvos: 'salvos_adulto_hombre', bautismos: 'bautismos_adulto_hombre', visitas: 'visitas_adulto_hombre' },
+                { nombre: 'Adultos Mujeres', asistencia: ['chapel_adultos_mujeres', 'clase_adultos_mujeres'], salvos: 'salvos_adulto_mujer', bautismos: 'bautismos_adulto_mujer', visitas: 'visitas_adulto_mujer' },
+                { nombre: 'Jóvenes Hombres', asistencia: ['chapel_jovenes_masculinos', 'clase_jovenes_masculinos'], salvos: 'salvos_joven_hombre', bautismos: 'bautismos_joven_hombre', visitas: 'visitas_joven_hombre' },
+                { nombre: 'Jóvenes Mujeres', asistencia: ['chapel_jovenes_femeninas', 'clase_jovenes_femeninas'], salvos: 'salvos_joven_mujer', bautismos: 'bautismos_joven_mujer', visitas: 'visitas_joven_mujer' },
+                { nombre: 'Niños', asistencia: ['chapel_ninos', 'clase_ninos_7a8', 'clase_ninos_9a12'], salvos: 'salvos_nino', bautismos: 'bautismos_nino', visitas: 'visitas_nino' },
+                { nombre: 'Niñas', asistencia: ['chapel_ninas', 'clase_ninas_7a8', 'clase_ninas_9a12', 'clase_ninas_2a6'], salvos: 'salvos_nina', bautismos: 'bautismos_nina', visitas: 'visitas_nina' }
+            ];
+
+            let hayErrores = false;
+            let mensajes = [];
+
+            categorias.forEach(cat => {
+                // Calcular total de personas en esta categoría
+                let totalPersonas = 0;
+                cat.asistencia.forEach(campo => {
+                    const select = document.querySelector(`[name="${campo}"]`);
+                    if (select) {
+                        totalPersonas += parseInt(select.value) || 0;
+                    }
+                });
+
+                // Obtener salvos, bautismos y visitas
+                const salvos = parseInt(document.querySelector(`[name="${cat.salvos}"]`)?.value) || 0;
+                const bautismos = parseInt(document.querySelector(`[name="${cat.bautismos}"]`)?.value) || 0;
+                const visitas = parseInt(document.querySelector(`[name="${cat.visitas}"]`)?.value) || 0;
+
+                // Validar que no excedan el total
+                if (salvos > totalPersonas) {
+                    hayErrores = true;
+                    mensajes.push(`❌ ${cat.nombre}: ${salvos} salvos pero solo hay ${totalPersonas} personas`);
+                    document.querySelector(`[name="${cat.salvos}"]`)?.classList.add('border-red-500', 'bg-red-50');
+                } else {
+                    document.querySelector(`[name="${cat.salvos}"]`)?.classList.remove('border-red-500', 'bg-red-50');
+                }
+
+                if (bautismos > totalPersonas) {
+                    hayErrores = true;
+                    mensajes.push(`❌ ${cat.nombre}: ${bautismos} bautismos pero solo hay ${totalPersonas} personas`);
+                    document.querySelector(`[name="${cat.bautismos}"]`)?.classList.add('border-red-500', 'bg-red-50');
+                } else {
+                    document.querySelector(`[name="${cat.bautismos}"]`)?.classList.remove('border-red-500', 'bg-red-50');
+                }
+
+                if (visitas > totalPersonas) {
+                    hayErrores = true;
+                    mensajes.push(`❌ ${cat.nombre}: ${visitas} visitas pero solo hay ${totalPersonas} personas`);
+                    document.querySelector(`[name="${cat.visitas}"]`)?.classList.add('border-red-500', 'bg-red-50');
+                } else {
+                    document.querySelector(`[name="${cat.visitas}"]`)?.classList.remove('border-red-500', 'bg-red-50');
+                }
+            });
+
+            // Mostrar/ocultar mensaje de error
+            let alertDiv = document.getElementById('alerta-congruencia');
+            if (!alertDiv) {
+                alertDiv = document.createElement('div');
+                alertDiv.id = 'alerta-congruencia';
+                alertDiv.className = 'fixed bottom-4 right-4 max-w-md z-50 transition-all duration-300';
+                document.body.appendChild(alertDiv);
+            }
+
+            if (hayErrores) {
+                alertDiv.innerHTML = `
+                    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg">
+                        <div class="flex items-start">
+                            <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <div>
+                                <p class="font-bold mb-2">⚠️ Datos Incongruentes</p>
+                                <ul class="text-sm space-y-1">
+                                    ${mensajes.map(m => `<li>${m}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                alertDiv.classList.remove('hidden');
+            } else {
+                alertDiv.classList.add('hidden');
+            }
+
+            return !hayErrores;
+        }
+
+        // Validar antes de enviar el formulario
+        form.addEventListener('submit', function(e) {
+            if (!validarCongruencia()) {
+                e.preventDefault();
+                alert('⚠️ Por favor corrige las incongruencias antes de guardar.\n\nNo puede haber más salvos, bautismos o visitas que personas registradas en cada categoría.');
+                // Scroll al primer error
+                const primerError = document.querySelector('.border-red-500');
+                if (primerError) {
+                    primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    primerError.focus();
+                }
+            }
+        });
 
         inputs.forEach(input => {
             input.addEventListener('change', calcularTotal);
