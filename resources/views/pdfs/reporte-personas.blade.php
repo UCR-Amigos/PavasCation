@@ -5,23 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte de Personas</title>
     <style>
+        @page { size: landscape; margin: 15mm; }
         body {
             font-family: Arial, sans-serif;
-            font-size: 11px;
+            font-size: 9px;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
         .header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 3px solid #7c3aed;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
         }
         .header img {
-            width: 60px;
-            height: 60px;
-            margin-right: 15px;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
         }
         .header-text {
             flex: 1;
@@ -29,19 +30,19 @@
         .header-text h1 {
             margin: 0;
             color: #7c3aed;
-            font-size: 24px;
+            font-size: 18px;
         }
         .header-text h2 {
-            margin: 5px 0 0 0;
+            margin: 3px 0 0 0;
             color: #6b7280;
-            font-size: 14px;
+            font-size: 11px;
             font-weight: normal;
         }
         .periodo {
             background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 15px;
             text-align: center;
             border: 1px solid #e9d5ff;
         }
@@ -49,167 +50,101 @@
             margin: 0;
             color: #6b21a8;
             font-weight: bold;
-            font-size: 12px;
-        }
-        .persona-card {
-            margin-bottom: 15px;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            overflow: hidden;
-            page-break-inside: avoid;
-        }
-        .persona-header {
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: white;
-            padding: 8px 12px;
-            font-weight: bold;
-            font-size: 12px;
-        }
-        .persona-body {
-            padding: 10px;
-            background: #f9fafb;
-        }
-        .promesas-section {
-            background: #fef3c7;
-            border: 2px solid #fbbf24;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-        .promesas-section h4 {
-            margin: 0 0 8px 0;
-            color: #92400e;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .promesa-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px;
-            background: white;
-            border-radius: 4px;
-            margin-bottom: 5px;
-            font-size: 9px;
-        }
-        .promesa-item.cumple {
-            border-left: 4px solid #10b981;
-        }
-        .promesa-item.no-cumple {
-            border-left: 4px solid #ef4444;
-        }
-        .cumplimiento-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 9px;
-            font-weight: bold;
-        }
-        .cumplimiento-badge.excelente {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        .cumplimiento-badge.bueno {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .cumplimiento-badge.regular {
-            background: #fee2e2;
-            color: #991b1b;
+            font-size: 10px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 15px;
+            font-size: 8px;
         }
         table th {
-            background: #f3f4f6;
-            padding: 6px;
-            text-align: left;
-            font-size: 10px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            padding: 8px 4px;
+            text-align: center;
             font-weight: bold;
-            color: #374151;
-            border-bottom: 2px solid #d1d5db;
+            border: 1px solid #6b21a8;
+            font-size: 8px;
         }
         table td {
-            padding: 5px 6px;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 10px;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .text-center {
+            padding: 6px 4px;
+            border: 1px solid #e5e7eb;
             text-align: center;
         }
-        .total-persona {
-            background: #ede9fe;
-            padding: 6px;
+        tbody tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .nombre-col {
+            text-align: left;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        .cumple {
+            background-color: #d1fae5;
+            color: #065f46;
+            font-weight: bold;
+        }
+        .no-cumple {
+            background-color: #fee2e2;
+            color: #991b1b;
+            font-weight: bold;
+        }
+        .total-row {
+            background: #ede9fe !important;
             font-weight: bold;
             color: #6b21a8;
-            text-align: right;
-            border-radius: 4px;
-            font-size: 11px;
         }
         .resumen-final {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 15px;
+            padding: 10px;
             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 2px solid #86efac;
-            page-break-inside: avoid;
         }
         .resumen-final h3 {
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             color: #166534;
-            font-size: 14px;
+            font-size: 12px;
         }
         .resumen-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
         }
         .resumen-item {
             background: white;
-            padding: 8px;
+            padding: 6px;
             border-radius: 4px;
             border: 1px solid #bbf7d0;
+            text-align: center;
         }
         .resumen-item label {
             display: block;
-            font-size: 9px;
+            font-size: 8px;
             color: #166534;
             font-weight: bold;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
         .resumen-item value {
             display: block;
-            font-size: 12px;
+            font-size: 10px;
             color: #15803d;
             font-weight: bold;
         }
-        .total-general {
-            background: #166534;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: bold;
-        }
         .footer {
-            margin-top: 30px;
+            margin-top: 15px;
             text-align: center;
-            font-size: 9px;
+            font-size: 7px;
             color: #9ca3af;
             border-top: 1px solid #e5e7eb;
-            padding-top: 10px;
+            padding-top: 8px;
         }
-        .no-sobres {
+        .no-data {
+            text-align: center;
+            padding: 20px;
             color: #9ca3af;
             font-style: italic;
-            text-align: center;
-            padding: 10px;
         }
     </style>
 </head>
@@ -226,126 +161,113 @@
         <p>Período: {{ $tituloPeriodo }}</p>
     </div>
 
-    @forelse($personas as $persona)
-    <div class="persona-card">
-        <div class="persona-header">
-            {{ $persona->nombre }}
-            @if($persona->telefono)
-                | {{ $persona->telefono }}
-            @endif
-            @if($persona->correo)
-                | {{ $persona->correo }}
-            @endif
-            @if(count($persona->promesas_periodo) > 0)
-                @php
-                    $cumplimiento = $persona->cumplimiento_global;
-                    $badgeClass = $cumplimiento >= 100 ? 'excelente' : ($cumplimiento >= 75 ? 'bueno' : 'regular');
-                @endphp
-                | <span class="cumplimiento-badge {{ $badgeClass }}">{{ number_format($cumplimiento, 1) }}% Cumplimiento</span>
-            @endif
-        </div>
-        <div class="persona-body">
-            @if(count($persona->promesas_periodo) > 0)
-                <div class="promesas-section">
-                    <h4>Promesas del Período ({{ $mesesEnPeriodo }} {{ $mesesEnPeriodo == 1 ? 'mes' : 'meses' }})</h4>
-                    @foreach($persona->promesas_periodo as $categoria => $datos)
-                        <div class="promesa-item {{ $datos['cumple'] ? 'cumple' : 'no-cumple' }}">
-                            <div>
-                                <strong>{{ $categoria }}</strong><br>
-                                Esperado: ${{ number_format($datos['esperado'], 2) }} | 
-                                Dado: ${{ number_format($datos['dado'], 2) }}
-                            </div>
-                            <div style="text-align: right;">
-                                @if($datos['cumple'])
-                                    <span style="color: #10b981; font-weight: bold;">✓ CUMPLE</span>
-                                @else
-                                    <span style="color: #ef4444; font-weight: bold;">✗ FALTA: ${{ number_format(abs($datos['diferencia']), 2) }}</span>
-                                @endif
-                                <br>
-                                <span style="color: #6b7280;">{{ number_format($datos['porcentaje'], 1) }}%</span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
+    @if($personas->count() > 0)
+        @php
+            // Obtener todas las categorías únicas
+            $categorias = [];
+            foreach ($personas as $persona) {
+                foreach ($persona->promesas_periodo as $categoria => $datos) {
+                    if (!in_array($categoria, $categorias)) {
+                        $categorias[] = $categoria;
+                    }
+                }
+            }
+            sort($categorias);
+        @endphp
 
-            @if($persona->sobres->count() > 0)
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 20%;">Fecha</th>
-                            <th style="width: 15%;">Culto</th>
-                            <th style="width: 30%;">Categoría</th>
-                            <th style="width: 20%;" class="text-right">Monto</th>
-                            <th style="width: 15%;" class="text-center">Sobres</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php
-                            $totalPersona = 0;
-                            $detallesAgrupados = [];
-                            
-                            // Agrupar detalles por fecha y culto
-                            foreach ($persona->sobres as $sobre) {
-                                $fecha = $sobre->created_at->format('d/m/Y');
-                                $culto = $sobre->culto ? $sobre->culto->tipo : 'Sin culto';
-                                $key = $fecha . '|' . $culto;
-                                
-                                if (!isset($detallesAgrupados[$key])) {
-                                    $detallesAgrupados[$key] = [
-                                        'fecha' => $fecha,
-                                        'culto' => $culto,
-                                        'categorias' => []
-                                    ];
-                                }
-                                
-                                foreach ($sobre->detalles as $detalle) {
-                                    if (!isset($detallesAgrupados[$key]['categorias'][$detalle->categoria])) {
-                                        $detallesAgrupados[$key]['categorias'][$detalle->categoria] = 0;
-                                    }
-                                    $detallesAgrupados[$key]['categorias'][$detalle->categoria] += $detalle->monto;
-                                    $totalPersona += $detalle->monto;
-                                }
-                            }
-                        @endphp
-                        
-                        @foreach($detallesAgrupados as $grupo)
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 15%;">NOMBRE</th>
+                    @foreach($categorias as $categoria)
+                        <th colspan="2" style="width: {{ 85 / count($categorias) }}%;">{{ strtoupper($categoria) }}</th>
+                    @endforeach
+                    <th rowspan="2" style="width: 8%;">TOTAL<br>ESPERADO</th>
+                    <th rowspan="2" style="width: 8%;">TOTAL<br>DADO</th>
+                    <th rowspan="2" style="width: 8%;">DIFERENCIA</th>
+                    <th rowspan="2" style="width: 6%;">%</th>
+                </tr>
+                <tr>
+                    @foreach($categorias as $categoria)
+                        <th style="font-size: 7px;">Esperado</th>
+                        <th style="font-size: 7px;">Dado</th>
+                    @endforeach
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $totalesEsperado = array_fill_keys($categorias, 0);
+                    $totalesDado = array_fill_keys($categorias, 0);
+                    $granTotalEsperado = 0;
+                    $granTotalDado = 0;
+                @endphp
+
+                @foreach($personas as $persona)
+                    @php
+                        $totalPersonaEsperado = 0;
+                        $totalPersonaDado = 0;
+                    @endphp
+                    <tr>
+                        <td class="nombre-col">{{ $persona->nombre }}</td>
+                        @foreach($categorias as $categoria)
                             @php
-                                $primeraCategoria = true;
-                                $categoriasCount = count($grupo['categorias']);
+                                $datos = $persona->promesas_periodo[$categoria] ?? ['esperado' => 0, 'dado' => 0];
+                                $esperado = $datos['esperado'];
+                                $dado = $datos['dado'];
+                                $totalPersonaEsperado += $esperado;
+                                $totalPersonaDado += $dado;
+                                $totalesEsperado[$categoria] += $esperado;
+                                $totalesDado[$categoria] += $dado;
+                                
+                                $cumple = $dado >= $esperado && $esperado > 0;
                             @endphp
-                            @foreach($grupo['categorias'] as $categoria => $monto)
-                                <tr>
-                                    @if($primeraCategoria)
-                                        <td rowspan="{{ $categoriasCount }}">{{ $grupo['fecha'] }}</td>
-                                        <td rowspan="{{ $categoriasCount }}">{{ $grupo['culto'] }}</td>
-                                    @endif
-                                    <td>{{ $categoria }}</td>
-                                    <td class="text-right">${{ number_format($monto, 2) }}</td>
-                                    @if($primeraCategoria)
-                                        <td rowspan="{{ $categoriasCount }}" class="text-center">{{ $categoriasCount }}</td>
-                                    @endif
-                                </tr>
-                                @php $primeraCategoria = false; @endphp
-                            @endforeach
+                            <td class="{{ $esperado > 0 ? ($cumple ? 'cumple' : 'no-cumple') : '' }}">
+                                ${{ number_format($esperado, 2) }}
+                            </td>
+                            <td class="{{ $esperado > 0 ? ($cumple ? 'cumple' : 'no-cumple') : '' }}">
+                                ${{ number_format($dado, 2) }}
+                            </td>
                         @endforeach
-                    </tbody>
-                </table>
-                <div class="total-persona">
-                    Total de {{ $persona->nombre }}: ${{ number_format($totalPersona, 2) }}
-                </div>
-            @else
-                <p class="no-sobres">Sin sobres registrados en este período</p>
-            @endif
+                        @php
+                            $granTotalEsperado += $totalPersonaEsperado;
+                            $granTotalDado += $totalPersonaDado;
+                            $diferencia = $totalPersonaDado - $totalPersonaEsperado;
+                            $porcentaje = $totalPersonaEsperado > 0 ? ($totalPersonaDado / $totalPersonaEsperado * 100) : 0;
+                        @endphp
+                        <td style="font-weight: bold;">${{ number_format($totalPersonaEsperado, 2) }}</td>
+                        <td style="font-weight: bold;">${{ number_format($totalPersonaDado, 2) }}</td>
+                        <td class="{{ $diferencia >= 0 ? 'cumple' : 'no-cumple' }}" style="font-weight: bold;">
+                            ${{ number_format($diferencia, 2) }}
+                        </td>
+                        <td class="{{ $porcentaje >= 100 ? 'cumple' : ($porcentaje >= 75 ? '' : 'no-cumple') }}" style="font-weight: bold;">
+                            {{ number_format($porcentaje, 0) }}%
+                        </td>
+                    </tr>
+                @endforeach
+
+                <!-- Fila de Totales -->
+                <tr class="total-row">
+                    <td>TOTALES</td>
+                    @foreach($categorias as $categoria)
+                        <td>${{ number_format($totalesEsperado[$categoria], 2) }}</td>
+                        <td>${{ number_format($totalesDado[$categoria], 2) }}</td>
+                    @endforeach
+                    <td>${{ number_format($granTotalEsperado, 2) }}</td>
+                    <td>${{ number_format($granTotalDado, 2) }}</td>
+                    @php
+                        $diferenciaTotal = $granTotalDado - $granTotalEsperado;
+                        $porcentajeTotal = $granTotalEsperado > 0 ? ($granTotalDado / $granTotalEsperado * 100) : 0;
+                    @endphp
+                    <td>${{ number_format($diferenciaTotal, 2) }}</td>
+                    <td>{{ number_format($porcentajeTotal, 0) }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    @else
+        <div class="no-data">
+            No hay personas con promesas registradas en este período
         </div>
-    </div>
-    @empty
-    <div class="persona-card">
-        <div class="persona-body">
-            <p class="no-sobres">No hay personas con sobres registrados en este período</p>
-        </div>
-    </div>
-    @endforelse
+    @endif
 
     @if($personas->count() > 0)
     <div class="resumen-final">
@@ -353,41 +275,21 @@
         
         <div class="resumen-grid">
             <div class="resumen-item">
-                <label>TOTAL DE PERSONAS</label>
+                <label>PERSONAS</label>
                 <value>{{ $personas->count() }}</value>
             </div>
             <div class="resumen-item">
-                <label>TOTAL DE SOBRES</label>
-                <value>{{ $personas->sum(function($p) { return $p->sobres->count(); }) }}</value>
-            </div>
-            <div class="resumen-item">
-                <label>TOTAL PROMETIDO</label>
+                <label>TOTAL ESPERADO</label>
                 <value>${{ number_format($totalPrometidoGeneral, 2) }}</value>
             </div>
             <div class="resumen-item">
                 <label>TOTAL RECIBIDO</label>
                 <value>${{ number_format($totalGeneral, 2) }}</value>
             </div>
-        </div>
-
-        @if(count($totalesPorCategoria) > 0)
-        <div style="margin: 15px 0;">
-            <label style="display: block; font-size: 10px; color: #166534; font-weight: bold; margin-bottom: 8px;">
-                TOTALES POR CATEGORÍA:
-            </label>
-            <div class="resumen-grid">
-                @foreach($totalesPorCategoria as $categoria => $total)
-                <div class="resumen-item">
-                    <label>{{ strtoupper($categoria) }}</label>
-                    <value>${{ number_format($total, 2) }}</value>
-                </div>
-                @endforeach
+            <div class="resumen-item">
+                <label>CUMPLIMIENTO GLOBAL</label>
+                <value>{{ $totalPrometidoGeneral > 0 ? number_format(($totalGeneral / $totalPrometidoGeneral * 100), 1) : 0 }}%</value>
             </div>
-        </div>
-        @endif
-
-        <div class="total-general">
-            TOTAL GENERAL: ${{ number_format($totalGeneral, 2) }}
         </div>
     </div>
     @endif
