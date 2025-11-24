@@ -235,8 +235,8 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-6">
             <div class="bg-blue-50 rounded-lg p-4 border-2 border-blue-200">
                 <div class="text-sm text-gray-600 mb-1">Total Capilla</div>
-                <div class="text-3xl font-bold text-blue-600">{{ $totalCapilla - $totalVisitas }}</div>
-                <div class="text-xs text-gray-500 mt-1">Sin visitas</div>
+                <div class="text-3xl font-bold text-blue-600">{{ $totalCapilla + $totalMaestros - $totalVisitas }}</div>
+                <div class="text-xs text-gray-500 mt-1">Con maestros, sin visitas</div>
             </div>
             
             <div class="bg-green-50 rounded-lg p-4 border-2 border-green-200">
