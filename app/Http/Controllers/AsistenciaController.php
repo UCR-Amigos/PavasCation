@@ -8,14 +8,24 @@ use Illuminate\Http\Request;
 
 class AsistenciaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cultos = Culto::with('asistencia')
+        $query = Culto::with('asistencia')
             ->whereHas('asistencia', function($query) {
                 $query->where('cerrado', false);
-            })
-            ->orderBy('fecha', 'desc')
-            ->paginate(20);
+            });
+        
+        // Filtro por mes
+        if ($request->filled('mes') && $request->mes !== 'todos') {
+            $query->whereMonth('fecha', $request->mes);
+        }
+        
+        // Filtro por año
+        if ($request->filled('año') && $request->año !== 'todos') {
+            $query->whereYear('fecha', $request->año);
+        }
+        
+        $cultos = $query->orderBy('fecha', 'desc')->paginate(20);
         
         $asistenciasCerradas = Asistencia::where('cerrado', true)
             ->with('culto')

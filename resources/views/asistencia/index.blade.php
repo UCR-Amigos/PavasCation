@@ -18,6 +18,49 @@
     </div>
     @endif
 
+    <!-- Filtros -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <form method="GET" action="{{ route('asistencia.index') }}" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="mes" class="block text-sm font-medium text-gray-700 mb-2">Mes</label>
+                    <select name="mes" id="mes" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="todos" {{ request('mes', 'todos') == 'todos' ? 'selected' : '' }}>Todos los meses</option>
+                        <option value="1" {{ request('mes') == '1' ? 'selected' : '' }}>Enero</option>
+                        <option value="2" {{ request('mes') == '2' ? 'selected' : '' }}>Febrero</option>
+                        <option value="3" {{ request('mes') == '3' ? 'selected' : '' }}>Marzo</option>
+                        <option value="4" {{ request('mes') == '4' ? 'selected' : '' }}>Abril</option>
+                        <option value="5" {{ request('mes') == '5' ? 'selected' : '' }}>Mayo</option>
+                        <option value="6" {{ request('mes') == '6' ? 'selected' : '' }}>Junio</option>
+                        <option value="7" {{ request('mes') == '7' ? 'selected' : '' }}>Julio</option>
+                        <option value="8" {{ request('mes') == '8' ? 'selected' : '' }}>Agosto</option>
+                        <option value="9" {{ request('mes') == '9' ? 'selected' : '' }}>Septiembre</option>
+                        <option value="10" {{ request('mes') == '10' ? 'selected' : '' }}>Octubre</option>
+                        <option value="11" {{ request('mes') == '11' ? 'selected' : '' }}>Noviembre</option>
+                        <option value="12" {{ request('mes') == '12' ? 'selected' : '' }}>Diciembre</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="año" class="block text-sm font-medium text-gray-700 mb-2">Año</label>
+                    <select name="año" id="año" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="todos" {{ request('año', 'todos') == 'todos' ? 'selected' : '' }}>Todos los años</option>
+                        @for($i = date('Y'); $i >= 2020; $i--)
+                            <option value="{{ $i }}" {{ request('año') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="flex items-end gap-2">
+                    <button type="submit" class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                        Filtrar
+                    </button>
+                    <a href="{{ route('asistencia.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">
+                        Limpiar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <div class="flex justify-end">
         <a href="{{ route('asistencia.create') }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
             + Nueva Asistencia

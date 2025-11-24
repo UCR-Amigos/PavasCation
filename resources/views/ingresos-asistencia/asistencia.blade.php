@@ -85,7 +85,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total Asistencia</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Capilla</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Clases</th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">PDF</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -127,10 +127,17 @@
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                         @if($culto->asistencia)
-                            <a href="{{ route('ingresos-asistencia.pdf-asistencia-culto', $culto) }}" 
-                               class="text-red-600 hover:text-red-900" target="_blank">
-                                Descargar
-                            </a>
+                            <div class="flex items-center justify-end gap-3">
+                                @if(!$culto->asistencia->cerrado)
+                                    <a href="{{ route('asistencia.edit', $culto->asistencia) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
+                                    <form action="{{ route('asistencia.destroy', $culto->asistencia) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de eliminar esta asistencia?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
+                                    </form>
+                                @endif
+                                <a href="{{ route('ingresos-asistencia.pdf-asistencia-culto', $culto) }}" class="text-green-600 hover:text-green-900" target="_blank">PDF</a>
+                            </div>
                         @endif
                     </td>
                 </tr>

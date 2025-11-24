@@ -87,9 +87,9 @@
     </div>
 
     <!-- Redes Sociales -->
-    <div class="bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg shadow-md p-6 text-white">
+    <div class="bg-gradient-to-r from-purple-700 to-blue-900 rounded-lg shadow-md p-6 text-white">
         <h2 class="text-2xl font-bold mb-4 text-center">Síguenos en Redes Sociales</h2>
-        <p class="text-center mb-6 text-purple-100">Mantente conectado con nuestra comunidad y conoce nuestras actividades</p>
+        <p class="text-center mb-6">Mantente conectado con nuestra comunidad y conoce nuestras actividades</p>
         <div class="flex justify-center gap-6">
             <a href="https://www.instagram.com/ibb_santacruz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
                target="_blank" 
