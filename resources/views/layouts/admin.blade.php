@@ -22,8 +22,8 @@
 <body class="font-sans antialiased bg-gray-50">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static lg:inset-0">
-            <div class="flex items-center justify-between h-16 px-6 border-b border-blue-700">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static lg:inset-0 flex flex-col">
+            <div class="flex items-center justify-between h-16 px-6 border-b border-blue-700 flex-shrink-0">
                 <div class="flex items-center gap-3">
                     <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
                     <h1 class="text-xl font-bold">IBBSC Admin</h1>
