@@ -391,4 +391,87 @@ class PersonaController extends Controller
         return redirect()->route('personas.edit', $persona)
             ->with('success', 'Todas las promesas, compromisos e historial han sido eliminados.');
     }
+
+    /**
+     * Genera un reporte PDF de personas con sus sobres en un rango de fechas
+     */
+    public function reportePdf(Request $request)
+    {
+        $validated = $request->validate([
+            'tipo_filtro' => 'required|in:meses,fechas',
+            'mes_inicio' => 'required_if:tipo_filtro,meses|nullable|integer|min:1|max:12',
+            'mes_fin' => 'required_if:tipo_filtro,meses|nullable|integer|min:1|max:12',
+            'fecha_inicio' => 'required_if:tipo_filtro,fechas|nullable|date',
+            'fecha_fin' => 'required_if:tipo_filtro,fechas|nullable|date',
+            'accion' => 'required|in:ver,descargar',
+        ]);
+
+        // Determinar el rango de fechas según el tipo de filtro
+        if ($validated['tipo_filtro'] === 'meses') {
+            $añoActual = date('Y');
+            $fechaInicio = Carbon::create($añoActual, $validated['mes_inicio'], 1)->startOfMonth();
+            $fechaFin = Carbon::create($añoActual, $validated['mes_fin'], 1)->endOfMonth();
+            $tituloPeriodo = $fechaInicio->locale('es')->translatedFormat('F') . ' - ' . 
+                           $fechaFin->locale('es')->translatedFormat('F Y');
+        } else {
+            $fechaInicio = Carbon::parse($validated['fecha_inicio'])->startOfDay();
+            $fechaFin = Carbon::parse($validated['fecha_fin'])->endOfDay();
+            $tituloPeriodo = $fechaInicio->locale('es')->translatedFormat('d/m/Y') . ' - ' . 
+                           $fechaFin->locale('es')->translatedFormat('d/m/Y');
+        }
+
+        // Validar que fecha inicio no sea mayor a fecha fin
+        if ($fechaInicio->gt($fechaFin)) {
+            return back()->withErrors(['error' => 'La fecha de inicio no puede ser mayor a la fecha de fin.']);
+        }
+
+        // Obtener personas activas con sobres en el rango de fechas
+        $personas = Persona::where('activo', true)
+            ->with(['sobres' => function($query) use ($fechaInicio, $fechaFin) {
+                $query->whereBetween('created_at', [$fechaInicio, $fechaFin])
+                      ->with(['detalles', 'culto']);
+            }])
+            ->whereHas('sobres', function($query) use ($fechaInicio, $fechaFin) {
+                $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
+            })
+            ->orderBy('nombre')
+            ->get();
+
+        // Calcular totales por categoría
+        $totalesPorCategoria = [];
+        $totalGeneral = 0;
+
+        foreach ($personas as $persona) {
+            $persona->total_sobres = 0;
+            foreach ($persona->sobres as $sobre) {
+                foreach ($sobre->detalles as $detalle) {
+                    if (!isset($totalesPorCategoria[$detalle->categoria])) {
+                        $totalesPorCategoria[$detalle->categoria] = 0;
+                    }
+                    $totalesPorCategoria[$detalle->categoria] += $detalle->monto;
+                    $persona->total_sobres += $detalle->monto;
+                    $totalGeneral += $detalle->monto;
+                }
+            }
+        }
+
+        $pdf = \PDF::loadView('pdfs.reporte-personas', [
+            'personas' => $personas,
+            'tituloPeriodo' => $tituloPeriodo,
+            'fechaInicio' => $fechaInicio,
+            'fechaFin' => $fechaFin,
+            'totalesPorCategoria' => $totalesPorCategoria,
+            'totalGeneral' => $totalGeneral,
+        ]);
+
+        $pdf->setPaper('letter', 'portrait');
+
+        $nombreArchivo = 'reporte-personas-' . $fechaInicio->format('Ymd') . '-' . $fechaFin->format('Ymd') . '.pdf';
+
+        if ($validated['accion'] === 'descargar') {
+            return $pdf->download($nombreArchivo);
+        } else {
+            return $pdf->stream($nombreArchivo);
+        }
+    }
 }

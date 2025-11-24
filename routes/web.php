@@ -98,6 +98,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('personas/quick-store', [PersonaController::class, 'quickStore'])->name('personas.quick-store');
     Route::post('personas/{persona}/reiniciar-compromisos', [PersonaController::class, 'reiniciarCompromisos'])->name('personas.reiniciar-compromisos');
     Route::post('personas/{persona}/limpiar-todo', [PersonaController::class, 'limpiarTodo'])->name('personas.limpiar-todo');
+    Route::get('personas/reporte-pdf', [PersonaController::class, 'reportePdf'])->name('personas.reporte-pdf');
     Route::resource('personas', PersonaController::class);
     Route::resource('promesas', PromesaController::class);
     
