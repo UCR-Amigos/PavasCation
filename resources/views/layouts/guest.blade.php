@@ -20,8 +20,13 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/Banner.png') }}');">
-            <div class="w-full sm:max-w-md px-8 py-6 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden sm:rounded-xl">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center px-4 py-6 sm:pt-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/Banner.png') }}');">
+            <div class="w-full sm:max-w-md mt-6 px-6 py-8 bg-white/95 backdrop-blur-sm shadow-2xl overflow-hidden rounded-xl">
+                <div class="mb-6 text-center">
+                    <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="w-16 h-16 mx-auto mb-3">
+                    <h1 class="text-2xl font-bold text-gray-800">IBBSC Admin</h1>
+                    <p class="text-sm text-gray-600 mt-1">Sistema de Administración</p>
+                </div>
                 {{ $slot }}
             </div>
         </div>

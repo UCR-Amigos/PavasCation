@@ -23,8 +23,13 @@ class PromesasReporteController extends Controller
         $añoActual = date('Y');
         $añosDisponibles = range($añoActual - 2, $añoActual);
 
-        // Calcular totales para el mes específico
-        $totales = $this->calcularTotales($año, $mes, $categoria);
+        // Si mes = 'todos', calcular total de todo el año
+        if ($mes === 'todos') {
+            $totales = $this->calcularTotalesAnuales($año, $categoria);
+        } else {
+            // Calcular totales para el mes específico
+            $totales = $this->calcularTotales($año, $mes, $categoria);
+        }
 
         return view('ingresos-asistencia.promesas', compact('totales', 'añosDisponibles', 'año', 'mes', 'categoria'));
     }
@@ -178,5 +183,55 @@ class PromesasReporteController extends Controller
             default:
                 return $promesa->monto;
         }
+    }
+
+    /**
+     * Calcula totales de todo el año (suma de todos los meses)
+     */
+    private function calcularTotalesAnuales($año, $categoria = null)
+    {
+        $totalesPorCategoria = [];
+        $grandTotal = [
+            'prometido' => 0,
+            'dado' => 0,
+            'faltante' => 0,
+            'profit' => 0,
+        ];
+
+        // Sumar todos los meses del año
+        for ($mes = 1; $mes <= 12; $mes++) {
+            $totalesMes = $this->calcularTotales($año, $mes, $categoria);
+            
+            // Sumar por categoría
+            foreach ($totalesMes['categorias'] as $catData) {
+                $cat = strtolower(str_replace(' ', '_', $catData['categoria']));
+                
+                if (!isset($totalesPorCategoria[$cat])) {
+                    $totalesPorCategoria[$cat] = [
+                        'categoria' => $catData['categoria'],
+                        'total_prometido' => 0,
+                        'total_dado' => 0,
+                        'faltante' => 0,
+                        'profit' => 0,
+                    ];
+                }
+                
+                $totalesPorCategoria[$cat]['total_prometido'] += $catData['total_prometido'];
+                $totalesPorCategoria[$cat]['total_dado'] += $catData['total_dado'];
+                $totalesPorCategoria[$cat]['faltante'] += $catData['faltante'];
+                $totalesPorCategoria[$cat]['profit'] += $catData['profit'];
+            }
+            
+            // Sumar totales generales
+            $grandTotal['prometido'] += $totalesMes['grand_total']['prometido'];
+            $grandTotal['dado'] += $totalesMes['grand_total']['dado'];
+            $grandTotal['faltante'] += $totalesMes['grand_total']['faltante'];
+            $grandTotal['profit'] += $totalesMes['grand_total']['profit'];
+        }
+
+        return [
+            'categorias' => array_values($totalesPorCategoria),
+            'grand_total' => $grandTotal,
+        ];
     }
 }

@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\Hash;
 
 class PersonaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $personas = Persona::withCount(['sobres', 'promesas'])->paginate(20);
+        $query = Persona::withCount(['sobres', 'promesas']);
+        
+        // Búsqueda por nombre
+        if ($request->filled('buscar')) {
+            $query->where('nombre', 'like', '%' . $request->buscar . '%');
+        }
+        
+        $personas = $query->paginate(20);
         $personasInactivas = Persona::where('activo', false)->count();
         return view('personas.index', compact('personas', 'personasInactivas'));
     }

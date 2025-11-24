@@ -25,6 +25,7 @@
                     <label for="mes" class="block text-sm font-medium text-gray-700 mb-2">Mes</label>
                     <select name="mes" id="mes" 
                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="todos" {{ $mes == 'todos' ? 'selected' : '' }}>Todos los meses</option>
                         @php
                             $meses = [
                                 1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
@@ -154,7 +155,14 @@
     <!-- Tabla de Promesas por Categoría -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold">Detalle por Categoría - {{ \Carbon\Carbon::create($año, $mes, 1)->locale('es')->translatedFormat('F Y') }}</h3>
+            <h3 class="text-lg font-semibold">
+                Detalle por Categoría - 
+                @if($mes == 'todos')
+                    Todo el año {{ $año }}
+                @else
+                    {{ \Carbon\Carbon::create($año, $mes, 1)->locale('es')->translatedFormat('F Y') }}
+                @endif
+            </h3>
             @if($categoria)
             <p class="text-sm text-gray-600 mt-1">Mostrando solo: <span class="font-semibold">{{ ucfirst($categoria) }}</span></p>
             @endif
