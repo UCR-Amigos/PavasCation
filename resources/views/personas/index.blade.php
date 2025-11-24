@@ -36,8 +36,8 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Teléfono</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden lg:table-cell">Correo</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Teléfono</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden md:table-cell">Correo</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden xl:table-cell">Sobres</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase hidden xl:table-cell">Promesas</th>
@@ -50,7 +50,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ $persona->nombre }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
                         {{ $persona->telefono ?? '-' }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden md:table-cell">
@@ -61,25 +61,25 @@
                             {{ $persona->activo ? 'Activo' : 'Inactivo' }}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden xl:table-cell">
                         {{ $persona->sobres_count }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden lg:table-cell">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 hidden xl:table-cell">
                         {{ $persona->promesas_count }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <!-- Desktop actions (solo pantallas grandes) -->
-                        <div class="hidden lg:flex lg:items-center lg:justify-end lg:gap-3">
-                            <a href="{{ route('personas.show', $persona) }}" class="text-green-600 hover:text-green-900">Ver</a>
-                            <a href="{{ route('compromisos.show', $persona) }}" class="text-purple-600 hover:text-purple-900">Compromiso</a>
-                            <a href="{{ route('personas.edit', $persona) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
-                            <button type="button" onclick="mostrarModalEliminar({{ $persona->id }}, '{{ $persona->nombre }}')" class="text-red-600 hover:text-red-900">
+                        <!-- Desktop actions (pantallas grandes) -->
+                        <div class="hidden md:flex md:items-center md:justify-end md:gap-2">
+                            <a href="{{ route('personas.show', $persona) }}" class="text-green-600 hover:text-green-900 text-xs">Ver</a>
+                            <a href="{{ route('compromisos.show', $persona) }}" class="text-purple-600 hover:text-purple-900 text-xs">Compromiso</a>
+                            <a href="{{ route('personas.edit', $persona) }}" class="text-blue-600 hover:text-blue-900 text-xs">Editar</a>
+                            <button type="button" onclick="mostrarModalEliminar({{ $persona->id }}, '{{ $persona->nombre }}')" class="text-red-600 hover:text-red-900 text-xs">
                                 Eliminar
                             </button>
                         </div>
                         
-                        <!-- Mobile/Tablet dropdown -->
-                        <div class="relative lg:hidden">
+                        <!-- Mobile dropdown (solo móviles) -->
+                        <div class="relative md:hidden">
                             <button type="button" onclick="togglePersonaDropdown({{ $persona->id }})" class="p-2 hover:bg-gray-100 rounded-full">
                                 <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path>

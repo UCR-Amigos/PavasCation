@@ -127,18 +127,36 @@ class IngresosAsistenciaController extends Controller
             });
 
             foreach ($semanas as $semana => $cultosSemana) {
+                $totalesSemana = $cultosSemana->reduce(function ($carry, $culto) {
+                    if ($culto->totales) {
+                        $carry['diezmo'] += $culto->totales->total_diezmo;
+                        $carry['misiones'] += $culto->totales->total_misiones;
+                        $carry['seminario'] += $culto->totales->total_seminario;
+                        $carry['campa'] += $culto->totales->total_campa;
+                        $carry['construccion'] += $culto->totales->total_construccion;
+                        $carry['prestamo'] += $culto->totales->total_prestamo;
+                        $carry['micro'] += $culto->totales->total_micro;
+                        $carry['suelto'] += $culto->totales->total_suelto;
+                        $carry['total'] += $culto->totales->total_general;
+                    }
+                    return $carry;
+                }, [
+                    'diezmo' => 0, 'misiones' => 0, 'seminario' => 0, 'campa' => 0,
+                    'construccion' => 0, 'prestamo' => 0, 'micro' => 0, 'suelto' => 0, 'total' => 0
+                ]);
+                
                 $registros[] = [
                     'fecha' => 'Semana del ' . $semana,
                     'tipo' => 'Semanal',
-                    'diezmo' => $cultosSemana->sum(fn($c) => $c->totales?->total_diezmo ?? 0),
-                    'misiones' => $cultosSemana->sum(fn($c) => $c->totales?->total_misiones ?? 0),
-                    'seminario' => $cultosSemana->sum(fn($c) => $c->totales?->total_seminario ?? 0),
-                    'campa' => $cultosSemana->sum(fn($c) => $c->totales?->total_campa ?? 0),
-                    'construccion' => $cultosSemana->sum(fn($c) => $c->totales?->total_construccion ?? 0),
-                    'prestamo' => $cultosSemana->sum(fn($c) => $c->totales?->total_prestamo ?? 0),
-                    'micro' => $cultosSemana->sum(fn($c) => $c->totales?->total_micro ?? 0),
-                    'suelto' => $cultosSemana->sum(fn($c) => $c->totales?->total_suelto ?? 0),
-                    'total' => $cultosSemana->sum(fn($c) => $c->totales?->total_general ?? 0),
+                    'diezmo' => $totalesSemana['diezmo'],
+                    'misiones' => $totalesSemana['misiones'],
+                    'seminario' => $totalesSemana['seminario'],
+                    'campa' => $totalesSemana['campa'],
+                    'construccion' => $totalesSemana['construccion'],
+                    'prestamo' => $totalesSemana['prestamo'],
+                    'micro' => $totalesSemana['micro'],
+                    'suelto' => $totalesSemana['suelto'],
+                    'total' => $totalesSemana['total'],
                 ];
             }
         } elseif ($tipoReporte == 'mes') {
@@ -148,18 +166,36 @@ class IngresosAsistenciaController extends Controller
 
             foreach ($meses as $mes => $cultosMes) {
                 $fecha = Carbon::parse($mes . '-01');
+                $totalesMes = $cultosMes->reduce(function ($carry, $culto) {
+                    if ($culto->totales) {
+                        $carry['diezmo'] += $culto->totales->total_diezmo;
+                        $carry['misiones'] += $culto->totales->total_misiones;
+                        $carry['seminario'] += $culto->totales->total_seminario;
+                        $carry['campa'] += $culto->totales->total_campa;
+                        $carry['construccion'] += $culto->totales->total_construccion;
+                        $carry['prestamo'] += $culto->totales->total_prestamo;
+                        $carry['micro'] += $culto->totales->total_micro;
+                        $carry['suelto'] += $culto->totales->total_suelto;
+                        $carry['total'] += $culto->totales->total_general;
+                    }
+                    return $carry;
+                }, [
+                    'diezmo' => 0, 'misiones' => 0, 'seminario' => 0, 'campa' => 0,
+                    'construccion' => 0, 'prestamo' => 0, 'micro' => 0, 'suelto' => 0, 'total' => 0
+                ]);
+                
                 $registros[] = [
                     'fecha' => $fecha->locale('es')->translatedFormat('F Y'),
                     'tipo' => 'Mensual',
-                    'diezmo' => $cultosMes->sum(fn($c) => $c->totales?->total_diezmo ?? 0),
-                    'misiones' => $cultosMes->sum(fn($c) => $c->totales?->total_misiones ?? 0),
-                    'seminario' => $cultosMes->sum(fn($c) => $c->totales?->total_seminario ?? 0),
-                    'campa' => $cultosMes->sum(fn($c) => $c->totales?->total_campa ?? 0),
-                    'construccion' => $cultosMes->sum(fn($c) => $c->totales?->total_construccion ?? 0),
-                    'prestamo' => $cultosMes->sum(fn($c) => $c->totales?->total_prestamo ?? 0),
-                    'micro' => $cultosMes->sum(fn($c) => $c->totales?->total_micro ?? 0),
-                    'suelto' => $cultosMes->sum(fn($c) => $c->totales?->total_suelto ?? 0),
-                    'total' => $cultosMes->sum(fn($c) => $c->totales?->total_general ?? 0),
+                    'diezmo' => $totalesMes['diezmo'],
+                    'misiones' => $totalesMes['misiones'],
+                    'seminario' => $totalesMes['seminario'],
+                    'campa' => $totalesMes['campa'],
+                    'construccion' => $totalesMes['construccion'],
+                    'prestamo' => $totalesMes['prestamo'],
+                    'micro' => $totalesMes['micro'],
+                    'suelto' => $totalesMes['suelto'],
+                    'total' => $totalesMes['total'],
                 ];
             }
         }
