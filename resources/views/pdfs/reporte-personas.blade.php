@@ -12,17 +12,26 @@
             padding: 20px;
         }
         .header {
-            text-align: center;
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
             border-bottom: 3px solid #7c3aed;
             padding-bottom: 15px;
         }
-        .header h1 {
+        .header img {
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+        }
+        .header-text {
+            flex: 1;
+        }
+        .header-text h1 {
             margin: 0;
             color: #7c3aed;
             font-size: 24px;
         }
-        .header h2 {
+        .header-text h2 {
             margin: 5px 0 0 0;
             color: #6b7280;
             font-size: 14px;
@@ -159,23 +168,26 @@
 </head>
 <body>
     <div class="header">
-        <h1>📊 Reporte de Personas</h1>
-        <h2>Iglesia Bautista Bíblica Shekinah de la Ciudad</h2>
+        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBSC">
+        <div class="header-text">
+            <h1>Reporte de Personas</h1>
+            <h2>Iglesia Bautista Bíblica Shekinah de la Ciudad</h2>
+        </div>
     </div>
 
     <div class="periodo">
-        <p>📅 Período: {{ $tituloPeriodo }}</p>
+        <p>Período: {{ $tituloPeriodo }}</p>
     </div>
 
     @forelse($personas as $persona)
     <div class="persona-card">
         <div class="persona-header">
-            👤 {{ $persona->nombre }}
+            {{ $persona->nombre }}
             @if($persona->telefono)
-                | 📱 {{ $persona->telefono }}
+                | {{ $persona->telefono }}
             @endif
             @if($persona->correo)
-                | 📧 {{ $persona->correo }}
+                | {{ $persona->correo }}
             @endif
         </div>
         <div class="persona-body">
@@ -259,7 +271,7 @@
 
     @if($personas->count() > 0)
     <div class="resumen-final">
-        <h3>📊 Resumen General</h3>
+        <h3>Resumen General</h3>
         
         <div class="resumen-grid">
             <div class="resumen-item">
@@ -275,7 +287,7 @@
         @if(count($totalesPorCategoria) > 0)
         <div style="margin: 15px 0;">
             <label style="display: block; font-size: 10px; color: #166534; font-weight: bold; margin-bottom: 8px;">
-                💰 TOTALES POR CATEGORÍA:
+                TOTALES POR CATEGORÍA:
             </label>
             <div class="resumen-grid">
                 @foreach($totalesPorCategoria as $categoria => $total)
@@ -289,7 +301,7 @@
         @endif
 
         <div class="total-general">
-            💵 TOTAL GENERAL: ${{ number_format($totalGeneral, 2) }}
+            TOTAL GENERAL: ${{ number_format($totalGeneral, 2) }}
         </div>
     </div>
     @endif
