@@ -502,8 +502,12 @@ class PersonaController extends Controller
 
             // Calcular cumplimiento global (solo si tiene promesas)
             if (count($persona->promesas_periodo) > 0) {
-                $totalEsperado = array_sum(array_column($persona->promesas_periodo, 'esperado'));
-                $totalDado = array_sum(array_column($persona->promesas_periodo, 'dado'));
+                $totalEsperado = 0;
+                $totalDado = 0;
+                foreach ($persona->promesas_periodo as $datos) {
+                    $totalEsperado += $datos['esperado'];
+                    $totalDado += $datos['dado'];
+                }
                 $persona->cumplimiento_global = $totalEsperado > 0 ? ($totalDado / $totalEsperado * 100) : 0;
             }
         }
