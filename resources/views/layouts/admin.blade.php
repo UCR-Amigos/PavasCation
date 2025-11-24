@@ -22,7 +22,7 @@
 <body class="font-sans antialiased bg-gray-50">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 lg:translate-x-0 lg:static lg:inset-0">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white transform transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static lg:inset-0">
             <div class="flex items-center justify-between h-16 px-6 border-b border-blue-700">
                 <div class="flex items-center gap-3">
                     <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="w-8 h-8 object-contain">
@@ -36,16 +36,17 @@
             </div>
 
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                <a href="{{ route('dashboard') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                <!-- Principal - Para todos los usuarios -->
+                <a href="{{ route('principal') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('principal') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
-                    Dashboard
+                    Principal
                 </a>
 
                 @if(Auth::user()->isMiembro())
-                <!-- Menú exclusivo para miembros -->
-                <a href="{{ route('mi-perfil.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('mi-perfil.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                <!-- Yo - Menú exclusivo para miembros -->
+                <a href="{{ route('mi-perfil.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('mi-perfil.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
@@ -54,7 +55,17 @@
                 @endif
 
                 @if(Auth::user()->canAccessRecuento())
-                <a href="{{ route('recuento.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('recuento.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                <!-- Dashboard - Solo para tesorería y admin -->
+                <a href="{{ route('dashboard') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('dashboard') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                @endif
+
+                @if(Auth::user()->canAccessRecuento())
+                <a href="{{ route('recuento.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('recuento.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
@@ -63,7 +74,7 @@
                 @endif
 
                 @if(Auth::user()->canAccessAsistencia())
-                <a href="{{ route('asistencia.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('asistencia.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                <a href="{{ route('asistencia.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('asistencia.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
@@ -72,7 +83,7 @@
                 @endif
 
                 @if(Auth::user()->canAccessRecuento() || Auth::user()->canAccessAsistencia())
-                <a href="{{ route('ingresos-asistencia.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('ingresos-asistencia.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                <a href="{{ route('ingresos-asistencia.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('ingresos-asistencia.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
@@ -83,25 +94,25 @@
                 @if(Auth::user()->rol === 'admin')
                 <div class="pt-4 mt-4 border-t border-blue-700">
                     <div class="px-4 py-2 text-xs font-semibold text-blue-300 uppercase">Administración</div>
-                    <a href="{{ route('cultos.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('cultos.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                    <a href="{{ route('cultos.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('cultos.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                         Gestionar Cultos
                     </a>
-                    <a href="{{ route('admin.clases.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.clases.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                    <a href="{{ route('admin.clases.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('admin.clases.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
                         </svg>
                         Gestionar Clases
                     </a>
-                    <a href="{{ route('personas.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('personas.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                    <a href="{{ route('personas.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('personas.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                         Gestionar Personas
                     </a>
-                    <a href="{{ route('usuarios.index') }}" class="flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('usuarios.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
+                    <a href="{{ route('usuarios.index') }}" class="nav-link flex items-center px-4 py-3 rounded-lg transition-colors {{ request()->routeIs('usuarios.*') ? 'bg-blue-700' : 'hover:bg-blue-700/50' }}">
                         <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
@@ -229,19 +240,36 @@
         const openBtn = document.getElementById('openSidebar');
         const closeBtn = document.getElementById('closeSidebar');
 
-        openBtn?.addEventListener('click', () => {
+        // Función para cerrar el sidebar
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        // Función para abrir el sidebar
+        function openSidebar() {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
-        });
+        }
 
-        closeBtn?.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        });
+        // Abrir sidebar con botón hamburguesa
+        openBtn?.addEventListener('click', openSidebar);
 
-        overlay?.addEventListener('click', () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
+        // Cerrar sidebar con botón X
+        closeBtn?.addEventListener('click', closeSidebar);
+
+        // Cerrar sidebar al hacer clic en overlay
+        overlay?.addEventListener('click', closeSidebar);
+
+        // Cerrar sidebar automáticamente al hacer clic en cualquier link de navegación (solo en móvil)
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                // Solo cerrar en móvil (cuando el sidebar está posicionado absolute)
+                if (window.innerWidth < 1024) {
+                    closeSidebar();
+                }
+            });
         });
 
         // Transición para cerrar sesión
