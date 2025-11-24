@@ -209,7 +209,7 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Mes de Inicio</label>
                                 <select name="mes_inicio" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500">
                                     <option value="">Selecciona mes...</option>
-                                    @for($i = 1; $i <= (int)date('m'); $i++)
+                                    @for($i = 1; $i <= 12; $i++)
                                         <option value="{{ $i }}" {{ $i == 1 ? 'selected' : '' }}>
                                             {{ \Carbon\Carbon::create()->month($i)->locale('es')->translatedFormat('F') }}
                                         </option>
@@ -220,7 +220,7 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Mes de Fin</label>
                                 <select name="mes_fin" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500">
                                     <option value="">Selecciona mes...</option>
-                                    @for($i = 1; $i <= (int)date('m'); $i++)
+                                    @for($i = 1; $i <= 12; $i++)
                                         <option value="{{ $i }}" {{ $i == (int)date('m') ? 'selected' : '' }}>
                                             {{ \Carbon\Carbon::create()->month($i)->locale('es')->translatedFormat('F') }}
                                         </option>

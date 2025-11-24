@@ -69,6 +69,53 @@
             padding: 10px;
             background: #f9fafb;
         }
+        .promesas-section {
+            background: #fef3c7;
+            border: 2px solid #fbbf24;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        .promesas-section h4 {
+            margin: 0 0 8px 0;
+            color: #92400e;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .promesa-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            font-size: 9px;
+        }
+        .promesa-item.cumple {
+            border-left: 4px solid #10b981;
+        }
+        .promesa-item.no-cumple {
+            border-left: 4px solid #ef4444;
+        }
+        .cumplimiento-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: bold;
+        }
+        .cumplimiento-badge.excelente {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .cumplimiento-badge.bueno {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .cumplimiento-badge.regular {
+            background: #fee2e2;
+            color: #991b1b;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -189,8 +236,39 @@
             @if($persona->correo)
                 | {{ $persona->correo }}
             @endif
+            @if(count($persona->promesas_periodo) > 0)
+                @php
+                    $cumplimiento = $persona->cumplimiento_global;
+                    $badgeClass = $cumplimiento >= 100 ? 'excelente' : ($cumplimiento >= 75 ? 'bueno' : 'regular');
+                @endphp
+                | <span class="cumplimiento-badge {{ $badgeClass }}">{{ number_format($cumplimiento, 1) }}% Cumplimiento</span>
+            @endif
         </div>
         <div class="persona-body">
+            @if(count($persona->promesas_periodo) > 0)
+                <div class="promesas-section">
+                    <h4>Promesas del Período ({{ $mesesEnPeriodo }} {{ $mesesEnPeriodo == 1 ? 'mes' : 'meses' }})</h4>
+                    @foreach($persona->promesas_periodo as $categoria => $datos)
+                        <div class="promesa-item {{ $datos['cumple'] ? 'cumple' : 'no-cumple' }}">
+                            <div>
+                                <strong>{{ $categoria }}</strong><br>
+                                Esperado: ${{ number_format($datos['esperado'], 2) }} | 
+                                Dado: ${{ number_format($datos['dado'], 2) }}
+                            </div>
+                            <div style="text-align: right;">
+                                @if($datos['cumple'])
+                                    <span style="color: #10b981; font-weight: bold;">✓ CUMPLE</span>
+                                @else
+                                    <span style="color: #ef4444; font-weight: bold;">✗ FALTA: ${{ number_format(abs($datos['diferencia']), 2) }}</span>
+                                @endif
+                                <br>
+                                <span style="color: #6b7280;">{{ number_format($datos['porcentaje'], 1) }}%</span>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
             @if($persona->sobres->count() > 0)
                 <table>
                     <thead>
@@ -281,6 +359,14 @@
             <div class="resumen-item">
                 <label>TOTAL DE SOBRES</label>
                 <value>{{ $personas->sum(function($p) { return $p->sobres->count(); }) }}</value>
+            </div>
+            <div class="resumen-item">
+                <label>TOTAL PROMETIDO</label>
+                <value>${{ number_format($totalPrometidoGeneral, 2) }}</value>
+            </div>
+            <div class="resumen-item">
+                <label>TOTAL RECIBIDO</label>
+                <value>${{ number_format($totalGeneral, 2) }}</value>
             </div>
         </div>
 

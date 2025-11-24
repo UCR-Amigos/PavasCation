@@ -425,24 +425,70 @@ class PersonaController extends Controller
             return back()->withErrors(['error' => 'La fecha de inicio no puede ser mayor a la fecha de fin.']);
         }
 
-        // Obtener personas activas con sobres en el rango de fechas
+        // Obtener personas activas con sus promesas
         $personas = Persona::where('activo', true)
-            ->with(['sobres' => function($query) use ($fechaInicio, $fechaFin) {
+            ->with(['promesas', 'sobres' => function($query) use ($fechaInicio, $fechaFin) {
                 $query->whereBetween('created_at', [$fechaInicio, $fechaFin])
                       ->with(['detalles', 'culto']);
             }])
-            ->whereHas('sobres', function($query) use ($fechaInicio, $fechaFin) {
-                $query->whereBetween('created_at', [$fechaInicio, $fechaFin]);
-            })
             ->orderBy('nombre')
             ->get();
 
-        // Calcular totales por categoría
+        // Calcular meses en el período
+        $mesesEnPeriodo = $fechaInicio->diffInMonths($fechaFin) + 1;
+
+        // Calcular totales por categoría y por persona
         $totalesPorCategoria = [];
         $totalGeneral = 0;
+        $totalPrometidoGeneral = 0;
 
         foreach ($personas as $persona) {
             $persona->total_sobres = 0;
+            $persona->promesas_periodo = [];
+            $persona->cumplimiento_global = 0;
+
+            // Calcular lo que debería dar según sus promesas en este período
+            foreach ($persona->promesas as $promesa) {
+                $montoPorMes = $promesa->monto;
+                $categoria = $promesa->categoria;
+                
+                // Calcular cuánto debería dar en total en el período según frecuencia
+                switch ($promesa->frecuencia) {
+                    case 'semanal':
+                        $montoEsperado = $montoPorMes * 4 * $mesesEnPeriodo; // 4 semanas por mes
+                        break;
+                    case 'quincenal':
+                        $montoEsperado = $montoPorMes * 2 * $mesesEnPeriodo; // 2 quincenas por mes
+                        break;
+                    case 'mensual':
+                        $montoEsperado = $montoPorMes * $mesesEnPeriodo;
+                        break;
+                    default:
+                        $montoEsperado = $montoPorMes * $mesesEnPeriodo;
+                }
+
+                // Calcular cuánto realmente dio en esta categoría
+                $montoDado = 0;
+                foreach ($persona->sobres as $sobre) {
+                    foreach ($sobre->detalles as $detalle) {
+                        if ($detalle->categoria === $categoria) {
+                            $montoDado += $detalle->monto;
+                        }
+                    }
+                }
+
+                $persona->promesas_periodo[$categoria] = [
+                    'esperado' => $montoEsperado,
+                    'dado' => $montoDado,
+                    'diferencia' => $montoDado - $montoEsperado,
+                    'cumple' => $montoDado >= $montoEsperado,
+                    'porcentaje' => $montoEsperado > 0 ? ($montoDado / $montoEsperado * 100) : 0
+                ];
+
+                $totalPrometidoGeneral += $montoEsperado;
+            }
+
+            // Calcular totales de sobres
             foreach ($persona->sobres as $sobre) {
                 foreach ($sobre->detalles as $detalle) {
                     if (!isset($totalesPorCategoria[$detalle->categoria])) {
@@ -453,7 +499,19 @@ class PersonaController extends Controller
                     $totalGeneral += $detalle->monto;
                 }
             }
+
+            // Calcular cumplimiento global (solo si tiene promesas)
+            if (count($persona->promesas_periodo) > 0) {
+                $totalEsperado = array_sum(array_column($persona->promesas_periodo, 'esperado'));
+                $totalDado = array_sum(array_column($persona->promesas_periodo, 'dado'));
+                $persona->cumplimiento_global = $totalEsperado > 0 ? ($totalDado / $totalEsperado * 100) : 0;
+            }
         }
+
+        // Filtrar solo personas con promesas o sobres
+        $personas = $personas->filter(function($persona) {
+            return count($persona->promesas) > 0 || $persona->sobres->count() > 0;
+        });
 
         $pdf = \PDF::loadView('pdfs.reporte-personas', [
             'personas' => $personas,
@@ -462,6 +520,8 @@ class PersonaController extends Controller
             'fechaFin' => $fechaFin,
             'totalesPorCategoria' => $totalesPorCategoria,
             'totalGeneral' => $totalGeneral,
+            'totalPrometidoGeneral' => $totalPrometidoGeneral,
+            'mesesEnPeriodo' => $mesesEnPeriodo,
         ]);
 
         $pdf->setPaper('letter', 'portrait');
