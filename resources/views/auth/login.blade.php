@@ -38,11 +38,8 @@
         </div>
 
         <div class="mt-8">
-            <button type="submit" class="btn-gemini w-full justify-center group">
-                <span class="relative z-10">{{ __('Log in') }}</span>
-                <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                </svg>
+            <button type="submit" class="btn-gemini w-full">
+                {{ __('Log in') }}
             </button>
         </div>
     </form>

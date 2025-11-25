@@ -20,16 +20,15 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-50">
-        <!-- Background decorativo con gradientes animados -->
-        <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <body class="font-sans antialiased">
+        <!-- Background con imagen del banner -->
+        <div class="fixed inset-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/Banner.png') }}');"></div>
+        
+        <!-- Overlay con gradientes animados -->
+        <div class="fixed inset-0 overflow-hidden pointer-events-none bg-gradient-to-br from-gemini-900/40 via-purple-900/30 to-blue-900/40">
             <!-- Gradientes flotantes -->
-            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-gemini-400/20 via-purple-400/10 to-transparent blur-3xl animate-float" style="animation-delay: 0s;"></div>
-            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-blue-400/20 via-cyan-400/10 to-transparent blur-3xl animate-float" style="animation-delay: 2s;"></div>
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-radial from-pink-400/10 via-transparent to-transparent blur-3xl animate-float" style="animation-delay: 4s;"></div>
-            
-            <!-- Grid pattern sutil -->
-            <div class="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-gemini-400/10 via-purple-400/5 to-transparent blur-3xl animate-float" style="animation-delay: 0s;"></div>
+            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-blue-400/10 via-cyan-400/5 to-transparent blur-3xl animate-float" style="animation-delay: 2s;"></div>
         </div>
 
         <div class="min-h-screen flex flex-col sm:justify-center items-center px-4 py-6 sm:pt-0 relative z-10">
