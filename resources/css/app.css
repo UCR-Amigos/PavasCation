@@ -1,3 +1,219 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    body {
+        @apply font-sans antialiased;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+        background-size: 400% 400%;
+        background-attachment: fixed;
+    }
+    
+    /* Mejoras tipográficas */
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-display;
+        letter-spacing: -0.02em;
+    }
+}
+
+@layer components {
+    /* Glassmorphism Cards */
+    .glass-card {
+        @apply bg-white/90 backdrop-blur-xl rounded-2xl shadow-glass border border-white/20;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .glass-card:hover {
+        @apply shadow-gemini-lg transform -translate-y-1;
+    }
+    
+    /* Gemini Gradient Buttons */
+    .btn-gemini {
+        @apply relative overflow-hidden bg-gradient-gemini-purple text-white font-semibold px-6 py-3 rounded-xl;
+        @apply shadow-glow-purple transition-all duration-300;
+        @apply hover:shadow-gemini-lg hover:scale-105 active:scale-95;
+    }
+    
+    .btn-gemini::before {
+        content: '';
+        @apply absolute top-0 left-0 w-full h-full bg-gradient-shine;
+        animation: shine 3s infinite;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .btn-gemini:hover::before {
+        opacity: 1;
+    }
+    
+    /* Gemini Input Fields */
+    .input-gemini {
+        @apply w-full px-4 py-3 rounded-xl border-2 border-gemini-200 bg-white/80 backdrop-blur-sm;
+        @apply focus:border-gemini-500 focus:ring-4 focus:ring-gemini-500/20 focus:bg-white;
+        @apply transition-all duration-300;
+    }
+    
+    /* Stats Card con Gradient */
+    .stat-card {
+        @apply relative overflow-hidden bg-white/90 backdrop-blur-xl rounded-2xl p-6 shadow-glass border border-white/20;
+        @apply transition-all duration-300 hover:shadow-gemini-lg hover:-translate-y-2;
+    }
+    
+    .stat-card::before {
+        content: '';
+        @apply absolute top-0 left-0 right-0 h-1 bg-gradient-gemini-purple;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    /* Gradient Text */
+    .text-gradient {
+        @apply bg-gradient-gemini-purple bg-clip-text text-transparent;
+    }
+    
+    /* Floating Animation */
+    .floating {
+        animation: float 8s ease-in-out infinite;
+    }
+    
+    /* Glow Effect */
+    .glow-effect {
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+    
+    /* Background Pattern */
+    .bg-pattern {
+        position: relative;
+    }
+    
+    .bg-pattern::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 30px 30px;
+        animation: backgroundPulse 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+    
+    /* Scrollbar personalizado */
+    .scrollbar-gemini::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    .scrollbar-gemini::-webkit-scrollbar-track {
+        @apply bg-gemini-100/50 rounded-full;
+    }
+    
+    .scrollbar-gemini::-webkit-scrollbar-thumb {
+        @apply bg-gradient-gemini-purple rounded-full;
+    }
+    
+    .scrollbar-gemini::-webkit-scrollbar-thumb:hover {
+        @apply bg-gemini-600;
+    }
+    
+    /* Badge Gemini */
+    .badge-gemini {
+        @apply inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold;
+        @apply bg-gradient-gemini-purple text-white shadow-glow-purple;
+        @apply transition-all duration-300 hover:scale-105;
+    }
+    
+    /* Table Gemini Style */
+    .table-gemini {
+        @apply w-full border-collapse;
+    }
+    
+    .table-gemini thead tr {
+        @apply bg-gradient-gemini-purple text-white;
+    }
+    
+    .table-gemini thead th {
+        @apply px-6 py-4 text-left font-semibold tracking-wider uppercase text-sm;
+    }
+    
+    .table-gemini thead th:first-child {
+        @apply rounded-tl-xl;
+    }
+    
+    .table-gemini thead th:last-child {
+        @apply rounded-tr-xl;
+    }
+    
+    .table-gemini tbody tr {
+        @apply bg-white/80 backdrop-blur-sm border-b border-gemini-100;
+        @apply transition-all duration-300 hover:bg-gemini-50/50 hover:scale-[1.01];
+    }
+    
+    .table-gemini tbody td {
+        @apply px-6 py-4;
+    }
+    
+    /* Modal Gemini */
+    .modal-gemini {
+        @apply fixed inset-0 z-50 overflow-y-auto;
+    }
+    
+    .modal-overlay {
+        @apply fixed inset-0 bg-gradient-gemini opacity-90 backdrop-blur-md;
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    .modal-content {
+        @apply relative bg-white/95 backdrop-blur-xl rounded-3xl shadow-gemini-lg;
+        @apply border-2 border-white/30 p-8 max-w-2xl mx-auto my-8;
+        animation: scaleIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* Alert Gemini */
+    .alert-success {
+        @apply bg-gradient-gemini-success border-2 border-green-300 text-green-900 px-6 py-4 rounded-xl;
+        @apply shadow-glass backdrop-blur-sm;
+    }
+    
+    .alert-error {
+        @apply bg-gradient-gemini-pink border-2 border-red-300 text-red-900 px-6 py-4 rounded-xl;
+        @apply shadow-glass backdrop-blur-sm;
+    }
+    
+    .alert-info {
+        @apply bg-gradient-gemini-blue border-2 border-blue-300 text-blue-900 px-6 py-4 rounded-xl;
+        @apply shadow-glass backdrop-blur-sm;
+    }
+}
+
+@layer utilities {
+    /* Animation Delays */
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-500 { animation-delay: 0.5s; }
+    .delay-600 { animation-delay: 0.6s; }
+    .delay-700 { animation-delay: 0.7s; }
+    .delay-800 { animation-delay: 0.8s; }
+    .delay-900 { animation-delay: 0.9s; }
+    
+    /* Gradient Borders */
+    .border-gradient {
+        border: 2px solid transparent;
+        background-clip: padding-box, border-box;
+        background-origin: padding-box, border-box;
+        background-image: linear-gradient(white, white), linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+}
