@@ -39,8 +39,11 @@
                     <div class="absolute inset-0 bg-gradient-gemini-purple blur-3xl opacity-30 animate-glow"></div>
                     <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="relative w-20 h-20 mx-auto drop-shadow-2xl animate-scale-in">
                 </div>
-                <h1 class="text-3xl font-display font-bold text-gradient mt-4 animate-fade-in" style="animation-delay: 0.2s;">IBBSC Admin</h1>
-                <p class="text-gray-600 mt-2 animate-fade-in" style="animation-delay: 0.3s;">Sistema de Administración</p>
+                <!-- Texto con fondo semitransparente y sombras fuertes -->
+                <div class="mt-4 inline-block px-6 py-3 rounded-2xl bg-white/95 backdrop-blur-xl shadow-2xl animate-fade-in" style="animation-delay: 0.2s;">
+                    <h1 class="text-3xl font-display font-bold text-gradient">IBBSC Admin</h1>
+                    <p class="text-gray-700 font-medium mt-1">Sistema de Administración</p>
+                </div>
             </div>
 
             <!-- Tarjeta de login con glassmorphism -->
