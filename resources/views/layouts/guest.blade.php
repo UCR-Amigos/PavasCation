@@ -12,23 +12,141 @@
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/Logo.png') }}">
         <link rel="shortcut icon" href="{{ asset('images/Logo.png') }}">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center px-4 py-6 sm:pt-0 bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/Banner.png') }}');">
-            <div class="w-full sm:max-w-md mt-6 px-6 py-8 bg-white/95 backdrop-blur-xl shadow-2xl overflow-hidden rounded-xl" style="background-color: rgba(255, 255, 255, 0.95);">
-                <div class="mb-6 text-center">
-                    <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="w-16 h-16 mx-auto mb-3">
-                    <h1 class="text-2xl font-bold text-gray-800">IBBSC Admin</h1>
-                    <p class="text-sm text-gray-600 mt-1">Sistema de Administración</p>
+    <body class="font-sans antialiased bg-gray-50">
+        <!-- Background decorativo con gradientes animados -->
+        <div class="fixed inset-0 overflow-hidden pointer-events-none">
+            <!-- Gradientes flotantes -->
+            <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-radial from-gemini-400/20 via-purple-400/10 to-transparent blur-3xl animate-float" style="animation-delay: 0s;"></div>
+            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-radial from-blue-400/20 via-cyan-400/10 to-transparent blur-3xl animate-float" style="animation-delay: 2s;"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-radial from-pink-400/10 via-transparent to-transparent blur-3xl animate-float" style="animation-delay: 4s;"></div>
+            
+            <!-- Grid pattern sutil -->
+            <div class="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
+        </div>
+
+        <div class="min-h-screen flex flex-col sm:justify-center items-center px-4 py-6 sm:pt-0 relative z-10">
+            <!-- Logo principal con animación -->
+            <div class="mb-8 text-center animate-fade-in">
+                <div class="relative inline-block">
+                    <!-- Glow effect detrás del logo -->
+                    <div class="absolute inset-0 bg-gradient-gemini-purple blur-3xl opacity-30 animate-glow"></div>
+                    <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="relative w-20 h-20 mx-auto drop-shadow-2xl animate-scale-in">
                 </div>
-                {{ $slot }}
+                <h1 class="text-3xl font-display font-bold text-gradient mt-4 animate-fade-in" style="animation-delay: 0.2s;">IBBSC Admin</h1>
+                <p class="text-gray-600 mt-2 animate-fade-in" style="animation-delay: 0.3s;">Sistema de Administración</p>
+            </div>
+
+            <!-- Tarjeta de login con glassmorphism -->
+            <div class="w-full sm:max-w-md animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="glass-card p-8 shadow-gemini-lg">
+                    <!-- Borde superior con gradiente -->
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-gemini-purple rounded-t-2xl"></div>
+                    
+                    {{ $slot }}
+                </div>
+
+                <!-- Footer -->
+                <div class="text-center mt-6 text-sm text-gray-500 animate-fade-in" style="animation-delay: 0.6s;">
+                    <p>© {{ date('Y') }} IBBSC. Todos los derechos reservados.</p>
+                </div>
             </div>
         </div>
+
+        <style>
+            @keyframes float {
+                0%, 100% {
+                    transform: translate(0, 0) scale(1);
+                }
+                33% {
+                    transform: translate(30px, -30px) scale(1.1);
+                }
+                66% {
+                    transform: translate(-20px, 20px) scale(0.9);
+                }
+            }
+
+            @keyframes glow {
+                0%, 100% {
+                    opacity: 0.3;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.6;
+                    transform: scale(1.2);
+                }
+            }
+
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes scale-in {
+                from {
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            @keyframes slide-up {
+                from {
+                    opacity: 0;
+                    transform: translateY(40px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-float {
+                animation: float 20s ease-in-out infinite;
+            }
+
+            .animate-glow {
+                animation: glow 3s ease-in-out infinite;
+            }
+
+            .animate-fade-in {
+                animation: fade-in 0.8s ease-out forwards;
+            }
+
+            .animate-scale-in {
+                animation: scale-in 0.6s ease-out forwards;
+            }
+
+            .animate-slide-up {
+                animation: slide-up 0.8s ease-out forwards;
+            }
+
+            .bg-grid-pattern {
+                background-image: 
+                    linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px);
+                background-size: 40px 40px;
+            }
+
+            .bg-gradient-radial {
+                background: radial-gradient(circle, var(--tw-gradient-stops));
+            }
+        </style>
     </body>
 </html>
