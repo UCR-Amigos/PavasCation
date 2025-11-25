@@ -7,10 +7,7 @@
 
 @layer base {
     body {
-        @apply font-sans antialiased;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-        background-size: 400% 400%;
-        background-attachment: fixed;
+        @apply font-sans antialiased bg-gray-50;
     }
     
     /* Mejoras tipográficas */
@@ -93,20 +90,7 @@
     /* Background Pattern */
     .bg-pattern {
         position: relative;
-    }
-    
-    .bg-pattern::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-        background-size: 30px 30px;
-        animation: backgroundPulse 20s ease-in-out infinite;
-        pointer-events: none;
-        z-index: 0;
+        background: #f9fafb;
     }
     
     /* Scrollbar personalizado */
