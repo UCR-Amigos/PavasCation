@@ -178,19 +178,19 @@
         <table>
             <thead>
                 <tr>
-                    <th rowspan="2" style="width: 15%;">NOMBRE</th>
+                    <th rowspan="2" style="width: 12%;">NOMBRE</th>
                     @foreach($categorias as $categoria)
-                        <th colspan="2" style="width: {{ 85 / count($categorias) }}%;">{{ strtoupper($categoria) }}</th>
+                        <th colspan="2">{{ strtoupper($categoria) }}</th>
                     @endforeach
-                    <th rowspan="2" style="width: 8%;">TOTAL<br>ESPERADO</th>
-                    <th rowspan="2" style="width: 8%;">TOTAL<br>DADO</th>
-                    <th rowspan="2" style="width: 8%;">DIFERENCIA</th>
-                    <th rowspan="2" style="width: 6%;">%</th>
+                    <th rowspan="2" style="width: 7%;">TOTAL<br>ESPERADO</th>
+                    <th rowspan="2" style="width: 7%;">TOTAL<br>DADO</th>
+                    <th rowspan="2" style="width: 7%;">DIFERENCIA</th>
+                    <th rowspan="2" style="width: 5%;">%</th>
                 </tr>
                 <tr>
                     @foreach($categorias as $categoria)
-                        <th style="font-size: 7px;">Esperado</th>
-                        <th style="font-size: 7px;">Dado</th>
+                        <th style="font-size: 7px; padding: 4px 2px;">Esperado</th>
+                        <th style="font-size: 7px; padding: 4px 2px;">Dado</th>
                     @endforeach
                 </tr>
             </thead>
@@ -273,6 +273,16 @@
     <div class="resumen-final">
         <h3>Resumen General</h3>
         
+        @php
+            // Calcular el total dado desde las promesas_periodo
+            $totalDadoReal = 0;
+            foreach ($personas as $p) {
+                foreach ($p->promesas_periodo as $cat => $datos) {
+                    $totalDadoReal += $datos['dado'];
+                }
+            }
+        @endphp
+        
         <div class="resumen-grid">
             <div class="resumen-item">
                 <label>PERSONAS</label>
@@ -284,11 +294,11 @@
             </div>
             <div class="resumen-item">
                 <label>TOTAL RECIBIDO</label>
-                <value>${{ number_format($totalGeneral, 2) }}</value>
+                <value>${{ number_format($totalDadoReal, 2) }}</value>
             </div>
             <div class="resumen-item">
                 <label>CUMPLIMIENTO GLOBAL</label>
-                <value>{{ $totalPrometidoGeneral > 0 ? number_format(($totalGeneral / $totalPrometidoGeneral * 100), 1) : 0 }}%</value>
+                <value>{{ $totalPrometidoGeneral > 0 ? number_format(($totalDadoReal / $totalPrometidoGeneral * 100), 1) : 0 }}%</value>
             </div>
         </div>
     </div>
