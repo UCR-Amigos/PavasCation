@@ -13,7 +13,7 @@
             </div>
             <h1 class="text-4xl font-bold mb-4">Bienvenido a la Iglesia Bíblica Bautista en Pavas</h1>
             <p class="text-xl text-blue-100 max-w-2xl mx-auto">
-                Una comunidad de fe comprometida con el amor de Cristo y el servicio a Dios
+                Una Iglesia que da pasos de Fe
             </p>
         </div>
     </div>
@@ -47,7 +47,7 @@
                 <h2 class="text-2xl font-bold text-gray-800">Nuestra Visión</h2>
             </div>
             <p class="text-gray-600 leading-relaxed">
-                Ser una iglesia que impacte a Santa Cruz y más allá, formando discípulos comprometidos con Cristo, viviendo en santidad y extendiendo el Reino de Dios a través del amor y la verdad.
+                Ser una iglesia que impacte a Pavas y más allá, formando discípulos comprometidos con Cristo, viviendo en santidad y extendiendo el Reino de Dios a través del amor y la verdad.
             </p>
         </div>
     </div>

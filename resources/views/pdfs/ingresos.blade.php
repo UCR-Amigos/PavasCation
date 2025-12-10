@@ -41,10 +41,9 @@
                 <th>Diezmo</th>
                 <th>Misiones</th>
                 <th>Seminario</th>
-                <th>Camp.</th>
-                <th>Const.</th>
-                <th>Prést.</th>
-                <th>Micro</th>
+                <th>Campamento</th>
+                <th>Pro-Templo</th>
+                <th>Ofrenda Especial</th>
                 <th>Suelto</th>
                 <th>TOTAL</th>
             </tr>
@@ -57,7 +56,6 @@
                     'seminario' => 0,
                     'campa' => 0,
                     'construccion' => 0,
-                    'prestamo' => 0,
                     'micro' => 0,
                     'suelto' => 0,
                     'total' => 0
@@ -71,7 +69,6 @@
                 <td>{{ number_format($registro['seminario'], 2) }}</td>
                 <td>{{ number_format($registro['campa'], 2) }}</td>
                 <td>{{ number_format($registro['construccion'], 2) }}</td>
-                <td>{{ number_format($registro['prestamo'], 2) }}</td>
                 <td>{{ number_format($registro['micro'], 2) }}</td>
                 <td>{{ number_format($registro['suelto'], 2) }}</td>
                 <td style="font-weight: bold;">{{ number_format($registro['total'], 2) }}</td>
@@ -82,7 +79,6 @@
                 $totales['seminario'] += $registro['seminario'];
                 $totales['campa'] += $registro['campa'];
                 $totales['construccion'] += $registro['construccion'];
-                $totales['prestamo'] += $registro['prestamo'];
                 $totales['micro'] += $registro['micro'];
                 $totales['suelto'] += $registro['suelto'];
                 $totales['total'] += $registro['total'];
@@ -95,7 +91,6 @@
                 <td>{{ number_format($totales['seminario'], 2) }}</td>
                 <td>{{ number_format($totales['campa'], 2) }}</td>
                 <td>{{ number_format($totales['construccion'], 2) }}</td>
-                <td>{{ number_format($totales['prestamo'], 2) }}</td>
                 <td>{{ number_format($totales['micro'], 2) }}</td>
                 <td>{{ number_format($totales['suelto'], 2) }}</td>
                 <td>{{ number_format($totales['total'], 2) }}</td>

@@ -197,6 +197,12 @@
                         <a href="{{ route('personas.show', $persona) }}" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">
                             Limpiar
                         </a>
+                        <a
+                            href="{{ route('personas.pdf-sobres', $persona) . '?' . http_build_query(request()->only(['mes','año','fecha_inicio','fecha_fin'])) }}"
+                            target="_blank"
+                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                            Descargar PDF
+                        </a>
                     </div>
                 </div>
             </form>

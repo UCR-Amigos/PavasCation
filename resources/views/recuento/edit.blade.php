@@ -47,7 +47,7 @@
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Detalles del Sobre</h3>
 
                 @php
-                    $categorias = ['diezmo', 'misiones', 'seminario', 'campa', 'prestamo', 'construccion', 'micro'];
+                    $categorias = ['diezmo', 'misiones', 'seminario', 'campamento', 'pro-templo', 'pro_templo', 'ofrenda especial'];
                     $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
                 @endphp
 

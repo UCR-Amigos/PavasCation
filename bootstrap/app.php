@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
+        // Append global audit logger (will record authenticated mutating requests)
+        $middleware->append(\App\Http\Middleware\AuditLogger::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

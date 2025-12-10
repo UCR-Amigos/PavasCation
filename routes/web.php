@@ -9,6 +9,7 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\PromesaController;
 use App\Http\Controllers\CultoController;
 use App\Http\Controllers\IngresosAsistenciaController;
+use App\Http\Controllers\AuditController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -99,6 +100,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('personas/{persona}/reiniciar-compromisos', [PersonaController::class, 'reiniciarCompromisos'])->name('personas.reiniciar-compromisos');
     Route::post('personas/{persona}/limpiar-todo', [PersonaController::class, 'limpiarTodo'])->name('personas.limpiar-todo');
     Route::get('personas/reporte-pdf', [PersonaController::class, 'reportePdf'])->name('personas.reporte-pdf');
+    Route::get('personas/{persona}/pdf-sobres', [PersonaController::class, 'pdfSobres'])->name('personas.pdf-sobres');
     Route::resource('personas', PersonaController::class);
     Route::resource('promesas', PromesaController::class);
     
@@ -112,6 +114,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     
     // Gestión de Usuarios
     Route::resource('usuarios', App\Http\Controllers\UserController::class);
+
+    // Auditoría
+    Route::prefix('admin/auditoria')->name('admin.auditoria.')->group(function () {
+        Route::get('/', [AuditController::class, 'index'])->name('index');
+        Route::get('/{log}', [AuditController::class, 'show'])->name('show');
+    });
 });
 
 require __DIR__.'/auth.php';

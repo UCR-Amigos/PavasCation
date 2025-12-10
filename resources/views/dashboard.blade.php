@@ -157,8 +157,8 @@
                         </svg>
                     </div>
                     <dl class="flex-1">
-                        <dt class="text-sm font-medium text-gray-500 mb-1">Préstamo</dt>
-                        <dd class="text-lg font-display font-bold text-red-600">₡{{ number_format($totalesMes['total_prestamo'], 2) }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 mb-1">Pro-Templo</dt>
+                        <dd class="text-lg font-display font-bold text-red-600">₡{{ number_format($totalesMes['total_construccion'], 2) }}</dd>
                     </dl>
                 </div>
             </div>
@@ -171,7 +171,7 @@
                         </svg>
                     </div>
                     <dl class="flex-1">
-                        <dt class="text-sm font-medium text-gray-500 mb-1">Micro</dt>
+                        <dt class="text-sm font-medium text-gray-500 mb-1">Ofrenda Especial</dt>
                         <dd class="text-lg font-display font-bold text-teal-600">₡{{ number_format($totalesMes['total_micro'], 2) }}</dd>
                     </dl>
                 </div>
@@ -297,14 +297,14 @@
     new Chart(distribucionCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Diezmo', 'Misiones', 'Seminario', 'Campamento', 'Préstamo', 'Construcción', 'Micro', 'Suelto'],
+            labels: ['Diezmo', 'Misiones', 'Seminario', 'Campamento', 'Pro-Templo', 'Ofrenda Especial', 'Suelto'],
             datasets: [{
                 data: [
                     {{ $distribucion['diezmo'] }},
                     {{ $distribucion['misiones'] }},
                     {{ $distribucion['seminario'] }},
                     {{ $distribucion['campa'] }},
-                    {{ $distribucion['prestamo'] }},
+                    {{ $distribucion['construccion'] }},
                     {{ $distribucion['construccion'] }},
                     {{ $distribucion['micro'] }},
                     {{ $distribucion['suelto'] }}

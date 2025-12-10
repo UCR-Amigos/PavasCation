@@ -75,9 +75,13 @@ class PersonaController extends Controller
 
         $persona = Persona::create($personaData);
 
-        // Guardar promesas si existen
+        // Guardar promesas si existen (excluye 'ofrenda especial')
         if ($request->has('promesas')) {
             foreach ($request->promesas as $promesaData) {
+                $cat = isset($promesaData['categoria']) ? strtolower(trim($promesaData['categoria'])) : '';
+                if ($cat === 'ofrenda especial' || $cat === 'ofrenda_especial') {
+                    continue;
+                }
                 if (!empty($promesaData['monto']) && $promesaData['monto'] > 0) {
                     $persona->promesas()->create($promesaData);
                 }
@@ -232,10 +236,14 @@ class PersonaController extends Controller
 
         $persona->update($personaData);
 
-        // Sincronizar promesas
+        // Sincronizar promesas (excluye 'ofrenda especial')
         $persona->promesas()->delete(); // Eliminar promesas anteriores
         if ($request->has('promesas')) {
             foreach ($request->promesas as $promesaData) {
+                $cat = isset($promesaData['categoria']) ? strtolower(trim($promesaData['categoria'])) : '';
+                if ($cat === 'ofrenda especial' || $cat === 'ofrenda_especial') {
+                    continue;
+                }
                 if (!empty($promesaData['monto']) && $promesaData['monto'] > 0) {
                     $persona->promesas()->create($promesaData);
                 }
@@ -542,5 +550,64 @@ class PersonaController extends Controller
         } else {
             return $pdf->stream($nombreArchivo);
         }
+    }
+
+    /**
+     * Genera un PDF de los sobres de una persona según filtros seleccionados en la vista 'Ver'.
+     */
+    public function pdfSobres(Request $request, Persona $persona)
+    {
+        $sobresQuery = $persona->sobres()->with(['detalles', 'culto']);
+
+        if ($request->filled('mes') && $request->mes !== 'todos') {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->whereMonth('fecha', $request->mes);
+            });
+        }
+
+        if ($request->filled('año') && $request->año !== 'todos') {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->whereYear('fecha', $request->año);
+            });
+        }
+
+        if ($request->filled('fecha_inicio')) {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->where('fecha', '>=', $request->fecha_inicio);
+            });
+        }
+
+        if ($request->filled('fecha_fin')) {
+            $sobresQuery->whereHas('culto', function($q) use ($request) {
+                $q->where('fecha', '<=', $request->fecha_fin);
+            });
+        }
+
+        $sobres = $sobresQuery->get();
+
+        // Armar descripción del período
+        $periodo = '';
+        if ($request->filled('fecha_inicio') || $request->filled('fecha_fin')) {
+            $ini = $request->filled('fecha_inicio') ? \Carbon\Carbon::parse($request->fecha_inicio)->format('d/m/Y') : 'inicio';
+            $fin = $request->filled('fecha_fin') ? \Carbon\Carbon::parse($request->fecha_fin)->format('d/m/Y') : 'hoy';
+            $periodo = $ini . ' - ' . $fin;
+        } elseif ($request->filled('mes') && $request->mes !== 'todos') {
+            $mesNombre = \Carbon\Carbon::create()->month((int)$request->mes)->locale('es')->translatedFormat('F');
+            $periodo = ucfirst($mesNombre) . ($request->filled('año') && $request->año !== 'todos' ? ' ' . $request->año : '');
+        } elseif ($request->filled('año') && $request->año !== 'todos') {
+            $periodo = 'Año ' . $request->año;
+        } else {
+            $periodo = 'Todos los registros';
+        }
+
+        $pdf = \PDF::loadView('pdfs.persona-sobres', [
+            'persona' => $persona,
+            'sobres' => $sobres,
+            'periodo' => $periodo,
+        ]);
+
+        $pdf->setPaper('letter', 'portrait');
+        $nombreArchivo = 'persona-' . $persona->id . '-sobres.pdf';
+        return $pdf->stream($nombreArchivo);
     }
 }

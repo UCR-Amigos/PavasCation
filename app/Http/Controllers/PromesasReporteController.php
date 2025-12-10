@@ -134,8 +134,8 @@ class PromesasReporteController extends Controller
 
         // PASO 2: Calcular TODOS los montos dados en el mes (incluyendo anónimos)
         // Para el apartado de promesas, excluimos 'diezmo' en "dados"
-        $categorias = $categoria ? [$categoria] : ['misiones', 'seminario', 'campa', 'construccion', 'prestamo', 'micro'];
-        // Si llegó una categoría específica 'diezmo', la omitimos igualmente
+        // Categorías nuevas para reporte de promesas (excluye diezmo)
+        $categorias = $categoria ? [$categoria] : ['misiones', 'seminario', 'campamento', 'pro-templo', 'ofrenda especial'];
         if ($categoria && strtolower($categoria) === 'diezmo') {
             $categorias = [];
         }

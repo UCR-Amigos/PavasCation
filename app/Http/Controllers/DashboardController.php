@@ -37,9 +37,11 @@ class DashboardController extends Controller
                     $carry['total_diezmo'] += $culto->totales->total_diezmo;
                     $carry['total_misiones'] += $culto->totales->total_misiones;
                     $carry['total_seminario'] += $culto->totales->total_seminario;
+                    // Campamento -> total_campa
                     $carry['total_campa'] += $culto->totales->total_campa;
-                    $carry['total_prestamo'] += $culto->totales->total_prestamo;
+                    // Pro-Templo -> total_construccion
                     $carry['total_construccion'] += $culto->totales->total_construccion;
+                    // Ofrenda Especial -> total_micro (reutilizada)
                     $carry['total_micro'] += $culto->totales->total_micro;
                     $carry['total_suelto'] += $culto->totales->total_suelto;
                 }

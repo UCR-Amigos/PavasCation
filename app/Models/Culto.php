@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
+use App\Traits\Auditable;
 
 class Culto extends Model
 {
+    use Auditable;
     protected $table = 'cultos';
 
     protected $fillable = [
