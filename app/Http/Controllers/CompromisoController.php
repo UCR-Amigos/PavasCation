@@ -58,6 +58,10 @@ class CompromisoController extends Controller
         $compromisos = collect();
 
         foreach ($persona->promesas as $promesa) {
+            // Excluir promesas de categoría 'diezmo' del sistema de compromisos
+            if (strtolower($promesa->categoria) === 'diezmo') {
+                continue;
+            }
             // Verificar si ya existe el registro de compromiso
             $compromiso = Compromiso::firstOrCreate(
                 [

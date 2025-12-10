@@ -19,6 +19,11 @@ class PromesasReporteController extends Controller
         $mes = $request->get('mes', date('m'));
         $categoria = $request->get('categoria', null);
 
+        // No mostrar 'diezmo' en el apartado de promesas (ingresos)
+        if ($categoria === 'diezmo') {
+            $categoria = null; // forzar vista general sin diezmo
+        }
+
         // Obtener años disponibles (solo año actual y anteriores)
         $añoActual = date('Y');
         $añosDisponibles = range($añoActual - 2, $añoActual);
@@ -39,6 +44,11 @@ class PromesasReporteController extends Controller
         $año = $request->get('año', date('Y'));
         $mes = $request->get('mes', date('m'));
         $categoria = $request->get('categoria', null);
+
+        // No mostrar 'diezmo' en PDF de promesas
+        if ($categoria === 'diezmo') {
+            $categoria = null;
+        }
 
         $totales = $this->calcularTotales($año, $mes, $categoria);
 
@@ -99,6 +109,11 @@ class PromesasReporteController extends Controller
                     continue;
                 }
 
+                // Excluir 'diezmo' del apartado de promesas (ingresos)
+                if (strtolower($promesa->categoria) === 'diezmo') {
+                    continue;
+                }
+
                 $cat = $promesa->categoria;
                 
                 if (!isset($totalesPorCategoria[$cat])) {
@@ -118,7 +133,12 @@ class PromesasReporteController extends Controller
         }
 
         // PASO 2: Calcular TODOS los montos dados en el mes (incluyendo anónimos)
-        $categorias = $categoria ? [$categoria] : ['diezmo', 'misiones', 'seminario', 'campa', 'construccion', 'prestamo', 'micro'];
+        // Para el apartado de promesas, excluimos 'diezmo' en "dados"
+        $categorias = $categoria ? [$categoria] : ['misiones', 'seminario', 'campa', 'construccion', 'prestamo', 'micro'];
+        // Si llegó una categoría específica 'diezmo', la omitimos igualmente
+        if ($categoria && strtolower($categoria) === 'diezmo') {
+            $categorias = [];
+        }
         
         foreach ($categorias as $cat) {
             // Obtener TODOS los sobres del mes en esta categoría (con o sin persona)
