@@ -168,7 +168,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ public_path('logo-ibbsc.png') }}" alt="IBBSC Logo" class="logo">
+        <img src="{{ public_path('images/Logo2.png') }}" alt="IBBP Logo" class="logo">
         <div class="title">Reporte Anual de Promesas</div>
         <div class="subtitle">Año {{ $año }}</div>
         @if($categoria && $categoria !== 'todas')
@@ -257,7 +257,7 @@
     </table>
 
     <div class="footer">
-        <p><strong>Iglesia Bautista Bíblica Sión de Coronado</strong></p>
+        <p><strong>Iglesia Bïblica Bautista en Pavas</strong></p>
         <p>Sistema de Gestión de Ingresos y Promesas</p>
     </div>
 </body>

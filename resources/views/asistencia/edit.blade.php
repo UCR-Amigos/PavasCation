@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBSC - Editar Asistencia')
+@section('title', 'IBBP - Editar Asistencia')
 @section('page-title', 'Editar Registro de Asistencia')
 
 @section('content')

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBSC - Nueva Promesa')
+@section('title', 'IBBP - Nueva Promesa')
 @section('page-title', 'Registrar Nueva Promesa')
 
 @section('content')

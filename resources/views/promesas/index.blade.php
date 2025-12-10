@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBSC - Promesas')
+@section('title', 'IBBP - Promesas')
 @section('page-title', 'Gestión de Promesas')
 
 @section('content')

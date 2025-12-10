@@ -509,7 +509,7 @@
                 </div>
                 <div class="header-text">
                     <h1>Reporte de Personas</h1>
-                    <h2>Iglesia Bautista Bíblica Shekinah de la Ciudad</h2>
+                    <h2>Iglesia Bíblica Bautista en Pavas</h2>
                 </div>
             </div>
         </div>
@@ -666,7 +666,7 @@
 
     <div class="footer">
         <p>🕐 Generado el {{ \Carbon\Carbon::now()->locale('es')->translatedFormat('d \d\e F \d\e Y \a \l\a\s h:i A') }}</p>
-        <p>IBBSC - Sistema de Administración | Powered by Gemini-Style Design</p>
+        <p>IBBP - Sistema de Administración | Powered by Gemini-Style Design</p>
     </div>
     </div>
 </body>

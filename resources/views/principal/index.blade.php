@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBSC - Principal')
-@section('page-title', 'Iglesia Bíblica Bautista Santa Cruz')
+@section('title', 'IBBP - Principal')
+@section('page-title', 'Iglesia Bíblica Bautista en Pavas')
 
 @section('content')
 <div class="space-y-6">
@@ -9,9 +9,9 @@
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl overflow-hidden">
         <div class="px-8 py-12 text-center text-white">
             <div class="flex justify-center mb-6">
-                <img src="{{ asset('images/Logo.png') }}" alt="IBBSC Logo" class="w-32 h-32 object-contain drop-shadow-2xl">
+                <img src="{{ asset('images/Logo.png') }}" alt="IBBP Logo" class="w-32 h-32 object-contain drop-shadow-2xl">
             </div>
-            <h1 class="text-4xl font-bold mb-4">Bienvenido a la Iglesia Bíblica Bautista Santa Cruz</h1>
+            <h1 class="text-4xl font-bold mb-4">Bienvenido a la Iglesia Bíblica Bautista en Pavas</h1>
             <p class="text-xl text-blue-100 max-w-2xl mx-auto">
                 Una comunidad de fe comprometida con el amor de Cristo y el servicio a Dios
             </p>
@@ -91,7 +91,7 @@
         <h2 class="text-2xl font-bold mb-4 text-center">Síguenos en Redes Sociales</h2>
         <p class="text-center mb-6">Mantente conectado con nuestra comunidad y conoce nuestras actividades</p>
         <div class="flex justify-center gap-6">
-            <a href="https://www.instagram.com/ibb_santacruz?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" 
+            <a href="https://www.instagram.com/ibbpavas/" 
                target="_blank" 
                rel="noopener noreferrer" 
                class="flex items-center gap-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105">
@@ -100,7 +100,7 @@
                 </svg>
                 <span class="font-semibold">Instagram</span>
             </a>
-            <a href="https://www.facebook.com/iglesia.biblica.bautista.santa.cruz" 
+            <a href="https://www.facebook.com/iglesia.biblica.bautista.pavas" 
                target="_blank" 
                rel="noopener noreferrer" 
                class="flex items-center gap-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-lg transition-all duration-200 hover:scale-105">

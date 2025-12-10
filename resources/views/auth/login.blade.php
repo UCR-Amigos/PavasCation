@@ -88,7 +88,7 @@
                 <!-- Logo central -->
                 <div class="relative animate-logo-entry">
                     <div class="absolute inset-0 bg-white/30 blur-2xl rounded-full animate-pulse-glow"></div>
-                    <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="relative w-28 h-28 mx-auto drop-shadow-2xl">
+                    <img src="{{ asset('images/Logo.png') }}" alt="IBBP" class="relative w-28 h-28 mx-auto drop-shadow-2xl">
                 </div>
             </div>
             

@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>IBBSC - Iniciar Sesión</title>
+        <title>IBBP - Iniciar Sesión</title>
 
         <!-- Favicon -->
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/Logo.png') }}">
@@ -37,11 +37,11 @@
                 <div class="relative inline-block">
                     <!-- Glow effect detrás del logo -->
                     <div class="absolute inset-0 bg-gradient-gemini-purple blur-3xl opacity-30 animate-glow"></div>
-                    <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="relative w-20 h-20 mx-auto drop-shadow-2xl animate-scale-in">
+                    <img src="{{ asset('images/Logo.png') }}" alt="IBBP" class="relative w-20 h-20 mx-auto drop-shadow-2xl animate-scale-in">
                 </div>
                 <!-- Texto con fondo semitransparente y sombras fuertes -->
                 <div class="mt-4 inline-block px-6 py-3 rounded-2xl bg-white/95 backdrop-blur-xl shadow-2xl animate-fade-in" style="animation-delay: 0.2s;">
-                    <h1 class="text-3xl font-display font-bold text-gradient">IBBSC Admin</h1>
+                    <h1 class="text-3xl font-display font-bold text-gradient">IBBP Admin</h1>
                     <p class="text-gray-700 font-medium mt-1">Sistema de Administración</p>
                 </div>
             </div>
@@ -57,7 +57,7 @@
 
                 <!-- Footer -->
                 <div class="text-center mt-6 text-sm text-gray-500 animate-fade-in" style="animation-delay: 0.6s;">
-                    <p>© {{ date('Y') }} IBBSC. Todos los derechos reservados.</p>
+                    <p>© {{ date('Y') }} IBBP. Todos los derechos reservados.</p>
                 </div>
             </div>
         </div>
