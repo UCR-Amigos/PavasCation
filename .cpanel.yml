@@ -2,8 +2,8 @@
 deployment:
   tasks:
     # Definir variables de ruta
-    - export DEPLOYPATH=/home/ibbsccou/public_html/
-    - export REPOPATH=/home/ibbsccou/repositories/IBBSCation/
+    - export DEPLOYPATH=/home/ibbsccou/public_html/IBBP/
+    - export REPOPATH=/home/ibbsccou/repositories/PavasCation/
     
     # Limpiar public_html (excepto .htaccess y archivos ocultos importantes)
     - /bin/find $DEPLOYPATH -mindepth 1 ! -name '.htaccess' ! -name '.well-known' -delete
