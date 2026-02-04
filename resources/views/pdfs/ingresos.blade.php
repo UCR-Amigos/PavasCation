@@ -26,24 +26,32 @@
 </head>
 <body>
     <div class="header">
-        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBP">
+        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBSC">
         <div class="header-text">
-            <h1>IBBP - Iglesia Bíblica Bautista en Pavas</h1>
+            <h1>IBBSC - Iglesia Bíblica Bautista en Santa Cruz</h1>
             <h2>Reporte de Ingresos - {{ ucfirst($tipoReporte) }}</h2>
             <p><strong>Generado:</strong> {{ now()->format('d/m/Y H:i') }}</p>
         </div>
     </div>
-    
+    @if(isset($soloTransferencias) && $soloTransferencias)
+    @php $totalTransferenciasGlobal = collect($registros)->sum('total'); @endphp
+    <div class="info-box" style="margin-top:10px;">
+        <strong>Total Transferencias:</strong> {{ number_format($totalTransferenciasGlobal, 2) }}
+    </div>
+    @endif
+
     <table>
         <thead>
             <tr>
                 <th>Fecha/Periodo</th>
                 <th>Diezmo</th>
+                <th>Ofr. Esp.</th>
                 <th>Misiones</th>
                 <th>Seminario</th>
-                <th>Campamento</th>
-                <th>Pro-Templo</th>
-                <th>Ofrenda Especial</th>
+                <th>Camp.</th>
+                <th>Const.</th>
+                <th>Prést.</th>
+                <th>Micro</th>
                 <th>Suelto</th>
                 <th>TOTAL</th>
             </tr>
@@ -56,6 +64,7 @@
                     'seminario' => 0,
                     'campa' => 0,
                     'construccion' => 0,
+                    'prestamo' => 0,
                     'micro' => 0,
                     'suelto' => 0,
                     'total' => 0
@@ -65,20 +74,24 @@
             <tr>
                 <td style="text-align: left;">{{ $registro['fecha'] }}</td>
                 <td>{{ number_format($registro['diezmo'], 2) }}</td>
+                <td>{{ number_format($registro['ofrenda_especial'] ?? 0, 2) }}</td>
                 <td>{{ number_format($registro['misiones'], 2) }}</td>
                 <td>{{ number_format($registro['seminario'], 2) }}</td>
                 <td>{{ number_format($registro['campa'], 2) }}</td>
                 <td>{{ number_format($registro['construccion'], 2) }}</td>
+                <td>{{ number_format($registro['prestamo'], 2) }}</td>
                 <td>{{ number_format($registro['micro'], 2) }}</td>
                 <td>{{ number_format($registro['suelto'], 2) }}</td>
                 <td style="font-weight: bold;">{{ number_format($registro['total'], 2) }}</td>
             </tr>
             @php
                 $totales['diezmo'] += $registro['diezmo'];
+                $totales['ofrenda_especial'] = ($totales['ofrenda_especial'] ?? 0) + ($registro['ofrenda_especial'] ?? 0);
                 $totales['misiones'] += $registro['misiones'];
                 $totales['seminario'] += $registro['seminario'];
                 $totales['campa'] += $registro['campa'];
                 $totales['construccion'] += $registro['construccion'];
+                $totales['prestamo'] += $registro['prestamo'];
                 $totales['micro'] += $registro['micro'];
                 $totales['suelto'] += $registro['suelto'];
                 $totales['total'] += $registro['total'];
@@ -87,10 +100,12 @@
             <tr class="total-row">
                 <td style="text-align: left;">TOTALES</td>
                 <td>{{ number_format($totales['diezmo'], 2) }}</td>
+                <td>{{ number_format($totales['ofrenda_especial'] ?? 0, 2) }}</td>
                 <td>{{ number_format($totales['misiones'], 2) }}</td>
                 <td>{{ number_format($totales['seminario'], 2) }}</td>
                 <td>{{ number_format($totales['campa'], 2) }}</td>
                 <td>{{ number_format($totales['construccion'], 2) }}</td>
+                <td>{{ number_format($totales['prestamo'], 2) }}</td>
                 <td>{{ number_format($totales['micro'], 2) }}</td>
                 <td>{{ number_format($totales['suelto'], 2) }}</td>
                 <td>{{ number_format($totales['total'], 2) }}</td>
@@ -98,8 +113,28 @@
         </tbody>
     </table>
     
+    @if(isset($tesorerosPorFecha) && is_array($tesorerosPorFecha) && count($tesorerosPorFecha) > 0)
+    <h3 style="margin-top: 20px; font-size: 11px;">Tesoreros por Fecha</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tesoreros</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($tesorerosPorFecha as $fecha => $nombres)
+            <tr>
+                <td style="text-align:left;">{{ $fecha }}</td>
+                <td style="text-align:left;">{{ is_array($nombres) ? implode(', ', $nombres) : $nombres }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+    @endif
+
     <div class="footer">
-        <p>Sistema de Administración - IBBP - Iglesia Bíblica Bautista en Pavas</p>
+        <p>Sistema de Administración - IBBSC - Iglesia Bíblica Bautista en Santa Cruz</p>
     </div>
 </body>
 </html>

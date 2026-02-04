@@ -1,4 +1,7 @@
 <!-- Información del Culto -->
+@php
+    $isAdmin = auth()->check() && (method_exists(auth()->user(), 'isAdmin') ? auth()->user()->isAdmin() : (auth()->user()->rol ?? null) === 'admin');
+@endphp
 <div class="bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg p-6 border-l-4 border-gray-500 mb-6">
     <div class="flex items-center justify-between">
         <div>
@@ -24,18 +27,29 @@
 
 <!-- Resumen Estadístico -->
 @if($culto->totales)
+@php
+    // Calcular totales por método de pago
+    $sobresEfectivo = $sobres->where('metodo_pago', 'efectivo')->sum('total_declarado');
+    $sobresTransferencias = $sobres->where('metodo_pago', 'transferencia')->sum('total_declarado');
+    $totalSuelto = $ofrendasSueltas->sum('monto');
+    $totalEgresosCerrado = $culto->egresos->sum('monto');
+    $totalEfectivoCerrado = $sobresEfectivo + $totalSuelto - $totalEgresosCerrado;
+    $totalTransferenciasCerrado = $sobresTransferencias;
+@endphp
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
     <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
-        <p class="text-sm text-gray-600">Cantidad de Sobres</p>
-        <p class="text-2xl font-bold text-green-600">{{ $culto->totales->cantidad_sobres }}</p>
+        <p class="text-sm text-gray-600">Total Efectivo</p>
+        <p class="text-2xl font-bold text-green-600">₡{{ number_format($totalEfectivoCerrado, 2) }}</p>
+        <p class="text-xs text-gray-500 mt-1">Sobres + Suelto - Egresos</p>
     </div>
-    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-purple-500">
-        <p class="text-sm text-gray-600">Total Diezmos</p>
-        <p class="text-2xl font-bold text-purple-600">₡{{ number_format($culto->totales->total_diezmo, 2) }}</p>
+    <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+        <p class="text-sm text-gray-600">Total Transferencias</p>
+        <p class="text-2xl font-bold text-blue-600">₡{{ number_format($totalTransferenciasCerrado, 2) }}</p>
+        <p class="text-xs text-gray-500 mt-1">Sobres transferencia</p>
     </div>
     <div class="bg-white rounded-lg shadow p-4 border-l-4 border-orange-500">
-        <p class="text-sm text-gray-600">Transferencias</p>
-        <p class="text-2xl font-bold text-orange-600">{{ $culto->totales->cantidad_transferencias }}</p>
+        <p class="text-sm text-gray-600">Cantidad de Sobres</p>
+        <p class="text-2xl font-bold text-orange-600">{{ $culto->totales->cantidad_sobres }}</p>
     </div>
 </div>
 @endif
@@ -54,9 +68,13 @@
                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Misiones</th>
                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Seminario</th>
                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Campamento</th>
-                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Pro-Templo</th>
-                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Ofrenda Especial</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Préstamo</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Construcción</th>
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Micro</th>
                     <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase font-bold">Subtotal</th>
+                    @if($isAdmin)
+                    <th class="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase">Acciones</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -78,28 +96,41 @@
                     $diezmo = $detallesPorCategoria->get('diezmo')->monto ?? 0;
                     $misiones = $detallesPorCategoria->get('misiones')->monto ?? 0;
                     $seminario = $detallesPorCategoria->get('seminario')->monto ?? 0;
-                    $campa = $detallesPorCategoria->get('campamento')->monto ?? ($detallesPorCategoria->get('campa')->monto ?? 0);
-                    $pro_templo = $detallesPorCategoria->get('pro-templo')->monto ?? ($detallesPorCategoria->get('construccion')->monto ?? 0);
-                    $ofrenda_especial = $detallesPorCategoria->get('ofrenda especial')->monto ?? ($detallesPorCategoria->get('micro')->monto ?? 0);
+                    $campa = $detallesPorCategoria->get('campa')->monto ?? 0;
+                    $prestamo = $detallesPorCategoria->get('prestamo')->monto ?? 0;
+                    $construccion = $detallesPorCategoria->get('construccion')->monto ?? 0;
+                    $micro = $detallesPorCategoria->get('micro')->monto ?? 0;
                     $subtotal = $sobre->total_declarado;
 
                     $totales['diezmo'] += $diezmo;
                     $totales['misiones'] += $misiones;
                     $totales['seminario'] += $seminario;
                     $totales['campa'] += $campa;
-                    $totales['construccion'] += $pro_templo;
-                    $totales['micro'] += $ofrenda_especial;
+                    $totales['prestamo'] += $prestamo;
+                    $totales['construccion'] += $construccion;
+                    $totales['micro'] += $micro;
                     $totales['subtotal'] += $subtotal;
                 @endphp
                 <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-sm font-medium text-gray-900">#{{ $sobre->numero_sobre }}</td>
+                    <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                        #{{ $sobre->numero_sobre }}
+                        @if($isAdmin)
+                        <a href="{{ route('recuento.edit', $sobre) }}" class="ml-2 inline-block text-blue-600 hover:text-blue-800 font-medium">Editar</a>
+                        @endif
+                    </td>
                     <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($diezmo, 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($misiones, 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($seminario, 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($campa, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($pro_templo, 2) }}</td>
-                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($ofrenda_especial, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($prestamo, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($construccion, 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-700">₡{{ number_format($micro, 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right font-bold text-blue-600">₡{{ number_format($subtotal, 2) }}</td>
+                    @if($isAdmin)
+                    <td class="px-4 py-3 text-sm text-right">
+                        <a href="{{ route('recuento.edit', $sobre) }}" class="text-blue-600 hover:text-blue-800 font-medium">Editar</a>
+                    </td>
+                    @endif
                 </tr>
                 @endforeach
                 
@@ -123,6 +154,34 @@
                     <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                     <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                     <td class="px-4 py-3 text-sm text-right font-bold text-green-600">₡{{ number_format($ofrenda->monto, 2) }}</td>
+                    @if($isAdmin)
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    @endif
+                </tr>
+                @endforeach
+
+                @foreach($culto->egresos as $egreso)
+                @php
+                    $totales['subtotal'] -= $egreso->monto;
+                @endphp
+                <tr class="hover:bg-red-50 bg-red-50/30">
+                    <td class="px-4 py-3 text-sm">
+                        <span class="font-medium text-red-700">Egreso</span>
+                        @if($egreso->descripcion)
+                        <span class="text-xs text-gray-500 block">{{ $egreso->descripcion }}</span>
+                        @endif
+                    </td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-red-600">₡{{ number_format($egreso->monto, 2) }}</td>
+                    @if($isAdmin)
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    @endif
                 </tr>
                 @endforeach
                 
@@ -133,9 +192,13 @@
                     <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['misiones'], 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['seminario'], 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['campa'], 2) }}</td>
+                    <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['prestamo'], 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['construccion'], 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right font-bold text-blue-700">₡{{ number_format($totales['micro'], 2) }}</td>
                     <td class="px-4 py-3 text-sm text-right font-bold text-green-700 text-lg">₡{{ number_format($totales['subtotal'], 2) }}</td>
+                    @if($isAdmin)
+                    <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                    @endif
                 </tr>
             </tbody>
         </table>

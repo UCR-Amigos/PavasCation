@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Carbon\Carbon;
-use App\Traits\Auditable;
 
 class Culto extends Model
 {
-    use Auditable;
     protected $table = 'cultos';
 
     protected $fillable = [
@@ -18,6 +16,11 @@ class Culto extends Model
         'hora',
         'tipo_culto',
         'notas',
+        'firma_tesorero',
+        'firmas_tesoreros',
+        'firma_pastor',
+        'firma_pastor_imagen',
+        'firmas_tesoreros_imagenes',
         'cerrado',
         'cerrado_at',
         'cerrado_por',
@@ -37,6 +40,8 @@ class Culto extends Model
             'hora' => 'datetime',
             'cerrado' => 'boolean',
             'cerrado_at' => 'datetime',
+            'firmas_tesoreros' => 'array',
+            'firmas_tesoreros_imagenes' => 'array',
         ];
     }
 
@@ -57,6 +62,11 @@ class Culto extends Model
     public function ofrendasSueltas(): HasMany
     {
         return $this->hasMany(OfrendaSuelta::class);
+    }
+
+    public function egresos(): HasMany
+    {
+        return $this->hasMany(Egreso::class);
     }
 
     public function asistencia(): HasOne

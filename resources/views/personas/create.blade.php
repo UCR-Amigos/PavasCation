@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBP - Nueva Persona')
+@section('title', 'IBBSC - Nueva Persona')
 @section('page-title', 'Registrar Nueva Persona')
 
 @section('content')
@@ -107,13 +107,12 @@
                     
                     <div id="promesas-container" class="space-y-4">
                         @php
-                            // Categorías de compromisos permitidas (excluye diezmo y ofrenda especial)
-                            $categorias = ['misiones', 'seminario', 'campamento', 'pro-templo'];
+                            $categorias = ['misiones', 'micro', 'construccion', 'seminario', 'campa', 'prestamo'];
                         @endphp
                         
                         @foreach($categorias as $index => $categoria)
                         <div class="bg-gray-50 p-4 rounded-lg">
-                            <h4 class="text-sm font-medium text-gray-700 mb-3 capitalize">{{ $categoria === 'pro-templo' ? 'Pro-Templo' : ucfirst($categoria) }}</h4>
+                            <h4 class="text-sm font-medium text-gray-700 mb-3 capitalize">{{ ucfirst($categoria) }}</h4>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                                 <div>
                                     <label class="block text-xs text-gray-600 mb-1">Monto</label>
@@ -137,7 +136,7 @@
                                 <div class="flex items-end">
                                     <p class="text-xs text-gray-500">
                                         <span class="font-medium">Ejemplo:</span><br>
-                                        $100 semanal = ~$400-500/mes
+                                        ₡100 semanal = ~₡400-500/mes
                                     </p>
                                 </div>
                             </div>

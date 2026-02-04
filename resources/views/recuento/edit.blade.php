@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBP - Editar Sobre')
+@section('title', 'IBBSC - Editar Sobre')
 @section('page-title', 'Editar Sobre #' . $sobre->numero_sobre)
 
 @section('content')
@@ -41,13 +41,21 @@
                 @error('metodo_pago')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
+                <div id="comprobanteWrapper" class="mt-3 hidden">
+                    <label for="comprobante_numero" class="block text-sm font-medium text-gray-700 mb-2">N° Comprobante (Transferencia)</label>
+                    <input type="text" name="comprobante_numero" id="comprobante_numero" value="{{ old('comprobante_numero', $sobre->comprobante_numero) }}"
+                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Ej: 1234567890">
+                    @error('comprobante_numero')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
             </div>
 
             <div class="space-y-4 mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Detalles del Sobre</h3>
 
                 @php
-                    $categorias = ['diezmo', 'misiones', 'seminario', 'campamento', 'pro-templo', 'pro_templo', 'ofrenda especial'];
+                    $categorias = ['diezmo', 'misiones', 'seminario', 'campa', 'prestamo', 'construccion', 'micro'];
                     $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
                 @endphp
 
@@ -58,7 +66,7 @@
                     </label>
                     <div class="relative">
                         <input type="hidden" name="detalles[{{ $loop->index }}][categoria]" value="{{ $categoria }}">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">$</span>
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₡</span>
                         <input type="number" 
                                name="detalles[{{ $loop->index }}][monto]" 
                                id="detalle_{{ $categoria }}"
@@ -74,7 +82,7 @@
             <div class="bg-blue-50 rounded-lg p-4 mb-6">
                 <div class="flex justify-between items-center">
                     <span class="text-lg font-semibold text-gray-700">Total Declarado:</span>
-                    <span id="totalDeclarado" class="text-2xl font-bold text-blue-600">$0.00</span>
+                    <span id="totalDeclarado" class="text-2xl font-bold text-blue-600">₡0.00</span>
                 </div>
             </div>
 
@@ -103,6 +111,9 @@
     document.addEventListener('DOMContentLoaded', function() {
         const inputs = document.querySelectorAll('.detalle-monto');
         const totalDisplay = document.getElementById('totalDeclarado');
+        const metodoPagoSelect = document.getElementById('metodo_pago');
+        const comprobanteWrapper = document.getElementById('comprobanteWrapper');
+        const comprobanteInput = document.getElementById('comprobante_numero');
 
         function calcularTotal() {
             let total = 0;
@@ -122,6 +133,18 @@
         });
 
         calcularTotal();
+
+        function toggleComprobante() {
+            if (metodoPagoSelect.value === 'transferencia') {
+                comprobanteWrapper.classList.remove('hidden');
+                comprobanteInput.required = true;
+            } else {
+                comprobanteWrapper.classList.add('hidden');
+                comprobanteInput.required = false;
+            }
+        }
+        metodoPagoSelect.addEventListener('change', toggleComprobante);
+        toggleComprobante();
     });
 </script>
 @endpush

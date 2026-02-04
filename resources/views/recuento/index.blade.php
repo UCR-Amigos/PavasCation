@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBP - Recuento de Sobres')
+@section('title', 'IBBSC - Recuento de Sobres')
 @section('page-title', 'Recuento de Sobres')
 
 @section('content')
@@ -43,11 +43,20 @@
                 <button type="button" onclick="document.getElementById('modalSuelto').classList.remove('hidden')" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
                     + Dinero Suelto
                 </button>
+                <button type="button" onclick="document.getElementById('modalEgreso').classList.remove('hidden')" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors">
+                    - Egresos
+                </button>
                 <a href="{{ route('ingresos-asistencia.pdf-recuento-individual', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     <span class="hidden sm:inline">Descargar </span>PDF
+                </a>
+                <a href="{{ route('ingresos-asistencia.pdf-recuento-transferencias', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Transferencias</span>
                 </a>
                 <button type="button" onclick="mostrarModalCerrarCulto({{ $cultoSeleccionado->id }})" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,6 +70,12 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     <span class="hidden sm:inline">Descargar </span>PDF
+                </a>
+                <a href="{{ route('ingresos-asistencia.pdf-recuento-transferencias', $cultoSeleccionado->id) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="hidden sm:inline">Transferencias</span>
                 </a>
                 <div class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md border border-gray-300 flex items-center justify-center gap-2">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -79,10 +94,390 @@
 
     @if($cultoSeleccionado && !$cultoSeleccionado->cerrado)
     <!-- MODO EDICIÓN: Culto Activo Seleccionado -->
+    <!-- Firmas de Recuento -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-semibold mb-4">Firmas de Recuento</h3>
+        <form method="POST" action="{{ route('recuento.firmas.update', $cultoSeleccionado->id) }}" class="space-y-4" id="firmasForm">
+            @csrf
+
+            <!-- Pastor -->
+            <div class="border rounded-lg p-4 bg-gray-50">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Pastor</label>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <input type="text" name="firma_pastor" id="firma_pastor_nombre"
+                           value="{{ old('firma_pastor', $cultoSeleccionado->firma_pastor) }}"
+                           class="flex-1 min-w-[200px] rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                           placeholder="Nombre del pastor">
+                    <input type="hidden" name="firma_pastor_imagen" id="firma_pastor_imagen"
+                           value="{{ old('firma_pastor_imagen', $cultoSeleccionado->firma_pastor_imagen) }}">
+                    <button type="button" onclick="abrirModalFirma('pastor', document.getElementById('firma_pastor_nombre').value || 'Pastor')"
+                            class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                        Firmar
+                    </button>
+                    <div id="preview_pastor" class="w-24 h-12 border rounded bg-white flex items-center justify-center overflow-hidden">
+                        @if($cultoSeleccionado->firma_pastor_imagen)
+                            <img src="{{ $cultoSeleccionado->firma_pastor_imagen }}" class="max-w-full max-h-full object-contain">
+                        @else
+                            <span class="text-xs text-gray-400">Sin firma</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tesoreros -->
+            <div class="border rounded-lg p-4 bg-gray-50">
+                <div class="flex justify-between items-center mb-3">
+                    <label class="block text-sm font-medium text-gray-700">Tesoreros</label>
+                    <button type="button" onclick="agregarTesorero()"
+                            class="px-3 py-1 bg-green-100 text-green-700 rounded-md hover:bg-green-200 text-sm flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Agregar Tesorero
+                    </button>
+                </div>
+                <div id="tesorerosContainer" class="space-y-3">
+                    @php
+                        $tesorerosImagenes = old('firmas_tesoreros', $cultoSeleccionado->firmas_tesoreros_imagenes ?? []);
+                        if (empty($tesorerosImagenes)) {
+                            // Si no hay imágenes, usar los nombres viejos
+                            $tesoreros = $cultoSeleccionado->firmas_tesoreros ?? [];
+                            $tesorerosImagenes = array_map(fn($n) => ['nombre' => $n, 'imagen' => ''], $tesoreros);
+                        }
+                    @endphp
+                    @if(empty($tesorerosImagenes))
+                        <div class="tesorero-row flex flex-wrap gap-3 items-center p-3 bg-white rounded-lg border" data-index="0">
+                            <input type="text" name="firmas_tesoreros[0][nombre]"
+                                   class="flex-1 min-w-[200px] rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 tesorero-nombre"
+                                   placeholder="Nombre del tesorero">
+                            <input type="hidden" name="firmas_tesoreros[0][imagen]" class="tesorero-imagen">
+                            <button type="button" onclick="abrirModalFirmaTesorero(this)"
+                                    class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                </svg>
+                                Firmar
+                            </button>
+                            <div class="tesorero-preview w-24 h-12 border rounded bg-white flex items-center justify-center overflow-hidden">
+                                <span class="text-xs text-gray-400">Sin firma</span>
+                            </div>
+                            <button type="button" onclick="quitarTesorero(this)"
+                                    class="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                    @else
+                        @foreach($tesorerosImagenes as $index => $t)
+                        <div class="tesorero-row flex flex-wrap gap-3 items-center p-3 bg-white rounded-lg border" data-index="{{ $index }}">
+                            <input type="text" name="firmas_tesoreros[{{ $index }}][nombre]"
+                                   value="{{ is_array($t) ? ($t['nombre'] ?? '') : $t }}"
+                                   class="flex-1 min-w-[200px] rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 tesorero-nombre"
+                                   placeholder="Nombre del tesorero">
+                            <input type="hidden" name="firmas_tesoreros[{{ $index }}][imagen]"
+                                   class="tesorero-imagen"
+                                   value="{{ is_array($t) ? ($t['imagen'] ?? '') : '' }}">
+                            <button type="button" onclick="abrirModalFirmaTesorero(this)"
+                                    class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                                </svg>
+                                Firmar
+                            </button>
+                            <div class="tesorero-preview w-24 h-12 border rounded bg-white flex items-center justify-center overflow-hidden">
+                                @if(is_array($t) && !empty($t['imagen']))
+                                    <img src="{{ $t['imagen'] }}" class="max-w-full max-h-full object-contain">
+                                @else
+                                    <span class="text-xs text-gray-400">Sin firma</span>
+                                @endif
+                            </div>
+                            <button type="button" onclick="quitarTesorero(this)"
+                                    class="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Guardar Firmas
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal de Firma -->
+    <div id="modalFirma" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h4 class="text-lg font-semibold text-gray-800">
+                    Firma de: <span id="modalFirmaNombre" class="text-blue-600"></span>
+                </h4>
+                <button type="button" onclick="cerrarModalFirma()" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="border-2 border-dashed border-gray-300 rounded-lg bg-white mb-4">
+                    <canvas id="signatureCanvas" class="w-full cursor-crosshair" style="touch-action: none;"></canvas>
+                </div>
+                <p class="text-sm text-gray-500 text-center mb-4">Dibuje su firma con el mouse o dedo</p>
+            </div>
+            <div class="flex justify-between p-4 border-t bg-gray-50 rounded-b-xl">
+                <button type="button" onclick="limpiarCanvas()"
+                        class="px-4 py-2 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Limpiar
+                </button>
+                <div class="flex gap-2">
+                    <button type="button" onclick="cerrarModalFirma()"
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100">
+                        Cancelar
+                    </button>
+                    <button type="button" onclick="guardarFirma()"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Guardar Firma
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales para firma
+        let canvas, ctx;
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let currentSignerType = null; // 'pastor' o 'tesorero'
+        let currentTesoreroRow = null;
+        let tesoreroIndex = {{ count($tesorerosImagenes) > 0 ? count($tesorerosImagenes) : 1 }};
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initCanvas();
+        });
+
+        function initCanvas() {
+            canvas = document.getElementById('signatureCanvas');
+            if (!canvas) return;
+
+            // Ajustar tamaño del canvas
+            const container = canvas.parentElement;
+            canvas.width = container.offsetWidth - 4;
+            canvas.height = 200;
+
+            ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events
+            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+            canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function getTouchPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.touches[0].clientX - rect.left,
+                y: e.touches[0].clientY - rect.top
+            };
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const pos = getMousePos(e);
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getTouchPos(e);
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            const pos = getMousePos(e);
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if (!isDrawing) return;
+            const pos = getTouchPos(e);
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(pos.x, pos.y);
+            ctx.stroke();
+
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function limpiarCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function abrirModalFirma(type, nombre) {
+            currentSignerType = type;
+            currentTesoreroRow = null;
+            document.getElementById('modalFirmaNombre').textContent = nombre || 'Firmante';
+            document.getElementById('modalFirma').classList.remove('hidden');
+
+            // Reinicializar canvas
+            setTimeout(() => {
+                initCanvas();
+                limpiarCanvas();
+
+                // Cargar firma existente si hay
+                const existingSignature = document.getElementById('firma_pastor_imagen').value;
+                if (existingSignature) {
+                    loadSignatureToCanvas(existingSignature);
+                }
+            }, 100);
+        }
+
+        function abrirModalFirmaTesorero(btn) {
+            const row = btn.closest('.tesorero-row');
+            currentSignerType = 'tesorero';
+            currentTesoreroRow = row;
+
+            const nombre = row.querySelector('.tesorero-nombre').value || 'Tesorero';
+            document.getElementById('modalFirmaNombre').textContent = nombre;
+            document.getElementById('modalFirma').classList.remove('hidden');
+
+            setTimeout(() => {
+                initCanvas();
+                limpiarCanvas();
+
+                // Cargar firma existente si hay
+                const existingSignature = row.querySelector('.tesorero-imagen').value;
+                if (existingSignature) {
+                    loadSignatureToCanvas(existingSignature);
+                }
+            }, 100);
+        }
+
+        function loadSignatureToCanvas(dataUrl) {
+            const img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = dataUrl;
+        }
+
+        function cerrarModalFirma() {
+            document.getElementById('modalFirma').classList.add('hidden');
+            currentSignerType = null;
+            currentTesoreroRow = null;
+        }
+
+        function guardarFirma() {
+            const dataUrl = canvas.toDataURL('image/png');
+
+            if (currentSignerType === 'pastor') {
+                document.getElementById('firma_pastor_imagen').value = dataUrl;
+                document.getElementById('preview_pastor').innerHTML =
+                    `<img src="${dataUrl}" class="max-w-full max-h-full object-contain">`;
+            } else if (currentSignerType === 'tesorero' && currentTesoreroRow) {
+                currentTesoreroRow.querySelector('.tesorero-imagen').value = dataUrl;
+                currentTesoreroRow.querySelector('.tesorero-preview').innerHTML =
+                    `<img src="${dataUrl}" class="max-w-full max-h-full object-contain">`;
+            }
+
+            cerrarModalFirma();
+        }
+
+        function agregarTesorero() {
+            const container = document.getElementById('tesorerosContainer');
+            const div = document.createElement('div');
+            div.className = 'tesorero-row flex flex-wrap gap-3 items-center p-3 bg-white rounded-lg border';
+            div.setAttribute('data-index', tesoreroIndex);
+            div.innerHTML = `
+                <input type="text" name="firmas_tesoreros[${tesoreroIndex}][nombre]"
+                       class="flex-1 min-w-[200px] rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 tesorero-nombre"
+                       placeholder="Nombre del tesorero">
+                <input type="hidden" name="firmas_tesoreros[${tesoreroIndex}][imagen]" class="tesorero-imagen">
+                <button type="button" onclick="abrirModalFirmaTesorero(this)"
+                        class="px-4 py-2 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                    </svg>
+                    Firmar
+                </button>
+                <div class="tesorero-preview w-24 h-12 border rounded bg-white flex items-center justify-center overflow-hidden">
+                    <span class="text-xs text-gray-400">Sin firma</span>
+                </div>
+                <button type="button" onclick="quitarTesorero(this)"
+                        class="px-3 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </button>
+            `;
+            container.appendChild(div);
+            tesoreroIndex++;
+        }
+
+        function quitarTesorero(btn) {
+            const row = btn.closest('.tesorero-row');
+            row.remove();
+        }
+    </script>
     
     <!-- Resumen del Culto -->
     @if($cultoSeleccionado->totales)
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
         <div class="bg-white rounded-lg shadow p-4">
             <p class="text-sm text-gray-600">Total General</p>
             <p class="text-2xl font-bold text-blue-600">₡{{ number_format($cultoSeleccionado->totales->total_general, 2) }}</p>
@@ -95,6 +490,10 @@
             <p class="text-sm text-gray-600">Diezmos</p>
             <p class="text-2xl font-bold text-purple-600">₡{{ number_format($cultoSeleccionado->totales->total_diezmo, 2) }}</p>
         </div>
+            <div class="bg-white rounded-lg shadow p-4">
+                <p class="text-sm text-gray-600">Ofrenda Especial</p>
+                <p class="text-2xl font-bold text-pink-600">₡{{ number_format($cultoSeleccionado->totales->total_ofrenda_especial, 2) }}</p>
+            </div>
         <div class="bg-white rounded-lg shadow p-4">
             <p class="text-sm text-gray-600">Transferencias</p>
             <p class="text-2xl font-bold text-orange-600">{{ $cultoSeleccionado->totales->cantidad_transferencias }}</p>
@@ -139,13 +538,21 @@
                                     {{ ucfirst($detalle->categoria) }}: ₡{{ number_format($detalle->monto, 2) }}
                                 </span>
                             @endforeach
+                            @if($sobre->metodo_pago === 'transferencia' && $sobre->comprobante_numero)
+                                <span class="inline-block bg-blue-100 text-blue-800 rounded px-2 py-1 text-xs mr-1 mb-1">
+                                    Comprobante: {{ $sobre->comprobante_numero }}
+                                </span>
+                            @endif
+                            @if($sobre->notas)
+                                <span class="block text-xs text-gray-500 mt-1">Notas: {{ $sobre->notas }}</span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <!-- Desktop actions -->
                             <div class="hidden sm:flex sm:items-center sm:justify-end sm:gap-3">
                                 <a href="{{ route('recuento.edit', $sobre) }}" class="text-blue-600 hover:text-blue-900">Editar</a>
                                 @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
-                                <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero }})" class="text-red-600 hover:text-red-900">
+                                <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero_sobre }})" class="text-red-600 hover:text-red-900">
                                     Eliminar
                                 </button>
                                 @endif
@@ -170,7 +577,7 @@
                                             </span>
                                         </a>
                                         @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
-                                        <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero }}); toggleSobreDropdown({{ $sobre->id }})" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-red-50">
+                                        <button type="button" onclick="mostrarModalEliminarSobre({{ $sobre->id }}, {{ $sobre->numero_sobre }}); toggleSobreDropdown({{ $sobre->id }})" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-red-50">
                                             <span class="flex items-center gap-2">
                                                 <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
@@ -211,6 +618,39 @@
 
     <!-- Tabla Resumen por Culto -->
     @if($sobres->count() > 0)
+    @php
+        // Sobres por método de pago
+        $sobresEfectivo = $sobres->where('metodo_pago', 'efectivo')->sum('total_declarado');
+        $sobresTransferencias = $sobres->where('metodo_pago', 'transferencia')->sum('total_declarado');
+
+        // Dinero suelto siempre es efectivo
+        $totalSuelto = $ofrendasSueltas->sum('monto');
+
+        // Total de egresos (solo se resta del efectivo)
+        $totalEgresos = $egresos->sum('monto');
+
+        // Totales finales
+        $totalEfectivo = $sobresEfectivo + $totalSuelto - $totalEgresos;
+        $totalTransferencias = $sobresTransferencias;
+        $totalGeneral = $totalEfectivo + $totalTransferencias;
+    @endphp
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-green-500">
+            <p class="text-sm text-gray-600">Total Efectivo</p>
+            <p class="text-2xl font-bold text-green-600">₡{{ number_format($totalEfectivo, 2) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Sobres + Suelto - Egresos</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
+            <p class="text-sm text-gray-600">Total Transferencias</p>
+            <p class="text-2xl font-bold text-blue-600">₡{{ number_format($totalTransferencias, 2) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Sobres + Suelto</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-4 border-l-4 border-purple-500">
+            <p class="text-sm text-gray-600">Total General</p>
+            <p class="text-2xl font-bold text-purple-600">₡{{ number_format($totalGeneral, 2) }}</p>
+            <p class="text-xs text-gray-500 mt-1">Efectivo + Transferencias</p>
+        </div>
+    </div>
     <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <h3 class="text-lg font-semibold text-gray-900">Resumen Detallado por Categorías</h3>
@@ -316,6 +756,48 @@
                         <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                         <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
                         <td class="px-4 py-3 text-sm text-right font-bold text-green-600">₡{{ number_format($ofrenda->monto, 2) }}</td>
+                    </tr>
+                    @endforeach
+
+                    <!-- Filas de Egresos -->
+                    @foreach($egresos as $egreso)
+                    @php
+                        $totales['subtotal'] -= $egreso->monto;
+                    @endphp
+                    <tr class="hover:bg-red-50 bg-red-50/30">
+                        <td class="px-4 py-3 text-sm">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="font-medium text-red-700">Egreso</span>
+                                    @if($egreso->descripcion)
+                                    <span class="text-xs text-gray-500 block">{{ $egreso->descripcion }}</span>
+                                    @endif
+                                </div>
+                                <div class="flex gap-2 ml-2">
+                                    <button onclick="editarEgreso({{ $egreso->id }}, {{ $egreso->monto }}, '{{ $egreso->descripcion }}')" 
+                                            class="text-blue-600 hover:text-blue-900 text-xs">
+                                        Editar
+                                    </button>
+                                    @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
+                                    <button type="button" onclick="mostrarModalEliminarEgreso({{ $egreso->id }}, '{{ $egreso->descripcion }}')" class="text-red-600 hover:text-red-900 text-xs">
+                                        Eliminar
+                                    </button>
+                                    <form id="form-eliminar-egreso-{{ $egreso->id }}" action="{{ route('recuento.destroy-egreso', $egreso) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-400">-</td>
+                        <td class="px-4 py-3 text-sm text-right font-bold text-red-600">₡{{ number_format($egreso->monto, 2) }}</td>
                     </tr>
                     @endforeach
                     
@@ -576,10 +1058,12 @@ function confirmarCerrarCulto() {
 }
 
 // Modales de eliminación
+// Modales de eliminación
 let sobreIdEliminar = null;
 let sueltoIdEliminar = null;
 let cultoIdEliminar = null;
 let cultoIdCerrar = null;
+let egresoIdEliminar = null;
 
 function mostrarModalEliminarSobre(id, numero) {
     sobreIdEliminar = id;
@@ -612,6 +1096,30 @@ function cerrarModalEliminarSuelto() {
 function confirmarEliminacionSuelto() {
     if (sueltoIdEliminar) {
         document.getElementById('form-eliminar-suelto-' + sueltoIdEliminar).submit();
+    }
+}
+
+function editarEgreso(id, monto, descripcion) {
+    document.getElementById('formEditarEgreso').action = `/recuento/egreso/${id}`;
+    document.getElementById('monto_egreso_edit').value = monto;
+    document.getElementById('descripcion_egreso_edit').value = descripcion || '';
+    document.getElementById('modalEditarEgreso').classList.remove('hidden');
+}
+
+function mostrarModalEliminarEgreso(id, descripcion) {
+    egresoIdEliminar = id;
+    document.getElementById('descripcionEgreso').textContent = descripcion || 'este egreso';
+    document.getElementById('modalEliminarEgreso').classList.remove('hidden');
+}
+
+function cerrarModalEliminarEgreso() {
+    document.getElementById('modalEliminarEgreso').classList.add('hidden');
+    egresoIdEliminar = null;
+}
+
+function confirmarEliminacionEgreso() {
+    if (egresoIdEliminar) {
+        document.getElementById('form-eliminar-egreso-' + egresoIdEliminar).submit();
     }
 }
 
@@ -718,6 +1226,117 @@ document.addEventListener('click', function(event) {
                 </button>
                 <button type="button" 
                         onclick="confirmarEliminacionSuelto()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Egreso -->
+<div id="modalEgreso" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Agregar Egreso</h3>
+            <form action="{{ route('recuento.store-egreso') }}" method="POST">
+                @csrf
+                <input type="hidden" name="culto_id" value="{{ $cultoSeleccionado?->id }}">
+                
+                <div class="mb-4">
+                    <label for="monto_egreso" class="block text-sm font-medium text-gray-700 mb-2">Monto (₡) *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₡</span>
+                        <input type="number" name="monto" id="monto_egreso" min="0.01" step="0.01" required
+                               class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="descripcion_egreso" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                    <textarea name="descripcion" id="descripcion_egreso" rows="2"
+                              class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('modalEgreso').classList.add('hidden')"
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Editar Egreso -->
+<div id="modalEditarEgreso" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Editar Egreso</h3>
+            <form id="formEditarEgreso" method="POST">
+                @csrf
+                @method('PUT')
+                
+                <div class="mb-4">
+                    <label for="monto_egreso_edit" class="block text-sm font-medium text-gray-700 mb-2">Monto (₡) *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₡</span>
+                        <input type="number" name="monto" id="monto_egreso_edit" min="0.01" step="0.01" required
+                               class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="descripcion_egreso_edit" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                    <textarea name="descripcion" id="descripcion_egreso_edit" rows="2"
+                              class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('modalEditarEgreso').classList.add('hidden')"
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                        Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Eliminar Egreso -->
+<div id="modalEliminarEgreso" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-red-900">⚠️ Eliminar Egreso</h3>
+                <button onclick="cerrarModalEliminarEgreso()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p class="text-sm text-yellow-800 mb-2">
+                    ¿Estás seguro de que deseas eliminar <strong id="descripcionEgreso"></strong>?
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button" 
+                        onclick="cerrarModalEliminarEgreso()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button" 
+                        onclick="confirmarEliminacionEgreso()"
                         class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                     Sí, Eliminar
                 </button>
