@@ -8,7 +8,6 @@ use App\Models\Persona;
 use App\Models\Sobre;
 use App\Models\SobreDetalle;
 use App\Models\OfrendaSuelta;
-use App\Models\AuditLog;
 use App\Services\CalculoTotalesCultoService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -128,27 +127,6 @@ class RecuentoClasesController extends Controller
             'notas' => $validated['notas'] ?? null,
         ]);
 
-        // Auditoría
-        $user = $request->user();
-        AuditLog::create([
-            'user_id' => $user->id ?? null,
-            'user_name' => $user->name ?? ($user->nombre ?? null),
-            'user_email' => $user->email ?? null,
-            'ip_address' => $request->ip(),
-            'user_agent' => substr($request->userAgent() ?? '', 0, 255),
-            'method' => 'POST',
-            'route' => 'recuento-clases.store',
-            'action' => 'Agregar Sobre de Clase',
-            'details' => json_encode([
-                'culto_id' => $sobre->culto_id,
-                'clase_id' => $sobre->clase_id,
-                'sobre_id' => $sobre->id,
-                'metodo_pago' => $sobre->metodo_pago,
-                'comprobante_numero' => $sobre->comprobante_numero,
-                'total_declarado' => $sobre->total_declarado,
-            ]),
-        ]);
-
         // Crear detalles
         foreach ($validated['detalles'] as $detalle) {
             if ($detalle['monto'] > 0) {
@@ -228,27 +206,6 @@ class RecuentoClasesController extends Controller
             'notas' => $validated['notas'] ?? null,
         ]);
 
-        // Auditoría
-        $user = $request->user();
-        AuditLog::create([
-            'user_id' => $user->id ?? null,
-            'user_name' => $user->name ?? ($user->nombre ?? null),
-            'user_email' => $user->email ?? null,
-            'ip_address' => $request->ip(),
-            'user_agent' => substr($request->userAgent() ?? '', 0, 255),
-            'method' => 'PUT',
-            'route' => 'recuento-clases.update',
-            'action' => 'Editar Sobre de Clase',
-            'details' => json_encode([
-                'culto_id' => $sobre->culto_id,
-                'clase_id' => $sobre->clase_id,
-                'sobre_id' => $sobre->id,
-                'metodo_pago' => $sobre->metodo_pago,
-                'comprobante_numero' => $sobre->comprobante_numero,
-                'total_declarado' => $sobre->total_declarado,
-            ]),
-        ]);
-
         // Eliminar detalles existentes y crear nuevos
         $sobre->detalles()->delete();
         foreach ($validated['detalles'] as $detalle) {
@@ -300,26 +257,6 @@ class RecuentoClasesController extends Controller
         if ($culto) {
             $this->calculoService->recalcular($culto);
         }
-
-        // Auditoría
-        AuditLog::create([
-            'user_id' => $currentUser->id ?? null,
-            'user_name' => $currentUser->name ?? ($currentUser->nombre ?? null),
-            'user_email' => $currentUser->email ?? null,
-            'ip_address' => request()->ip(),
-            'user_agent' => substr(request()->userAgent() ?? '', 0, 255),
-            'method' => 'DELETE',
-            'route' => 'recuento-clases.destroy',
-            'action' => 'Eliminar Sobre de Clase',
-            'details' => json_encode([
-                'culto_id' => $cultoId,
-                'clase_id' => $claseId,
-                'sobre_id' => $sobreId,
-                'metodo_pago' => $metodo,
-                'comprobante_numero' => $comprobante,
-                'total_declarado' => $totalDeclarado,
-            ]),
-        ]);
 
         return redirect()->route('recuento-clases.index', [
             'culto_id' => $cultoId,
