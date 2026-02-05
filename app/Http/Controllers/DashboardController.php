@@ -37,11 +37,9 @@ class DashboardController extends Controller
                     $carry['total_diezmo'] += $culto->totales->total_diezmo;
                     $carry['total_misiones'] += $culto->totales->total_misiones;
                     $carry['total_seminario'] += $culto->totales->total_seminario;
-                    // Campamento -> total_campa
                     $carry['total_campa'] += $culto->totales->total_campa;
-                    // Pro-Templo -> total_construccion
+                    $carry['total_prestamo'] += $culto->totales->total_prestamo;
                     $carry['total_construccion'] += $culto->totales->total_construccion;
-                    // Ofrenda Especial -> total_micro (reutilizada)
                     $carry['total_micro'] += $culto->totales->total_micro;
                     $carry['total_suelto'] += $culto->totales->total_suelto;
                 }
@@ -94,6 +92,10 @@ class DashboardController extends Controller
 
         foreach ($personas as $persona) {
             foreach ($persona->promesas as $promesa) {
+                // Excluir promesas de diezmo: el diezmo no forma parte de compromisos/promesas
+                if (strtolower($promesa->categoria) === 'diezmo') {
+                    continue;
+                }
                 $montoPagado = $persona->sobres()
                     ->whereHas('detalles', function ($query) use ($promesa) {
                         $query->where('categoria', $promesa->categoria);

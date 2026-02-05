@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'IBBSC - Compromisos - ' . $persona->nombre)
+@section('title', 'IBBP - Compromisos - ' . $persona->nombre)
 @section('page-title', 'Estado de Compromisos')
 
 @section('content')

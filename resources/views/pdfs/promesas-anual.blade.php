@@ -168,7 +168,7 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ public_path('logo-ibbsc.png') }}" alt="IBBSC Logo" class="logo">
+        <img src="{{ public_path('logo-ibbsc.png') }}" alt="IBBP Logo" class="logo">
         <div class="title">Reporte Anual de Promesas</div>
         <div class="subtitle">Año {{ $año }}</div>
         @if($categoria && $categoria !== 'todas')

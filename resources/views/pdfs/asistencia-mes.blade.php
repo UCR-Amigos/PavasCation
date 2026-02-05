@@ -22,9 +22,9 @@
 </head>
 <body>
     <div class="header">
-        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBSC">
+        <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBP">
         <div class="header-text">
-            <h1>IBBSC - Iglesia Bíblica Bautista en Santa Cruz</h1>
+            <h1>IBBP - Iglesia Bíblica Bautista en Santa Cruz</h1>
             <h2>Reporte de Asistencia - {{ $nombreMes }} {{ $año }}</h2>
             <p><strong>Generado:</strong> {{ now()->format('d/m/Y H:i') }}</p>
         </div>
@@ -169,7 +169,7 @@
     </table>
     
     <div class="footer">
-        <p>Sistema de Administración - IBBSC - Iglesia Bíblica Bautista en Santa Cruz</p>
+        <p>Sistema de Administración - IBBP - Iglesia Bíblica Bautista en Santa Cruz</p>
     </div>
 </body>
 </html>

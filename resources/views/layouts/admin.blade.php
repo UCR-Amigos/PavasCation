@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'IBBSC - Sistema de Administración')</title>
+    <title>@yield('title', 'IBBP - Sistema de Administración')</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/Logo.png') }}">
@@ -30,7 +30,7 @@
                     <div class="w-12 h-12 bg-white/10 rounded-xl p-2">
                         <img src="{{ asset('images/Logo.png') }}" alt="Logo" class="w-full h-full object-contain">
                     </div>
-                    <h1 class="text-xl font-display font-bold tracking-tight">IBBSC Admin</h1>
+                    <h1 class="text-xl font-display font-bold tracking-tight">IBBP Admin</h1>
                 </div>
                 <button id="closeSidebar" class="lg:hidden text-white hover:text-blue-200 transition-colors p-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +188,7 @@
         <div id="logoutOverlay" class="fixed inset-0 bg-blue-800 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
             <div class="text-center">
                 <div class="mb-6">
-                    <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="w-24 h-24 mx-auto">
+                    <img src="{{ asset('images/Logo.png') }}" alt="IBBP" class="w-24 h-24 mx-auto">
                 </div>
 
                 <!-- Spinner simple -->

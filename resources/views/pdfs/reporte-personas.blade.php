@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte de Personas - IBBSC</title>
+    <title>Reporte de Personas - IBBP</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -505,7 +505,7 @@
         <div class="header">
             <div class="header-content">
                 <div class="logo-container">
-                    <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBSC">
+                    <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBP">
                 </div>
                 <div class="header-text">
                     <h1>Reporte de Personas</h1>
@@ -666,7 +666,7 @@
 
     <div class="footer">
         <p>🕐 Generado el {{ \Carbon\Carbon::now()->locale('es')->translatedFormat('d \d\e F \d\e Y \a \l\a\s h:i A') }}</p>
-        <p>IBBSC - Sistema de Administración | Powered by Gemini-Style Design</p>
+        <p>IBBP - Sistema de Administración | Powered by Gemini-Style Design</p>
     </div>
     </div>
 </body>

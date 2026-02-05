@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reporte de Contribuciones - IBBSC</title>
+    <title>Reporte de Contribuciones - IBBP</title>
     <style>
         @page {
             size: landscape;
@@ -196,7 +196,7 @@
     <div class="container">
         <div class="header">
             <div class="logo">
-                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBSC">
+                <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBP">
             </div>
             <div class="header-text">
                 <h1>Reporte de Contribuciones</h1>
@@ -270,7 +270,7 @@
 
         <div class="footer">
             <p>Generado el {{ \Carbon\Carbon::now()->locale('es')->translatedFormat('d \d\e F \d\e Y \a \l\a\s h:i A') }}</p>
-            <p>IBBSC - Sistema de Administración</p>
+            <p>IBBP - Sistema de Administración</p>
         </div>
     </div>
 </body>

@@ -70,7 +70,7 @@
         <div class="text-center">
             <!-- Logo -->
             <div class="mb-8">
-                <img src="{{ asset('images/Logo.png') }}" alt="IBBSC" class="w-24 h-24 mx-auto">
+                <img src="{{ asset('images/Logo.png') }}" alt="IBBP" class="w-24 h-24 mx-auto">
             </div>
 
             <!-- Spinner -->
