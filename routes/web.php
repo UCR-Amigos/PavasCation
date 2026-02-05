@@ -9,6 +9,7 @@ use App\Http\Controllers\PersonaController;
 use App\Http\Controllers\PromesaController;
 use App\Http\Controllers\CultoController;
 use App\Http\Controllers\IngresosAsistenciaController;
+use App\Http\Controllers\RecuentoClasesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -107,6 +108,17 @@ Route::middleware(['auth', 'role:admin,tesorero'])->group(function () {
     Route::get('/ingresos-asistencia/promesas', [App\Http\Controllers\PromesasReporteController::class, 'index'])->name('ingresos-asistencia.promesas');
     Route::get('/ingresos-asistencia/pdf-promesas', [App\Http\Controllers\PromesasReporteController::class, 'pdfPromesas'])->name('ingresos-asistencia.pdf-promesas');
     Route::get('/ingresos-asistencia/pdf-promesas-anual', [App\Http\Controllers\PromesasReporteController::class, 'pdfAnual'])->name('ingresos-asistencia.pdf-promesas-anual');
+
+    // Recuento por Clases
+    Route::prefix('recuento-clases')->name('recuento-clases.')->group(function () {
+        Route::get('/', [RecuentoClasesController::class, 'index'])->name('index');
+        Route::get('/create', [RecuentoClasesController::class, 'create'])->name('create');
+        Route::post('/', [RecuentoClasesController::class, 'store'])->name('store');
+        Route::get('/{sobre}/edit', [RecuentoClasesController::class, 'edit'])->name('edit');
+        Route::put('/{sobre}', [RecuentoClasesController::class, 'update'])->name('update');
+        Route::delete('/{sobre}', [RecuentoClasesController::class, 'destroy'])->name('destroy');
+        Route::get('/pdf/{culto}/{clase}', [RecuentoClasesController::class, 'pdfClase'])->name('pdf');
+    });
 });
 
 // Rutas para Admin y Asistente - Asistencia

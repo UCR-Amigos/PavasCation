@@ -15,6 +15,7 @@ class Sobre extends Model
     protected $fillable = [
         'culto_id',
         'persona_id',
+        'clase_id',
         'numero_sobre',
         'metodo_pago',
         'comprobante_numero',
@@ -34,6 +35,11 @@ class Sobre extends Model
     public function persona(): BelongsTo
     {
         return $this->belongsTo(Persona::class);
+    }
+
+    public function clase(): BelongsTo
+    {
+        return $this->belongsTo(ClaseAsistencia::class);
     }
 
     public function detalles(): HasMany
