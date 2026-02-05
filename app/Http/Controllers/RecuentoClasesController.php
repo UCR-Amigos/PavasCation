@@ -7,6 +7,7 @@ use App\Models\Culto;
 use App\Models\Persona;
 use App\Models\Sobre;
 use App\Models\SobreDetalle;
+use App\Models\OfrendaSuelta;
 use App\Models\AuditLog;
 use App\Services\CalculoTotalesCultoService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -37,6 +38,7 @@ class RecuentoClasesController extends Controller
 
         // Sobres filtrados por culto y clase
         $sobres = collect();
+        $ofrendasSueltas = collect();
         $resumen = null;
 
         if ($cultoId && $claseId) {
@@ -45,9 +47,15 @@ class RecuentoClasesController extends Controller
                 ->with(['persona', 'detalles', 'clase'])
                 ->get();
 
+            $ofrendasSueltas = OfrendaSuelta::where('culto_id', $cultoId)
+                ->where('clase_id', $claseId)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
             // Calcular resumen de la clase
+            $totalSuelto = $ofrendasSueltas->sum('monto');
             $resumen = [
-                'total' => $sobres->sum('total_declarado'),
+                'total' => $sobres->sum('total_declarado') + $totalSuelto,
                 'cantidad_sobres' => $sobres->count(),
                 'efectivo' => $sobres->where('metodo_pago', 'efectivo')->count(),
                 'transferencias' => $sobres->where('metodo_pago', 'transferencia')->count(),
@@ -60,6 +68,7 @@ class RecuentoClasesController extends Controller
             'cultoSeleccionado',
             'claseSeleccionada',
             'sobres',
+            'ofrendasSueltas',
             'resumen'
         ));
     }
@@ -318,11 +327,129 @@ class RecuentoClasesController extends Controller
         ])->with('success', 'Sobre de clase eliminado correctamente.');
     }
 
+    public function storeSuelto(Request $request)
+    {
+        $validated = $request->validate([
+            'culto_id' => 'required|exists:cultos,id',
+            'clase_id' => 'required|exists:clases_asistencia,id',
+            'monto' => 'required|numeric|min:0.01',
+            'descripcion' => 'nullable|string|max:500',
+        ]);
+
+        // Verificar que el culto no esté cerrado
+        $culto = Culto::findOrFail($validated['culto_id']);
+        if ($culto->cerrado) {
+            return redirect()->route('recuento-clases.index', [
+                'culto_id' => $culto->id,
+                'clase_id' => $validated['clase_id']
+            ])->with('error', 'No se puede agregar dinero suelto a un culto cerrado.');
+        }
+
+        OfrendaSuelta::create([
+            'culto_id' => $validated['culto_id'],
+            'clase_id' => $validated['clase_id'],
+            'monto' => $validated['monto'],
+            'metodo_pago' => 'efectivo', // Dinero suelto siempre es efectivo
+            'descripcion' => $validated['descripcion'] ?? null,
+        ]);
+
+        // Recalcular totales
+        if ($culto) {
+            $this->calculoService->recalcular($culto);
+        }
+
+        return redirect()->route('recuento-clases.index', [
+            'culto_id' => $validated['culto_id'],
+            'clase_id' => $validated['clase_id']
+        ])->with('success', 'Dinero suelto registrado correctamente.');
+    }
+
+    public function editSuelto(OfrendaSuelta $suelto)
+    {
+        if ($suelto->culto->cerrado) {
+            return redirect()->route('recuento-clases.index', [
+                'culto_id' => $suelto->culto_id,
+                'clase_id' => $suelto->clase_id
+            ])->with('error', 'No se puede editar dinero suelto de un culto cerrado.');
+        }
+
+        return response()->json($suelto);
+    }
+
+    public function updateSuelto(Request $request, OfrendaSuelta $suelto)
+    {
+        if ($suelto->culto->cerrado) {
+            return redirect()->route('recuento-clases.index', [
+                'culto_id' => $suelto->culto_id,
+                'clase_id' => $suelto->clase_id
+            ])->with('error', 'No se puede editar dinero suelto de un culto cerrado.');
+        }
+
+        $validated = $request->validate([
+            'monto' => 'required|numeric|min:0.01',
+            'descripcion' => 'nullable|string|max:500',
+        ]);
+
+        $suelto->update([
+            'monto' => $validated['monto'],
+            'descripcion' => $validated['descripcion'] ?? null,
+        ]);
+
+        // Recalcular totales
+        $culto = Culto::find($suelto->culto_id);
+        if ($culto) {
+            $this->calculoService->recalcular($culto);
+        }
+
+        return redirect()->route('recuento-clases.index', [
+            'culto_id' => $suelto->culto_id,
+            'clase_id' => $suelto->clase_id
+        ])->with('success', 'Dinero suelto actualizado correctamente.');
+    }
+
+    public function destroySuelto(OfrendaSuelta $suelto)
+    {
+        // Solo admin y tesorero pueden eliminar dinero suelto
+        if (!in_array(auth()->user()->rol, ['admin', 'tesorero'])) {
+            return redirect()->route('recuento-clases.index', [
+                'culto_id' => $suelto->culto_id,
+                'clase_id' => $suelto->clase_id
+            ])->with('error', 'No tienes permiso para eliminar dinero suelto.');
+        }
+
+        if ($suelto->culto->cerrado) {
+            return redirect()->route('recuento-clases.index', [
+                'culto_id' => $suelto->culto_id,
+                'clase_id' => $suelto->clase_id
+            ])->with('error', 'No se puede eliminar dinero suelto de un culto cerrado.');
+        }
+
+        $cultoId = $suelto->culto_id;
+        $claseId = $suelto->clase_id;
+        $suelto->delete();
+
+        // Recalcular totales
+        $culto = Culto::find($cultoId);
+        if ($culto) {
+            $this->calculoService->recalcular($culto);
+        }
+
+        return redirect()->route('recuento-clases.index', [
+            'culto_id' => $cultoId,
+            'clase_id' => $claseId
+        ])->with('success', 'Dinero suelto eliminado correctamente.');
+    }
+
     public function pdfClase(Culto $culto, ClaseAsistencia $clase)
     {
         $sobres = Sobre::where('culto_id', $culto->id)
             ->where('clase_id', $clase->id)
             ->with(['persona', 'detalles'])
+            ->get();
+
+        $ofrendasSueltas = OfrendaSuelta::where('culto_id', $culto->id)
+            ->where('clase_id', $clase->id)
+            ->orderBy('created_at', 'desc')
             ->get();
 
         // Calcular totales por categoría
@@ -345,16 +472,18 @@ class RecuentoClasesController extends Controller
             }
         }
 
+        $totalSuelto = $ofrendasSueltas->sum('monto');
+
         $resumen = [
-            'total' => $sobres->sum('total_declarado'),
+            'total' => $sobres->sum('total_declarado') + $totalSuelto,
             'cantidad_sobres' => $sobres->count(),
-            'efectivo' => $sobres->where('metodo_pago', 'efectivo')->sum('total_declarado'),
+            'efectivo' => $sobres->where('metodo_pago', 'efectivo')->sum('total_declarado') + $totalSuelto,
             'transferencias' => $sobres->where('metodo_pago', 'transferencia')->sum('total_declarado'),
             'cantidad_efectivo' => $sobres->where('metodo_pago', 'efectivo')->count(),
             'cantidad_transferencias' => $sobres->where('metodo_pago', 'transferencia')->count(),
         ];
 
-        $pdf = Pdf::loadView('pdfs.recuento-clase', compact('culto', 'clase', 'sobres', 'totalesPorCategoria', 'resumen'));
+        $pdf = Pdf::loadView('pdfs.recuento-clase', compact('culto', 'clase', 'sobres', 'ofrendasSueltas', 'totalesPorCategoria', 'resumen'));
         $pdf->setPaper('A4', 'landscape');
 
         $filename = 'recuento-clase-' . $clase->slug . '-' . $culto->fecha->format('Y-m-d') . '.pdf';

@@ -117,6 +117,10 @@ Route::middleware(['auth', 'role:admin,tesorero'])->group(function () {
         Route::get('/{sobre}/edit', [RecuentoClasesController::class, 'edit'])->name('edit');
         Route::put('/{sobre}', [RecuentoClasesController::class, 'update'])->name('update');
         Route::delete('/{sobre}', [RecuentoClasesController::class, 'destroy'])->name('destroy');
+        Route::post('/suelto', [RecuentoClasesController::class, 'storeSuelto'])->name('store-suelto');
+        Route::get('/suelto/{suelto}/edit', [RecuentoClasesController::class, 'editSuelto'])->name('edit-suelto');
+        Route::put('/suelto/{suelto}', [RecuentoClasesController::class, 'updateSuelto'])->name('update-suelto');
+        Route::delete('/suelto/{suelto}', [RecuentoClasesController::class, 'destroySuelto'])->name('destroy-suelto');
         Route::get('/pdf/{culto}/{clase}', [RecuentoClasesController::class, 'pdfClase'])->name('pdf');
     });
 });

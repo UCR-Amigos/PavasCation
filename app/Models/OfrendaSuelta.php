@@ -11,8 +11,10 @@ class OfrendaSuelta extends Model
 
     protected $fillable = [
         'culto_id',
+        'clase_id',
         'monto',
         'metodo_pago',
+        'descripcion',
     ];
 
     protected $casts = [
@@ -22,5 +24,10 @@ class OfrendaSuelta extends Model
     public function culto(): BelongsTo
     {
         return $this->belongsTo(Culto::class);
+    }
+
+    public function clase(): BelongsTo
+    {
+        return $this->belongsTo(ClaseAsistencia::class, 'clase_id');
     }
 }

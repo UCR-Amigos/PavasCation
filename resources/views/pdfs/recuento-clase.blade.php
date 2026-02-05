@@ -138,6 +138,29 @@
             </tr>
             @endforeach
 
+            <!-- Dinero Suelto -->
+            @foreach($ofrendasSueltas as $ofrenda)
+            @php
+                $totalGeneral += $ofrenda->monto;
+                $totalEfectivo += $ofrenda->monto;
+            @endphp
+            <tr style="background-color: #f0fdf4;">
+                <td class="text-center" colspan="2">
+                    <strong>Dinero Suelto</strong>
+                    @if($ofrenda->descripcion)
+                    <br><small style="color: #6b7280;">{{ $ofrenda->descripcion }}</small>
+                    @endif
+                </td>
+                <td>
+                    <span class="badge badge-efectivo">Efectivo</span>
+                </td>
+                <td>-</td>
+                <td>-</td>
+                <td class="text-right" colspan="8">-</td>
+                <td class="text-right subtotal" style="color: #16a34a;">{{ number_format($ofrenda->monto, 2) }}</td>
+            </tr>
+            @endforeach
+
             <!-- Totales -->
             <tr class="total-row">
                 <td colspan="5" class="text-right">TOTALES</td>

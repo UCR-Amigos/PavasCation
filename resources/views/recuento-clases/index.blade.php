@@ -90,6 +90,13 @@
                 </svg>
                 Agregar Sobre
             </a>
+            <button type="button" onclick="document.getElementById('modalSuelto').classList.remove('hidden')"
+                    class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Dinero Suelto
+            </button>
             @endif
             @if($sobres->count() > 0)
             <a href="{{ route('recuento-clases.pdf', [$cultoSeleccionado->id, $claseSeleccionada->id]) }}"
@@ -210,6 +217,48 @@
                         </td>
                     </tr>
                     @endforeach
+
+                    <!-- Filas de Dinero Suelto -->
+                    @foreach($ofrendasSueltas as $ofrenda)
+                    @php
+                        $totalGeneral += $ofrenda->monto;
+                    @endphp
+                    <tr class="hover:bg-green-50 bg-green-50/30">
+                        <td class="px-4 py-3 text-sm" colspan="2">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="font-medium text-green-700">Dinero Suelto</span>
+                                    @if($ofrenda->descripcion)
+                                    <span class="text-xs text-gray-500 block">{{ $ofrenda->descripcion }}</span>
+                                    @endif
+                                </div>
+                                @if(!$cultoSeleccionado->cerrado)
+                                <div class="flex gap-2 ml-2">
+                                    <button onclick="editarSuelto({{ $ofrenda->id }}, {{ $ofrenda->monto }}, '{{ $ofrenda->descripcion }}')"
+                                            class="text-blue-600 hover:text-blue-900 text-xs">
+                                        Editar
+                                    </button>
+                                    @if(in_array(auth()->user()->rol, ['admin', 'tesorero']))
+                                    <button type="button" onclick="mostrarModalEliminarSuelto({{ $ofrenda->id }}, '{{ $ofrenda->descripcion }}')" class="text-red-600 hover:text-red-900 text-xs">
+                                        Eliminar
+                                    </button>
+                                    <form id="form-eliminar-suelto-{{ $ofrenda->id }}" action="{{ route('recuento-clases.destroy-suelto', $ofrenda) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    @endif
+                                </div>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-4 py-3 text-sm">
+                            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Efectivo</span>
+                        </td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700" colspan="8">-</td>
+                        <td class="px-4 py-3 text-sm text-right font-semibold text-green-600">{{ number_format($ofrenda->monto, 0, ',', '.') }}</td>
+                        <td class="px-4 py-3"></td>
+                    </tr>
+                    @endforeach
                 </tbody>
                 <tfoot class="bg-blue-50">
                     <tr class="font-bold">
@@ -263,4 +312,144 @@
     </div>
     @endif
 </div>
+
+<!-- Modal para Dinero Suelto -->
+<div id="modalSuelto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Agregar Dinero Suelto</h3>
+            <form action="{{ route('recuento-clases.store-suelto') }}" method="POST">
+                @csrf
+                <input type="hidden" name="culto_id" value="{{ $cultoSeleccionado?->id }}">
+                <input type="hidden" name="clase_id" value="{{ $claseSeleccionada?->id }}">
+
+                <div class="mb-4">
+                    <label for="monto_suelto" class="block text-sm font-medium text-gray-700 mb-2">Monto (₡) *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₡</span>
+                        <input type="number" name="monto" id="monto_suelto" min="0.01" step="0.01" required
+                               class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="descripcion_suelto" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                    <textarea name="descripcion" id="descripcion_suelto" rows="2"
+                              class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('modalSuelto').classList.add('hidden')"
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Editar Dinero Suelto -->
+<div id="modalEditarSuelto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Editar Dinero Suelto</h3>
+            <form id="formEditarSuelto" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="mb-4">
+                    <label for="monto_suelto_edit" class="block text-sm font-medium text-gray-700 mb-2">Monto (₡) *</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">₡</span>
+                        <input type="number" name="monto" id="monto_suelto_edit" min="0.01" step="0.01" required
+                               class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="descripcion_suelto_edit" class="block text-sm font-medium text-gray-700 mb-2">Descripción</label>
+                    <textarea name="descripcion" id="descripcion_suelto_edit" rows="2"
+                              class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('modalEditarSuelto').classList.add('hidden')"
+                            class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Actualizar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Eliminar Dinero Suelto -->
+<div id="modalEliminarSuelto" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-red-900">⚠️ Eliminar Dinero Suelto</h3>
+                <button onclick="cerrarModalEliminarSuelto()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <p class="text-sm text-yellow-800 mb-2">
+                    ¿Estás seguro de que deseas eliminar <strong id="descripcionSuelto"></strong>?
+                </p>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button type="button"
+                        onclick="cerrarModalEliminarSuelto()"
+                        class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </button>
+                <button type="button"
+                        onclick="confirmarEliminacionSuelto()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
+                    Sí, Eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function editarSuelto(id, monto, descripcion) {
+    document.getElementById('formEditarSuelto').action = `/recuento-clases/suelto/${id}`;
+    document.getElementById('monto_suelto_edit').value = monto;
+    document.getElementById('descripcion_suelto_edit').value = descripcion || '';
+    document.getElementById('modalEditarSuelto').classList.remove('hidden');
+}
+
+let sueltoIdEliminar = null;
+
+function mostrarModalEliminarSuelto(id, descripcion) {
+    sueltoIdEliminar = id;
+    document.getElementById('descripcionSuelto').textContent = descripcion || 'este dinero suelto';
+    document.getElementById('modalEliminarSuelto').classList.remove('hidden');
+}
+
+function cerrarModalEliminarSuelto() {
+    document.getElementById('modalEliminarSuelto').classList.add('hidden');
+    sueltoIdEliminar = null;
+}
+
+function confirmarEliminacionSuelto() {
+    if (sueltoIdEliminar) {
+        document.getElementById('form-eliminar-suelto-' + sueltoIdEliminar).submit();
+    }
+}
+</script>
 @endsection
