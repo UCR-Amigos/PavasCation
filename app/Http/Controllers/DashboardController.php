@@ -35,36 +35,33 @@ class DashboardController extends Controller
                 if ($culto->totales) {
                     $carry['total_general'] += $culto->totales->total_general;
                     $carry['total_diezmo'] += $culto->totales->total_diezmo;
+                    $carry['total_ofrenda_especial'] += $culto->totales->total_ofrenda_especial;
                     $carry['total_misiones'] += $culto->totales->total_misiones;
                     $carry['total_seminario'] += $culto->totales->total_seminario;
-                    $carry['total_campa'] += $culto->totales->total_campa;
-                    $carry['total_prestamo'] += $culto->totales->total_prestamo;
-                    $carry['total_construccion'] += $culto->totales->total_construccion;
-                    $carry['total_micro'] += $culto->totales->total_micro;
+                    $carry['total_campamento'] += $culto->totales->total_campamento;
+                    $carry['total_pro_templo'] += $culto->totales->total_pro_templo;
                     $carry['total_suelto'] += $culto->totales->total_suelto;
                 }
                 return $carry;
             }, [
                 'total_general' => 0,
                 'total_diezmo' => 0,
+                'total_ofrenda_especial' => 0,
                 'total_misiones' => 0,
                 'total_seminario' => 0,
-                'total_campa' => 0,
-                'total_prestamo' => 0,
-                'total_construccion' => 0,
-                'total_micro' => 0,
+                'total_campamento' => 0,
+                'total_pro_templo' => 0,
                 'total_suelto' => 0,
             ]);
 
         // Distribución por categorías (mismo mes)
         $distribucion = [
             'diezmo' => $totalesMes['total_diezmo'],
+            'ofrenda_especial' => $totalesMes['total_ofrenda_especial'],
             'misiones' => $totalesMes['total_misiones'],
             'seminario' => $totalesMes['total_seminario'],
-            'campa' => $totalesMes['total_campa'],
-            'prestamo' => $totalesMes['total_prestamo'],
-            'construccion' => $totalesMes['total_construccion'],
-            'micro' => $totalesMes['total_micro'],
+            'campamento' => $totalesMes['total_campamento'],
+            'pro_templo' => $totalesMes['total_pro_templo'],
             'suelto' => $totalesMes['total_suelto'],
         ];
 

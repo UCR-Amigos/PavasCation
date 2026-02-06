@@ -131,9 +131,7 @@
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Misiones</th>
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Semin.</th>
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Camp.</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Prést.</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Const.</th>
-                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Micro</th>
+                        <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Pro T.</th>
                         <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                         <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                     </tr>
@@ -145,10 +143,8 @@
                             'ofrenda_especial' => 0,
                             'misiones' => 0,
                             'seminario' => 0,
-                            'campa' => 0,
-                            'prestamo' => 0,
-                            'construccion' => 0,
-                            'micro' => 0,
+                            'campamento' => 0,
+                            'pro_templo' => 0,
                         ];
                         $totalGeneral = 0;
                     @endphp
@@ -159,19 +155,15 @@
                         $ofrendaEspecial = $detallesPorCategoria->get('ofrenda_especial')->monto ?? 0;
                         $misiones = $detallesPorCategoria->get('misiones')->monto ?? 0;
                         $seminario = $detallesPorCategoria->get('seminario')->monto ?? 0;
-                        $campa = $detallesPorCategoria->get('campa')->monto ?? 0;
-                        $prestamo = $detallesPorCategoria->get('prestamo')->monto ?? 0;
-                        $construccion = $detallesPorCategoria->get('construccion')->monto ?? 0;
-                        $micro = $detallesPorCategoria->get('micro')->monto ?? 0;
+                        $campamento = $detallesPorCategoria->get('campamento')->monto ?? 0;
+                        $pro_templo = $detallesPorCategoria->get('pro_templo')->monto ?? 0;
 
                         $totales['diezmo'] += $diezmo;
                         $totales['ofrenda_especial'] += $ofrendaEspecial;
                         $totales['misiones'] += $misiones;
                         $totales['seminario'] += $seminario;
-                        $totales['campa'] += $campa;
-                        $totales['prestamo'] += $prestamo;
-                        $totales['construccion'] += $construccion;
-                        $totales['micro'] += $micro;
+                        $totales['campamento'] += $campamento;
+                        $totales['pro_templo'] += $pro_templo;
                         $totalGeneral += $sobre->total_declarado;
                     @endphp
                     <tr class="hover:bg-gray-50">
@@ -186,10 +178,8 @@
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($ofrendaEspecial, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($misiones, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($seminario, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($campa, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($prestamo, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($construccion, 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($micro, 0, ',', '.') }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($campamento, 0, ',', '.') }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-right text-gray-700">{{ number_format($pro_templo, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-sm text-right font-semibold text-blue-600">{{ number_format($sobre->total_declarado, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 whitespace-nowrap text-center">
                             @if(!$cultoSeleccionado->cerrado)
@@ -254,7 +244,7 @@
                         <td class="px-4 py-3 text-sm">
                             <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Efectivo</span>
                         </td>
-                        <td class="px-4 py-3 text-sm text-right text-gray-700" colspan="8">-</td>
+                        <td class="px-4 py-3 text-sm text-right text-gray-700" colspan="6">-</td>
                         <td class="px-4 py-3 text-sm text-right font-semibold text-green-600">{{ number_format($ofrenda->monto, 0, ',', '.') }}</td>
                         <td class="px-4 py-3"></td>
                     </tr>
@@ -267,10 +257,8 @@
                         <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['ofrenda_especial'], 0, ',', '.') }}</td>
                         <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['misiones'], 0, ',', '.') }}</td>
                         <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['seminario'], 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['campa'], 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['prestamo'], 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['construccion'], 0, ',', '.') }}</td>
-                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['micro'], 0, ',', '.') }}</td>
+                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['campamento'], 0, ',', '.') }}</td>
+                        <td class="px-4 py-3 text-right text-sm text-gray-900">{{ number_format($totales['pro_templo'], 0, ',', '.') }}</td>
                         <td class="px-4 py-3 text-right text-sm text-blue-700">{{ number_format($totalGeneral, 0, ',', '.') }}</td>
                         <td class="px-4 py-3"></td>
                     </tr>

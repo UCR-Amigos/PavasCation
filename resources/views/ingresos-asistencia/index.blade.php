@@ -82,21 +82,13 @@
                 <p class="text-sm text-gray-600">Seminario</p>
                 <p class="text-xl font-bold text-yellow-600">₡{{ number_format($categorias['seminario'], 0, ',', '.') }}</p>
             </div>
-            <div class="p-4 bg-purple-50 rounded-lg">
-                <p class="text-sm text-gray-600">Construcción</p>
-                <p class="text-xl font-bold text-purple-600">₡{{ number_format($categorias['construccion'], 0, ',', '.') }}</p>
-            </div>
             <div class="p-4 bg-red-50 rounded-lg">
                 <p class="text-sm text-gray-600">Campamento</p>
-                <p class="text-xl font-bold text-red-600">₡{{ number_format($categorias['campa'], 0, ',', '.') }}</p>
+                <p class="text-xl font-bold text-red-600">₡{{ number_format($categorias['campamento'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-pink-50 rounded-lg">
-                <p class="text-sm text-gray-600">Préstamo</p>
-                <p class="text-xl font-bold text-pink-600">₡{{ number_format($categorias['prestamo'], 0, ',', '.') }}</p>
-            </div>
-            <div class="p-4 bg-indigo-50 rounded-lg">
-                <p class="text-sm text-gray-600">Micro</p>
-                <p class="text-xl font-bold text-indigo-600">₡{{ number_format($categorias['micro'], 0, ',', '.') }}</p>
+                <p class="text-sm text-gray-600">Pro-Templo</p>
+                <p class="text-xl font-bold text-pink-600">₡{{ number_format($categorias['pro_templo'], 0, ',', '.') }}</p>
             </div>
             <div class="p-4 bg-gray-50 rounded-lg">
                 <p class="text-sm text-gray-600">Suelto</p>

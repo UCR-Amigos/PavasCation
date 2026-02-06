@@ -84,17 +84,17 @@
                 </div>
             </div>
 
-            <!-- Construcción -->
+            <!-- Ofrenda Especial -->
             <div class="stat-card">
                 <div class="flex flex-col h-full">
                     <div class="bg-amber-500 rounded-lg p-2.5 w-fit mb-3">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
                         </svg>
                     </div>
                     <dl class="flex-1">
-                        <dt class="text-sm font-medium text-gray-500 mb-1">Construcción</dt>
-                        <dd class="text-lg font-display font-bold text-amber-600">₡{{ number_format($totalesMes['total_construccion'], 2) }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 mb-1">Ofrenda Especial</dt>
+                        <dd class="text-lg font-display font-bold text-amber-600">₡{{ number_format($totalesMes['total_ofrenda_especial'], 2) }}</dd>
                     </dl>
                 </div>
             </div>
@@ -140,40 +140,26 @@
                     </div>
                     <dl class="flex-1">
                         <dt class="text-sm font-medium text-gray-500 mb-1">Campamento</dt>
-                        <dd class="text-lg font-display font-bold text-pink-600">₡{{ number_format($totalesMes['total_campa'], 2) }}</dd>
+                        <dd class="text-lg font-display font-bold text-pink-600">₡{{ number_format($totalesMes['total_campamento'], 2) }}</dd>
                     </dl>
                 </div>
             </div>
 
-            <!-- Préstamo -->
+            <!-- Pro-Templo -->
             <div class="stat-card">
                 <div class="flex flex-col h-full">
                     <div class="bg-red-500 rounded-lg p-2.5 w-fit mb-3">
                         <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
                     </div>
                     <dl class="flex-1">
-                        <dt class="text-sm font-medium text-gray-500 mb-1">Préstamo</dt>
-                        <dd class="text-lg font-display font-bold text-red-600">₡{{ number_format($totalesMes['total_prestamo'], 2) }}</dd>
+                        <dt class="text-sm font-medium text-gray-500 mb-1">Pro-Templo</dt>
+                        <dd class="text-lg font-display font-bold text-red-600">₡{{ number_format($totalesMes['total_pro_templo'], 2) }}</dd>
                     </dl>
                 </div>
             </div>
 
-            <!-- Micro -->
-            <div class="stat-card">
-                <div class="flex flex-col h-full">
-                    <div class="bg-teal-500 rounded-lg p-2.5 w-fit mb-3">
-                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <dl class="flex-1">
-                        <dt class="text-sm font-medium text-gray-500 mb-1">Micro</dt>
-                        <dd class="text-lg font-display font-bold text-teal-600">₡{{ number_format($totalesMes['total_micro'], 2) }}</dd>
-                    </dl>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -291,26 +277,24 @@
     new Chart(distribucionCtx, {
         type: 'doughnut',
         data: {
-            labels: ['Diezmo', 'Misiones', 'Seminario', 'Campamento', 'Préstamo', 'Construcción', 'Micro', 'Suelto'],
+            labels: ['Diezmo', 'Ofrenda Especial', 'Misiones', 'Seminario', 'Campamento', 'Pro-Templo', 'Suelto'],
             datasets: [{
                 data: [
                     {{ $distribucion['diezmo'] }},
+                    {{ $distribucion['ofrenda_especial'] }},
                     {{ $distribucion['misiones'] }},
                     {{ $distribucion['seminario'] }},
-                    {{ $distribucion['campa'] }},
-                    {{ $distribucion['prestamo'] }},
-                    {{ $distribucion['construccion'] }},
-                    {{ $distribucion['micro'] }},
+                    {{ $distribucion['campamento'] }},
+                    {{ $distribucion['pro_templo'] }},
                     {{ $distribucion['suelto'] }}
                 ],
                 backgroundColor: [
                     'rgba(37, 99, 235, 0.8)',
+                    'rgba(245, 158, 11, 0.8)',
                     'rgba(34, 197, 94, 0.8)',
                     'rgba(249, 115, 22, 0.8)',
                     'rgba(236, 72, 153, 0.8)',
                     'rgba(239, 68, 68, 0.8)',
-                    'rgba(245, 158, 11, 0.8)',
-                    'rgba(20, 184, 166, 0.8)',
                     'rgba(99, 102, 241, 0.8)'
                 ],
                 borderWidth: 2,

@@ -414,7 +414,7 @@ class PersonaController extends Controller
         $tituloPeriodo = "Enero - {$meses[$mesActual]} {$anioActual}";
 
         // Categorías fijas en orden
-        $categorias = ['diezmo', 'misiones', 'seminario', 'campa', 'construccion', 'micro'];
+        $categorias = ['diezmo', 'ofrenda_especial', 'misiones', 'seminario', 'campamento', 'pro_templo'];
 
         // Obtener personas activas con sus sobres del período
         $personas = Persona::where('activo', true)
@@ -491,7 +491,7 @@ class PersonaController extends Controller
                         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         // Categorias con subdivision (dado/esperado) - sin diezmo ni ofrenda
-        $categoriasConPromesa = ['misiones', 'seminario', 'campa', 'construccion', 'micro'];
+        $categoriasConPromesa = ['misiones', 'seminario', 'campamento', 'pro_templo'];
 
         // Obtener personas activas con promesas y sobres
         $personas = Persona::where('activo', true)

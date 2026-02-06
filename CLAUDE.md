@@ -68,7 +68,7 @@ npm run build                    # Build and minify assets
 - `User` - System users with 6 roles (admin, tesorero, asistente, general, miembro, invitado)
 - `Culto` - Services/worship events (parent entity for offerings, attendance, expenses)
 - `Sobre` - Envelopes/offerings with auto-increment numbering per service
-- `SobreDetalle` - Breakdown by category (diezmo, misiones, seminario, campamento, préstamo, construcción, micro)
+- `SobreDetalle` - Breakdown by category (diezmo, ofrenda_especial, misiones, seminario, campamento, pro_templo)
 - `Persona` - Church members
 - `Promesa` - Financial commitments/pledges
 - `Asistencia` - Detailed attendance demographics (chapel and age-grouped classes)
@@ -124,12 +124,11 @@ Persona (Member)
 
 All envelope offerings are tracked across these categories:
 - `diezmo` - Tithes
+- `ofrenda_especial` - Special offering
 - `misiones` - Missions
 - `seminario` - Seminary
 - `campamento` - Camp
-- `prestamo` - Loan
-- `construccion` - Construction
-- `micro` - Micro offerings
+- `pro_templo` - Pro-Temple
 
 When adding new categories, update:
 1. Database migration for `sobre_detalles` table

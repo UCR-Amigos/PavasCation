@@ -395,10 +395,8 @@ class RecuentoClasesController extends Controller
             'ofrenda_especial' => 0,
             'misiones' => 0,
             'seminario' => 0,
-            'campa' => 0,
-            'prestamo' => 0,
-            'construccion' => 0,
-            'micro' => 0,
+            'campamento' => 0,
+            'pro_templo' => 0,
         ];
 
         foreach ($sobres as $sobre) {

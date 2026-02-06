@@ -55,14 +55,22 @@
                 <h3 class="text-lg font-semibold text-gray-900 mb-4">Detalles del Sobre</h3>
 
                 @php
-                    $categorias = ['diezmo', 'misiones', 'seminario', 'campa', 'prestamo', 'construccion', 'micro'];
+                    $categorias = ['diezmo', 'ofrenda_especial', 'misiones', 'seminario', 'campamento', 'pro_templo'];
+                    $categoriasLabels = [
+                        'diezmo' => 'Diezmo',
+                        'ofrenda_especial' => 'Ofrenda Especial',
+                        'misiones' => 'Misiones',
+                        'seminario' => 'Seminario',
+                        'campamento' => 'Campamento',
+                        'pro_templo' => 'Pro-Templo',
+                    ];
                     $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
                 @endphp
 
                 @foreach($categorias as $categoria)
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                     <label for="detalle_{{ $categoria }}" class="block text-sm font-medium text-gray-700">
-                        {{ ucfirst($categoria) }}
+                        {{ $categoriasLabels[$categoria] }}
                     </label>
                     <div class="relative">
                         <input type="hidden" name="detalles[{{ $loop->index }}][categoria]" value="{{ $categoria }}">

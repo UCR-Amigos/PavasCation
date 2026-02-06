@@ -49,9 +49,7 @@
                 <th>Misiones</th>
                 <th>Seminario</th>
                 <th>Camp.</th>
-                <th>Const.</th>
-                <th>Prést.</th>
-                <th>Micro</th>
+                <th>Pro-T.</th>
                 <th>Suelto</th>
                 <th>TOTAL</th>
             </tr>
@@ -60,12 +58,11 @@
             @php
                 $totales = [
                     'diezmo' => 0,
+                    'ofrenda_especial' => 0,
                     'misiones' => 0,
                     'seminario' => 0,
-                    'campa' => 0,
-                    'construccion' => 0,
-                    'prestamo' => 0,
-                    'micro' => 0,
+                    'campamento' => 0,
+                    'pro_templo' => 0,
                     'suelto' => 0,
                     'total' => 0
                 ];
@@ -77,22 +74,18 @@
                 <td>{{ number_format($registro['ofrenda_especial'] ?? 0, 2) }}</td>
                 <td>{{ number_format($registro['misiones'], 2) }}</td>
                 <td>{{ number_format($registro['seminario'], 2) }}</td>
-                <td>{{ number_format($registro['campa'], 2) }}</td>
-                <td>{{ number_format($registro['construccion'], 2) }}</td>
-                <td>{{ number_format($registro['prestamo'], 2) }}</td>
-                <td>{{ number_format($registro['micro'], 2) }}</td>
+                <td>{{ number_format($registro['campamento'] ?? 0, 2) }}</td>
+                <td>{{ number_format($registro['pro_templo'] ?? 0, 2) }}</td>
                 <td>{{ number_format($registro['suelto'], 2) }}</td>
                 <td style="font-weight: bold;">{{ number_format($registro['total'], 2) }}</td>
             </tr>
             @php
                 $totales['diezmo'] += $registro['diezmo'];
-                $totales['ofrenda_especial'] = ($totales['ofrenda_especial'] ?? 0) + ($registro['ofrenda_especial'] ?? 0);
+                $totales['ofrenda_especial'] += ($registro['ofrenda_especial'] ?? 0);
                 $totales['misiones'] += $registro['misiones'];
                 $totales['seminario'] += $registro['seminario'];
-                $totales['campa'] += $registro['campa'];
-                $totales['construccion'] += $registro['construccion'];
-                $totales['prestamo'] += $registro['prestamo'];
-                $totales['micro'] += $registro['micro'];
+                $totales['campamento'] += ($registro['campamento'] ?? 0);
+                $totales['pro_templo'] += ($registro['pro_templo'] ?? 0);
                 $totales['suelto'] += $registro['suelto'];
                 $totales['total'] += $registro['total'];
             @endphp
@@ -100,13 +93,11 @@
             <tr class="total-row">
                 <td style="text-align: left;">TOTALES</td>
                 <td>{{ number_format($totales['diezmo'], 2) }}</td>
-                <td>{{ number_format($totales['ofrenda_especial'] ?? 0, 2) }}</td>
+                <td>{{ number_format($totales['ofrenda_especial'], 2) }}</td>
                 <td>{{ number_format($totales['misiones'], 2) }}</td>
                 <td>{{ number_format($totales['seminario'], 2) }}</td>
-                <td>{{ number_format($totales['campa'], 2) }}</td>
-                <td>{{ number_format($totales['construccion'], 2) }}</td>
-                <td>{{ number_format($totales['prestamo'], 2) }}</td>
-                <td>{{ number_format($totales['micro'], 2) }}</td>
+                <td>{{ number_format($totales['campamento'], 2) }}</td>
+                <td>{{ number_format($totales['pro_templo'], 2) }}</td>
                 <td>{{ number_format($totales['suelto'], 2) }}</td>
                 <td>{{ number_format($totales['total'], 2) }}</td>
             </tr>

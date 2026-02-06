@@ -47,20 +47,20 @@
                     @php
                         $labels = [
                             'diezmo' => 'Diezmo',
+                            'ofrenda_especial' => 'Ofrenda Especial',
                             'misiones' => 'Misiones',
                             'seminario' => 'Seminario',
                             'campamento' => 'Campamento',
-                            'pro-templo' => 'Pro-Templo',
-                            'ofrenda especial' => 'Ofrenda Especial',
+                            'pro_templo' => 'Pro-Templo',
                         ];
                         $rubros = array_keys($labels);
                         $montos = array_fill_keys($rubros, 0);
 
                         foreach ($sobre->detalles as $detalle) {
                             $catRaw = strtolower(trim($detalle->categoria));
-                            $catNorm = str_replace(['_', '  '], [' ', ' '], $catRaw);
-                            if (in_array($catNorm, ['ofrenda especial', 'ofrenda_especial'])) { $catNorm = 'ofrenda especial'; }
-                            if (in_array($catNorm, ['pro-templo', 'pro templo', 'protemplo'])) { $catNorm = 'pro-templo'; }
+                            $catNorm = str_replace(['  '], [' '], $catRaw);
+                            if (in_array($catNorm, ['ofrenda especial', 'ofrenda_especial'])) { $catNorm = 'ofrenda_especial'; }
+                            if (in_array($catNorm, ['pro-templo', 'pro templo', 'pro_templo', 'protemplo'])) { $catNorm = 'pro_templo'; }
                             if (isset($montos[$catNorm])) { $montos[$catNorm] = $detalle->monto; }
                         }
                     @endphp

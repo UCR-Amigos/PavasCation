@@ -89,9 +89,7 @@
                 <th class="text-right">Misiones</th>
                 <th class="text-right">Semin.</th>
                 <th class="text-right">Camp.</th>
-                <th class="text-right">Prést.</th>
-                <th class="text-right">Const.</th>
-                <th class="text-right">Micro</th>
+                <th class="text-right">Pro-T.</th>
                 <th class="text-right">Total</th>
             </tr>
         </thead>
@@ -109,10 +107,8 @@
                 $ofrendaEspecial = $detallesPorCategoria->get('ofrenda_especial')->monto ?? 0;
                 $misiones = $detallesPorCategoria->get('misiones')->monto ?? 0;
                 $seminario = $detallesPorCategoria->get('seminario')->monto ?? 0;
-                $campa = $detallesPorCategoria->get('campa')->monto ?? 0;
-                $prestamo = $detallesPorCategoria->get('prestamo')->monto ?? 0;
-                $construccion = $detallesPorCategoria->get('construccion')->monto ?? 0;
-                $micro = $detallesPorCategoria->get('micro')->monto ?? 0;
+                $campamento = $detallesPorCategoria->get('campamento')->monto ?? 0;
+                $pro_templo = $detallesPorCategoria->get('pro_templo')->monto ?? 0;
                 $totalGeneral += $sobre->total_declarado;
                 if ($sobre->metodo_pago === 'transferencia') { $totalTransferencias += $sobre->total_declarado; } else { $totalEfectivo += $sobre->total_declarado; }
             @endphp
@@ -130,10 +126,8 @@
                 <td class="text-right">{{ number_format($ofrendaEspecial, 2) }}</td>
                 <td class="text-right">{{ number_format($misiones, 2) }}</td>
                 <td class="text-right">{{ number_format($seminario, 2) }}</td>
-                <td class="text-right">{{ number_format($campa, 2) }}</td>
-                <td class="text-right">{{ number_format($prestamo, 2) }}</td>
-                <td class="text-right">{{ number_format($construccion, 2) }}</td>
-                <td class="text-right">{{ number_format($micro, 2) }}</td>
+                <td class="text-right">{{ number_format($campamento, 2) }}</td>
+                <td class="text-right">{{ number_format($pro_templo, 2) }}</td>
                 <td class="text-right subtotal">{{ number_format($sobre->total_declarado, 2) }}</td>
             </tr>
             @endforeach
@@ -156,7 +150,7 @@
                 </td>
                 <td>-</td>
                 <td>-</td>
-                <td class="text-right" colspan="8">-</td>
+                <td class="text-right" colspan="6">-</td>
                 <td class="text-right subtotal" style="color: #16a34a;">{{ number_format($ofrenda->monto, 2) }}</td>
             </tr>
             @endforeach
@@ -168,10 +162,8 @@
                 <td class="text-right">{{ number_format($totalesPorCategoria['ofrenda_especial'], 2) }}</td>
                 <td class="text-right">{{ number_format($totalesPorCategoria['misiones'], 2) }}</td>
                 <td class="text-right">{{ number_format($totalesPorCategoria['seminario'], 2) }}</td>
-                <td class="text-right">{{ number_format($totalesPorCategoria['campa'], 2) }}</td>
-                <td class="text-right">{{ number_format($totalesPorCategoria['prestamo'], 2) }}</td>
-                <td class="text-right">{{ number_format($totalesPorCategoria['construccion'], 2) }}</td>
-                <td class="text-right">{{ number_format($totalesPorCategoria['micro'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['campamento'], 2) }}</td>
+                <td class="text-right">{{ number_format($totalesPorCategoria['pro_templo'], 2) }}</td>
                 <td class="text-right">{{ number_format($totalGeneral, 2) }}</td>
             </tr>
         </tbody>
@@ -205,16 +197,10 @@
                 <span class="categoria-label">Seminario:</span> ₡{{ number_format($totalesPorCategoria['seminario'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Campamento:</span> ₡{{ number_format($totalesPorCategoria['campa'], 2) }}
+                <span class="categoria-label">Campamento:</span> ₡{{ number_format($totalesPorCategoria['campamento'], 2) }}
             </span>
             <span class="categoria-item">
-                <span class="categoria-label">Préstamo:</span> ₡{{ number_format($totalesPorCategoria['prestamo'], 2) }}
-            </span>
-            <span class="categoria-item">
-                <span class="categoria-label">Construcción:</span> ₡{{ number_format($totalesPorCategoria['construccion'], 2) }}
-            </span>
-            <span class="categoria-item">
-                <span class="categoria-label">Micro:</span> ₡{{ number_format($totalesPorCategoria['micro'], 2) }}
+                <span class="categoria-label">Pro-Templo:</span> ₡{{ number_format($totalesPorCategoria['pro_templo'], 2) }}
             </span>
         </div>
     </div>

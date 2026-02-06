@@ -17,10 +17,8 @@ class CalculoTotalesCultoService
             'total_ofrenda_especial' => 0,
             'total_misiones' => 0,
             'total_seminario' => 0,
-            'total_campa' => 0,
-            'total_prestamo' => 0,
-            'total_construccion' => 0,
-            'total_micro' => 0,
+            'total_campamento' => 0,
+            'total_pro_templo' => 0,
             'total_suelto' => 0,
             'total_egresos' => 0,
             'cantidad_sobres' => $sobres->count(),
@@ -36,7 +34,7 @@ class CalculoTotalesCultoService
             foreach ($sobre->detalles as $detalle) {
                 $categoria = strtolower($detalle->categoria);
                 $key = 'total_' . $categoria;
-                
+
                 if (isset($totales[$key])) {
                     $totales[$key] += $detalle->monto;
                 }
@@ -55,16 +53,13 @@ class CalculoTotalesCultoService
         }
 
         // Calcular total general
-        // Total general incluye ingresos y resta egresos
         $totales['total_general'] = array_sum([
             $totales['total_diezmo'],
             $totales['total_ofrenda_especial'],
             $totales['total_misiones'],
             $totales['total_seminario'],
-            $totales['total_campa'],
-            $totales['total_prestamo'],
-            $totales['total_construccion'],
-            $totales['total_micro'],
+            $totales['total_campamento'],
+            $totales['total_pro_templo'],
             $totales['total_suelto'],
         ]) - $totales['total_egresos'];
 

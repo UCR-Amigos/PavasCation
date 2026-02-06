@@ -124,7 +124,7 @@ class PromesasReporteController extends Controller
 
         // PASO 2: Calcular TODOS los montos dados en el mes (incluyendo anónimos)
         // Excluir diezmo y ofrenda_especial del cálculo de promesas
-        $categorias = $categoria ? [$categoria] : ['misiones', 'seminario', 'campa', 'construccion', 'prestamo', 'micro'];
+        $categorias = $categoria ? [$categoria] : ['misiones', 'seminario', 'campamento', 'pro_templo'];
         // Sanear cuando piden una categoría excluida
         if ($categoria && in_array(strtolower($categoria), ['diezmo', 'ofrenda_especial'])) {
             $categorias = [];

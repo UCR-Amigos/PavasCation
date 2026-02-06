@@ -142,42 +142,22 @@
                             </div>
 
                             <div>
-                                <label for="campa" class="block text-sm font-medium text-gray-700 mb-2">Campamento</label>
+                                <label for="campamento" class="block text-sm font-medium text-gray-700 mb-2">Campamento</label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">₡</span>
-                                    <input type="number" name="detalles[4][monto]" id="campa" step="0.01" min="0" value="0"
+                                    <input type="number" name="detalles[4][monto]" id="campamento" step="0.01" min="0" value="0"
                                            class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 detalle-monto">
-                                    <input type="hidden" name="detalles[4][categoria]" value="campa">
+                                    <input type="hidden" name="detalles[4][categoria]" value="campamento">
                                 </div>
                             </div>
 
                             <div>
-                                <label for="prestamo" class="block text-sm font-medium text-gray-700 mb-2">Préstamo</label>
+                                <label for="pro_templo" class="block text-sm font-medium text-gray-700 mb-2">Pro-Templo</label>
                                 <div class="relative">
                                     <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">₡</span>
-                                    <input type="number" name="detalles[5][monto]" id="prestamo" step="0.01" min="0" value="0"
+                                    <input type="number" name="detalles[5][monto]" id="pro_templo" step="0.01" min="0" value="0"
                                            class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 detalle-monto">
-                                    <input type="hidden" name="detalles[5][categoria]" value="prestamo">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="construccion" class="block text-sm font-medium text-gray-700 mb-2">Construcción</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">₡</span>
-                                    <input type="number" name="detalles[6][monto]" id="construccion" step="0.01" min="0" value="0"
-                                           class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 detalle-monto">
-                                    <input type="hidden" name="detalles[6][categoria]" value="construccion">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="micro" class="block text-sm font-medium text-gray-700 mb-2">Micro</label>
-                                <div class="relative">
-                                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">₡</span>
-                                    <input type="number" name="detalles[7][monto]" id="micro" step="0.01" min="0" value="0"
-                                           class="w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 detalle-monto">
-                                    <input type="hidden" name="detalles[7][categoria]" value="micro">
+                                    <input type="hidden" name="detalles[5][categoria]" value="pro_templo">
                                 </div>
                             </div>
                         </div>

@@ -127,7 +127,7 @@
                     
                     <div id="promesas-container" class="space-y-4">
                         @php
-                            $categorias = ['misiones', 'micro', 'construccion', 'seminario', 'campa', 'prestamo'];
+                            $categorias = ['misiones', 'seminario', 'campamento', 'pro_templo'];
                             $promesasActuales = $persona->promesas->keyBy('categoria');
                         @endphp
                         
