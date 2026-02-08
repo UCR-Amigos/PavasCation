@@ -27,32 +27,41 @@ class DashboardController extends Controller
             ->reverse()
             ->values();
 
-        // Totales del mes seleccionado (antes era semanal, ahora es mensual)
-        $totalesMes = Culto::whereBetween('fecha', [$inicioMes, $finMes])
-            ->with('totales')
-            ->get()
-            ->reduce(function ($carry, $culto) {
-                if ($culto->totales) {
-                    $carry['total_general'] += $culto->totales->total_general;
-                    $carry['total_diezmo'] += $culto->totales->total_diezmo;
-                    $carry['total_ofrenda_especial'] += $culto->totales->total_ofrenda_especial;
-                    $carry['total_misiones'] += $culto->totales->total_misiones;
-                    $carry['total_seminario'] += $culto->totales->total_seminario;
-                    $carry['total_campamento'] += $culto->totales->total_campamento;
-                    $carry['total_pro_templo'] += $culto->totales->total_pro_templo;
-                    $carry['total_suelto'] += $culto->totales->total_suelto;
+        // Totales del mes seleccionado - calculados directamente de sobres/detalles
+        $cultosMes = Culto::whereBetween('fecha', [$inicioMes, $finMes])
+            ->with(['sobres.detalles', 'ofrendasSueltas', 'egresos'])
+            ->get();
+
+        $totalesMes = [
+            'total_general' => 0,
+            'total_diezmo' => 0,
+            'total_ofrenda_especial' => 0,
+            'total_misiones' => 0,
+            'total_seminario' => 0,
+            'total_campamento' => 0,
+            'total_pro_templo' => 0,
+            'total_suelto' => 0,
+        ];
+
+        foreach ($cultosMes as $culto) {
+            foreach ($culto->sobres as $sobre) {
+                foreach ($sobre->detalles as $detalle) {
+                    $key = 'total_' . $detalle->categoria;
+                    if (isset($totalesMes[$key])) {
+                        $totalesMes[$key] += $detalle->monto;
+                    }
                 }
-                return $carry;
-            }, [
-                'total_general' => 0,
-                'total_diezmo' => 0,
-                'total_ofrenda_especial' => 0,
-                'total_misiones' => 0,
-                'total_seminario' => 0,
-                'total_campamento' => 0,
-                'total_pro_templo' => 0,
-                'total_suelto' => 0,
-            ]);
+            }
+            $totalesMes['total_suelto'] += $culto->ofrendasSueltas->sum('monto');
+        }
+
+        $totalesMes['total_general'] = $totalesMes['total_diezmo']
+            + $totalesMes['total_ofrenda_especial']
+            + $totalesMes['total_misiones']
+            + $totalesMes['total_seminario']
+            + $totalesMes['total_campamento']
+            + $totalesMes['total_pro_templo']
+            + $totalesMes['total_suelto'];
 
         // Distribución por categorías (mismo mes)
         $distribucion = [
