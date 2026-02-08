@@ -34,10 +34,12 @@ class CalculoTotalesCultoService
             foreach ($sobre->detalles as $detalle) {
                 $categoria = strtolower($detalle->categoria);
 
-                // Mapear nombres viejos a nuevos por compatibilidad
+                // Mapear nombres viejos/variantes a los canónicos
                 $mapeo = [
                     'campa' => 'campamento',
                     'prestamo' => 'pro_templo',
+                    'pro-templo' => 'pro_templo',
+                    'ofrenda-especial' => 'ofrenda_especial',
                 ];
                 $categoria = $mapeo[$categoria] ?? $categoria;
 

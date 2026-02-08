@@ -150,7 +150,8 @@
                     @endphp
                     @foreach($sobres as $sobre)
                     @php
-                        $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
+                        $mapeoCategoria = ['campa' => 'campamento', 'prestamo' => 'pro_templo', 'pro-templo' => 'pro_templo', 'ofrenda-especial' => 'ofrenda_especial'];
+                        $detallesPorCategoria = $sobre->detalles->keyBy(fn($d) => $mapeoCategoria[strtolower($d->categoria)] ?? strtolower($d->categoria));
                         $diezmo = $detallesPorCategoria->get('diezmo')->monto ?? 0;
                         $ofrendaEspecial = $detallesPorCategoria->get('ofrenda_especial')->monto ?? 0;
                         $misiones = $detallesPorCategoria->get('misiones')->monto ?? 0;

@@ -95,7 +95,8 @@
                     <h3 class="text-lg font-semibold mb-4">Detalles del Sobre</h3>
 
                     @php
-                        $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
+                        $mapeoCategoria = ['campa' => 'campamento', 'prestamo' => 'pro_templo', 'pro-templo' => 'pro_templo', 'ofrenda-especial' => 'ofrenda_especial'];
+                        $detallesPorCategoria = $sobre->detalles->keyBy(fn($d) => $mapeoCategoria[strtolower($d->categoria)] ?? strtolower($d->categoria));
                     @endphp
 
                     <div class="space-y-3" id="detallesContainer">

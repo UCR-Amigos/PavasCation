@@ -64,7 +64,8 @@
                         'campamento' => 'Campamento',
                         'pro_templo' => 'Pro-Templo',
                     ];
-                    $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
+                    $mapeoCategoria = ['campa' => 'campamento', 'prestamo' => 'pro_templo', 'pro-templo' => 'pro_templo', 'ofrenda-especial' => 'ofrenda_especial'];
+                    $detallesPorCategoria = $sobre->detalles->keyBy(fn($d) => $mapeoCategoria[strtolower($d->categoria)] ?? strtolower($d->categoria));
                 @endphp
 
                 @foreach($categorias as $categoria)

@@ -533,9 +533,12 @@
                             ₡{{ number_format($sobre->total_declarado, 2) }}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500 hidden lg:table-cell">
+                            @php
+                                $catLabels = ['diezmo' => 'Diezmo', 'ofrenda_especial' => 'Ofrenda Especial', 'misiones' => 'Misiones', 'seminario' => 'Seminario', 'campamento' => 'Campamento', 'pro_templo' => 'Pro-Templo'];
+                            @endphp
                             @foreach($sobre->detalles as $detalle)
                                 <span class="inline-block bg-gray-100 rounded px-2 py-1 text-xs mr-1 mb-1">
-                                    {{ ucfirst($detalle->categoria) }}: ₡{{ number_format($detalle->monto, 2) }}
+                                    {{ $catLabels[$detalle->categoria] ?? ucfirst($detalle->categoria) }}: ₡{{ number_format($detalle->monto, 2) }}
                                 </span>
                             @endforeach
                             @if($sobre->metodo_pago === 'transferencia' && $sobre->comprobante_numero)
@@ -683,7 +686,8 @@
                     @endphp
                     @foreach($sobres as $sobre)
                     @php
-                        $detallesPorCategoria = $sobre->detalles->keyBy('categoria');
+                        $mapeoCategoria = ['campa' => 'campamento', 'prestamo' => 'pro_templo', 'pro-templo' => 'pro_templo', 'ofrenda-especial' => 'ofrenda_especial'];
+                        $detallesPorCategoria = $sobre->detalles->keyBy(fn($d) => $mapeoCategoria[strtolower($d->categoria)] ?? strtolower($d->categoria));
                         $diezmo = $detallesPorCategoria->get('diezmo')->monto ?? 0;
                         $ofrenda_especial = $detallesPorCategoria->get('ofrenda_especial')->monto ?? 0;
                         $misiones = $detallesPorCategoria->get('misiones')->monto ?? 0;

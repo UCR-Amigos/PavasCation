@@ -12,23 +12,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Renombrar categorías en sobre_detalles
-        DB::table('sobre_detalles')->where('categoria', 'campa')->update(['categoria' => 'campamento']);
-        DB::table('sobre_detalles')->where('categoria', 'prestamo')->update(['categoria' => 'pro_templo']);
-        DB::table('sobre_detalles')->where('categoria', 'construccion')->delete();
-        DB::table('sobre_detalles')->where('categoria', 'micro')->delete();
+        $tablas = ['sobre_detalles', 'promesas', 'compromisos'];
 
-        // Renombrar categorías en promesas
-        DB::table('promesas')->where('categoria', 'campa')->update(['categoria' => 'campamento']);
-        DB::table('promesas')->where('categoria', 'prestamo')->update(['categoria' => 'pro_templo']);
-        DB::table('promesas')->where('categoria', 'construccion')->delete();
-        DB::table('promesas')->where('categoria', 'micro')->delete();
-
-        // Renombrar categorías en compromisos
-        DB::table('compromisos')->where('categoria', 'campa')->update(['categoria' => 'campamento']);
-        DB::table('compromisos')->where('categoria', 'prestamo')->update(['categoria' => 'pro_templo']);
-        DB::table('compromisos')->where('categoria', 'construccion')->delete();
-        DB::table('compromisos')->where('categoria', 'micro')->delete();
+        foreach ($tablas as $tabla) {
+            // Normalizar todas las variantes a los nombres canónicos
+            DB::table($tabla)->where('categoria', 'campa')->update(['categoria' => 'campamento']);
+            DB::table($tabla)->where('categoria', 'prestamo')->update(['categoria' => 'pro_templo']);
+            DB::table($tabla)->where('categoria', 'pro-templo')->update(['categoria' => 'pro_templo']);
+            DB::table($tabla)->where('categoria', 'ofrenda-especial')->update(['categoria' => 'ofrenda_especial']);
+            DB::table($tabla)->where('categoria', 'construccion')->delete();
+            DB::table($tabla)->where('categoria', 'micro')->delete();
+        }
     }
 
     public function down(): void
