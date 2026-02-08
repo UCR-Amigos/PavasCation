@@ -106,9 +106,11 @@ class PromesasReporteController extends Controller
 
                 $cat = $promesa->categoria;
                 
+                $catLabels = ['diezmo' => 'Diezmo', 'ofrenda_especial' => 'Ofrenda Especial', 'misiones' => 'Misiones', 'seminario' => 'Seminario', 'campamento' => 'Campamento', 'pro_templo' => 'Pro-Templo'];
+
                 if (!isset($totalesPorCategoria[$cat])) {
                     $totalesPorCategoria[$cat] = [
-                        'categoria' => ucfirst($cat),
+                        'categoria' => $catLabels[$cat] ?? ucfirst($cat),
                         'total_prometido' => 0,
                         'total_dado' => 0,
                         'faltante' => 0,
@@ -140,13 +142,14 @@ class PromesasReporteController extends Controller
                     $query->whereYear('created_at', $año)
                           ->whereMonth('created_at', $mes);
                 })
-                ->where('categoria', $cat)
+                ->whereCategoria($cat)
                 ->sum('monto');
 
             // Si hay dinero dado pero no hay promesas en esta categoría, crear el registro
+            $catLabels2 = ['diezmo' => 'Diezmo', 'ofrenda_especial' => 'Ofrenda Especial', 'misiones' => 'Misiones', 'seminario' => 'Seminario', 'campamento' => 'Campamento', 'pro_templo' => 'Pro-Templo'];
             if ($montoDadoTotal > 0 && !isset($totalesPorCategoria[$cat])) {
                 $totalesPorCategoria[$cat] = [
-                    'categoria' => ucfirst($cat),
+                    'categoria' => $catLabels2[$cat] ?? ucfirst($cat),
                     'total_prometido' => 0,
                     'total_dado' => 0,
                     'faltante' => 0,

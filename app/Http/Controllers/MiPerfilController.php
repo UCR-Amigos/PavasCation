@@ -22,15 +22,16 @@ class MiPerfilController extends Controller
         
         // Calcular cumplimiento de promesas del mes actual
         $promesasConEstatus = $persona->promesas->map(function ($promesa) use ($persona) {
+            $catVariants = \App\Models\SobreDetalle::categoriaVariants($promesa->categoria);
             $montoPagado = $persona->sobres()
-                ->whereHas('detalles', function ($query) use ($promesa) {
-                    $query->where('categoria', $promesa->categoria);
+                ->whereHas('detalles', function ($query) use ($catVariants) {
+                    $query->whereIn('categoria', $catVariants);
                 })
                 ->whereMonth('created_at', Carbon::now()->month)
                 ->get()
-                ->sum(function ($sobre) use ($promesa) {
+                ->sum(function ($sobre) use ($catVariants) {
                     return $sobre->detalles()
-                        ->where('categoria', $promesa->categoria)
+                        ->whereIn('categoria', $catVariants)
                         ->sum('monto');
                 });
 

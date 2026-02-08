@@ -136,7 +136,7 @@ class CompromisoController extends Controller
                       ->whereYear('created_at', $año)
                       ->whereMonth('created_at', $mes);
             })
-            ->where('categoria', $categoria)
+            ->whereIn('categoria', \App\Models\SobreDetalle::categoriaVariants($categoria))
             ->sum('monto');
     }
 
