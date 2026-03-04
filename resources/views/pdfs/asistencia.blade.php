@@ -32,7 +32,7 @@
     <div class="header">
         <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/Logo2.png'))) }}" alt="Logo IBBP">
         <div class="header-text">
-            <h1>IBBP - Iglesia Bíblica Bautista en Santa Cruz</h1>
+            <h1>IBBP - Iglesia Bíblica Bautista en Pavas</h1>
             <h2>Reporte de Asistencia</h2>
             <p><strong>Fecha de Generación:</strong> {{ now()->format('d/m/Y H:i') }}</p>
         </div>
@@ -115,7 +115,7 @@
     </table>
     
     <div class="footer">
-        <p>Sistema de Administración - IBBP - Iglesia Bíblica Bautista en Santa Cruz</p>
+        <p>Sistema de Administración - IBBP - Iglesia Bíblica Bautista en Pavas</p>
     </div>
 </body>
 </html>

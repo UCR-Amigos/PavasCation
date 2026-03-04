@@ -16,7 +16,7 @@ class AdminUserSeeder extends Seeder
         // Usuario Admin
         User::create([
             'name' => 'Administrador',
-            'email' => 'admin@ibbsc.com',
+            'email' => 'admin@ibbp.com',
             'password' => Hash::make('admin123'),
             'rol' => 'admin',
         ]);
@@ -24,7 +24,7 @@ class AdminUserSeeder extends Seeder
         // Usuario Tesorero
         User::create([
             'name' => 'Tesorero',
-            'email' => 'tesorero@ibbsc.com',
+            'email' => 'tesorero@ibbp.com',
             'password' => Hash::make('tesorero123'),
             'rol' => 'tesorero',
         ]);
@@ -32,7 +32,7 @@ class AdminUserSeeder extends Seeder
         // Usuario General
         User::create([
             'name' => 'Usuario General',
-            'email' => 'general@ibbsc.com',
+            'email' => 'general@ibbp.com',
             'password' => Hash::make('general123'),
             'rol' => 'general',
         ]);

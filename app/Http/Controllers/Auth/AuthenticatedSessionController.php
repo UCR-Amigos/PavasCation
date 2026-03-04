@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
     {
         // Buscar o crear usuario invitado
         $guest = User::firstOrCreate(
-            ['email' => 'invitado@ibbsc.local'],
+            ['email' => 'invitado@ibbp.local'],
             [
                 'name' => 'Invitado',
                 'password' => bcrypt(str()->random(32)), // Password aleatorio que nadie conoce

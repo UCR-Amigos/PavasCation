@@ -200,7 +200,7 @@
             </div>
             <div class="header-text">
                 <h1>Reporte de Contribuciones</h1>
-                <h2>Iglesia Bíblica Bautista en Santa Cruz</h2>
+                <h2>Iglesia Bíblica Bautista en Pavas</h2>
             </div>
         </div>
 

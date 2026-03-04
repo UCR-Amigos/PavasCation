@@ -267,7 +267,7 @@
             </div>
             <div class="header-text">
                 <h1>Reporte General de Compromisos</h1>
-                <h2>Iglesia Biblica Bautista en Santa Cruz</h2>
+                <h2>Iglesia Bíblica Bautista en Pavas</h2>
             </div>
         </div>
 
